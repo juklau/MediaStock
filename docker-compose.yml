@@ -1,0 +1,76 @@
+
+version: '3.8'
+
+services:
+  #Service Web PHP Apache
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mediastock-web
+    ports:
+      - "8080:80"
+    volumes:
+    # Monter le code source dans le conteneur
+      - ./:/var/www/html
+    environment:
+       DB_HOST: mysql
+       DB_NAME: ${DB_NAME}
+       DB_USER: ${DB_USER}
+       DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - mysql
+    networks:
+      - mediastock-network
+   
+
+
+    # Service Base de Données MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: mediastock-db
+    ports: 
+      - "3306:3306"   # ok en DEV; à NE PAS exposer en prod
+    environment:
+       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+       MYSQL_DATABASE: ${DB_NAME}
+       MYSQL_USER: ${DB_USER}
+       MYSQL_PASSWORD: ${DB_PASSWORD}
+       TZ: Europe/Paris
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    volumes:
+      # Persister les données MySQL
+      - mysql-data:/var/lib/mysql
+      # Monter le script d'initialisation
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro #ro = read only
+    networks:
+      - mediastock-network
+
+  # Service phpMyAdmin (développement uniquement)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: mediastock-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+       PMA_HOST: mysql
+       PMA_PORT: 3306
+       PMA_USER: ${DB_USER}
+       PMA_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - mysql
+    networks:
+      - mediastock-network
+
+# Volumes nommés pour persistance
+volumes:
+  mysql-data:
+    # driver: local => c'est le driver par défaut
+
+#Réseau pour communication inter-conteneurs
+networks:
+  mediastock-network:
+    driver: bridge
