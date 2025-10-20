@@ -1,4 +1,3 @@
-USE mediastock;
 
 CREATE TABLE `Item`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -9,8 +8,7 @@ CREATE TABLE `Item`(
     `état` ENUM('') NOT NULL,
     `categorie_id` BIGINT NOT NULL
 );
-ALTER TABLE
-    `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
+ALTER TABLE `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 CREATE TABLE `Pret`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `item_id` BIGINT NOT NULL,
@@ -56,7 +54,6 @@ CREATE TABLE `sous_categorie`(
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT NOT NULL
 );
-ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
 ALTER TABLE `emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
