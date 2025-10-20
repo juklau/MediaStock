@@ -8,8 +8,6 @@ CREATE TABLE `Item`(
 );
 ALTER TABLE
     `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
-ALTER TABLE
-    `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 CREATE TABLE `Pret`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `item_id` BIGINT NOT NULL,
@@ -76,4 +74,25 @@ ALTER TABLE
     `Pret` ADD CONSTRAINT `pret_item_id_foreign` FOREIGN KEY(`item_id`) REFERENCES `Item`(`id`);
 ALTER TABLE
     `sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
+
+INSERT INTO `Administrateur`(`login`, `mot_de_passe_hash`) VALUES
+('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhYz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz');
+INSERT INTO `Formation`(`formation`) VALUES
+('SIO 1'),
+('SIO 2'),
+('PSL'),
+('ECS');
+INSERT INTO `categorie`(`categorie`) VALUES
+('Ordinateur'),
+('Audio'),
+('Periphériques'),
+('Autres');
+INSERT INTO `sous_categorie`(`sous_categorie`, `categorie_id`) VALUES
+('Souris', 1),
+('Clavier', 1),
+('Micro-cravate', 2),
+('Casque', 2),
+('Câble HDMI', 3),
+('Adaptateur MAC', 4),
+('Clé USB', 4);
     
