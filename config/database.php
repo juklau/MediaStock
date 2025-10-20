@@ -1,12 +1,9 @@
-
-
 <?php
-
-    declare(strict_types=1);
+declare(strict_types=1);
 
     //connexion PDO à la base applicative
 
-    //function database(): PDO{
+    // function database(): PDO{
 
         $host = getenv('DB_HOST') ?: 'mysql'; // 'mysql' est le nom du service dans docker-compose.yml
         $db   = getenv('DB_NAME') ?: 'mediastock';
