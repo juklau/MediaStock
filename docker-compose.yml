@@ -55,7 +55,7 @@ services:
 
       # Optionnel: script SQL auto au 1er démarrage (alternative à setup_db.php)
       # Monter le script d'initialisation
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro #ro = read only
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro #ro = read only
     networks:
       - mediastock-network
 
