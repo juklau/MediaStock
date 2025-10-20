@@ -1,3 +1,5 @@
+USE mediastock;
+
 CREATE TABLE `Item`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `nom` VARCHAR(50) NOT NULL,
@@ -7,8 +9,6 @@ CREATE TABLE `Item`(
     `état` ENUM('') NOT NULL,
     `categorie_id` BIGINT NOT NULL
 );
-ALTER TABLE
-    `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 ALTER TABLE
     `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 CREATE TABLE `Pret`(
@@ -22,18 +22,14 @@ CREATE TABLE `Pret`(
     `note_fin` VARCHAR(200) NOT NULL,
     `preteur_id` BIGINT NOT NULL
 );
-ALTER TABLE
-    `Pret` ADD INDEX `pret_item_id_emprenteur_id_preteur_id_index`(
+ALTER TABLE `Pret` ADD INDEX `pret_item_id_emprenteur_id_preteur_id_index`(
         `item_id`,
         `emprenteur_id`,
         `preteur_id`
     );
-ALTER TABLE
-    `Pret` ADD INDEX `pret_item_id_index`(`item_id`);
-ALTER TABLE
-    `Pret` ADD INDEX `pret_emprenteur_id_index`(`emprenteur_id`);
-ALTER TABLE
-    `Pret` ADD INDEX `pret_preteur_id_index`(`preteur_id`);
+ALTER TABLE `Pret` ADD INDEX `pret_item_id_index`(`item_id`);
+ALTER TABLE `Pret` ADD INDEX `pret_emprenteur_id_index`(`emprenteur_id`);
+ALTER TABLE `Pret` ADD INDEX `pret_preteur_id_index`(`preteur_id`);
 CREATE TABLE `Administrateur`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `login` VARCHAR(50) NOT NULL,
@@ -46,8 +42,7 @@ CREATE TABLE `emprunteur`(
     `role` ENUM('') NOT NULL,
     `formation_id` BIGINT NOT NULL
 );
-ALTER TABLE
-    `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
+ALTER TABLE `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
 CREATE TABLE `categorie`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `categorie` VARCHAR(50) NOT NULL
@@ -61,20 +56,12 @@ CREATE TABLE `sous_categorie`(
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT NOT NULL
 );
-ALTER TABLE
-    `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
-ALTER TABLE
-    `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
-ALTER TABLE
-    `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
-ALTER TABLE
-    `emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
-ALTER TABLE
-    `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
-ALTER TABLE
-    `Pret` ADD CONSTRAINT `pret_emprenteur_id_foreign` FOREIGN KEY(`emprenteur_id`) REFERENCES `emprunteur`(`id`);
-ALTER TABLE
-    `Pret` ADD CONSTRAINT `pret_item_id_foreign` FOREIGN KEY(`item_id`) REFERENCES `Item`(`id`);
-ALTER TABLE
-    `sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
+ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
+ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
+ALTER TABLE `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
+ALTER TABLE `emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
+ALTER TABLE `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
+ALTER TABLE `Pret` ADD CONSTRAINT `pret_emprenteur_id_foreign` FOREIGN KEY(`emprenteur_id`) REFERENCES `emprunteur`(`id`);
+ALTER TABLE `Pret` ADD CONSTRAINT `pret_item_id_foreign` FOREIGN KEY(`item_id`) REFERENCES `Item`(`id`);
+ALTER TABLE `sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
     
