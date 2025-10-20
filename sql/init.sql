@@ -1,3 +1,5 @@
+USE mediastock;
+
 CREATE TABLE `Item`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `nom` VARCHAR(50) NOT NULL,
@@ -7,8 +9,6 @@ CREATE TABLE `Item`(
     `état` ENUM('') NOT NULL,
     `categorie_id` BIGINT NOT NULL
 );
-ALTER TABLE
-    `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 ALTER TABLE
     `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 CREATE TABLE `Pret`(
