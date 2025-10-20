@@ -3,6 +3,7 @@ CREATE TABLE `Item`(
     `nom` VARCHAR(50) NOT NULL,
     `model` VARCHAR(50) NULL,
     `qr_code` VARCHAR(255) NOT NULL,
+    `image_url` VARCHAR(200) NOT NULL,
     `état` ENUM('') NOT NULL,
     `categorie_id` BIGINT NOT NULL
 );
