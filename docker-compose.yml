@@ -1,5 +1,6 @@
 
-version: '3.8'
+# version: '3.8'
+
 
 services:
   #Service Web PHP Apache
@@ -11,8 +12,16 @@ services:
     ports:
       - "8080:80"
     volumes:
-    # Monter le code source dans le conteneur
-      - ./:/var/www/html
+    # Monter le code source dans le conteneur => à monte précisément ce dont Apache a besoin
+    - ./public:/var/www/html/public
+    - ./src:/var/www/html/src
+    - ./config:/var/www/html/config
+    - ./vendor:/var/www/html/vendor
+    - ./composer.json:/var/www/html/composer.json
+    - ./composer.lock:/var/www/html/composer.lock
+
+    # Script de setup (temporaire, si je le supprimerai après)
+    # - ./scripts:/var/www/html/scripts
     environment:
        DB_HOST: mysql
        DB_NAME: ${DB_NAME}
@@ -22,19 +31,18 @@ services:
       - mysql
     networks:
       - mediastock-network
-   
 
 
-    # Service Base de Données MySQL
+  # Service Base de Données MySQL
   mysql:
     image: mysql:8.0
     container_name: mediastock-db
-    ports: 
-      - "3306:3306"   # ok en DEV; à NE PAS exposer en prod
+    # ports: 
+      # - "3306:3306"                   # ok en DEV; à NE PAS exposer en prod
     environment:
        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
-       MYSQL_DATABASE: ${DB_NAME}
-       MYSQL_USER: ${DB_USER}
+       MYSQL_DATABASE: ${DB_NAME}     # création de la BDD au premier démarrage
+       MYSQL_USER: ${DB_USER}         # création l'utilisateur applicatif
        MYSQL_PASSWORD: ${DB_PASSWORD}
        TZ: Europe/Paris
     command: >
@@ -44,10 +52,13 @@ services:
     volumes:
       # Persister les données MySQL
       - mysql-data:/var/lib/mysql
+
+      # Optionnel: script SQL auto au 1er démarrage (alternative à setup_db.php)
       # Monter le script d'initialisation
       - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro #ro = read only
     networks:
       - mediastock-network
+
 
   # Service phpMyAdmin (développement uniquement)
   phpmyadmin:

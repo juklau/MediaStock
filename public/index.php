@@ -1,0 +1,5 @@
+
+<!-- temporaire -->
+
+<?php phpinfo();
+?>
