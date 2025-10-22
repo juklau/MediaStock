@@ -1,5 +1,5 @@
 USE mediastock;
-
+-- même que le dump.sql du prof
 -- il faut enlever les accents !!!
 CREATE TABLE `Item`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -46,6 +46,7 @@ CREATE TABLE `emprunteur`(
     `emprunteur_nom` VARCHAR(50) NOT NULL,
     `emprunteur_prenom` VARCHAR(50) NOT NULL,
     `role` ENUM('etudiant(e)', 'intervenant') NOT NULL,
+    -- peut être à modifier NOT NULL sur NULL!!!!
     `formation_id` BIGINT UNSIGNED NOT NULL
 );
 ALTER TABLE
@@ -83,22 +84,37 @@ INSERT INTO `Administrateur`(`login`, `mot_de_passe_hash`) VALUES
 ('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhYz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz');
 
 INSERT INTO `Formation`(`formation`) VALUES
-('SIO 1'),
-('SIO 2'),
-('PSL'),
-('ECS');
+('ECS1'),
+('ECS2'),
+('ECS3 A Brand Digit'),
+('ECS3 B Com Event'),
+('ECS4 A Brand Digit'),
+('ECS4 B Com Event'),
+('ECS4 DA'),
+('ECS5 Com Digit'),
+('ECS5 Com Event'),
+('NSS 1'),
+('NSS 2'),
+('PSL 1'),
+('PSL 2'),
+('PSL 3'),
+('Iris 1'),
+('Iris 2');
 
 INSERT INTO `categorie`(`categorie`) VALUES
-('Ordinateur'),
+('Informatique'),
 ('Audio'),
-('Peripheriques'),
+('Connectique'),
 ('Autres');
 
-INSERT INTO `sous_categorie`(`sous_categorie`, `categorie_id`) VALUES
-('Souris', 1),
-('Clavier', 1),
-('Micro-cravate', 2),
-('Casque', 2),
-('Cable HDMI', 3),
-('Adaptateur MAC', 4),
-('Cle USB', 4); 
+
+-- Insertion des sous-catégories avec SELECT pour garantir les bons ID
+INSERT INTO `sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
+('Souris', (SELECT id FROM categorie WHERE categorie = 'Informatique')),
+('Clavier', (SELECT id FROM categorie WHERE categorie = 'Informatique')),
+('Micro-cravate', (SELECT id FROM categorie WHERE categorie = 'Audio')),
+('Casque', (SELECT id FROM categorie WHERE categorie = 'Audio')),
+('Cable HDMI', (SELECT id FROM categorie WHERE categorie = 'Connectique')),
+('Rallonge', (SELECT id FROM categorie WHERE categorie = 'Connectique')),
+('Adaptateur MAC', (SELECT id FROM categorie WHERE categorie = 'Autres')),
+('Cle USB', (SELECT id FROM categorie WHERE categorie = 'Autres'));
