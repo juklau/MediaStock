@@ -1,5 +1,3 @@
-<!-- il faut que je laisse ici: codes du prof -->
-
 <?php
     /**
     * Chargeur automatique pour la couche d'accès aux données MediaStock

@@ -211,7 +211,7 @@ class Item extends BaseModel {
      * @param int $id
      * @return array
      */
-    public function getItemByID(int $id): array{
+    public function getItemByID(int $id){
         $sql = "SELECT * 
                 FROM {$this->table} 
                 WHERE id = :id";
@@ -219,8 +219,11 @@ class Item extends BaseModel {
         $stmt->execute([
             ":id" => $id
         ]);
+
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
+
+
     
 
     /**
