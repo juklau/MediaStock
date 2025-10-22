@@ -30,7 +30,7 @@ class Item extends BaseModel {
                 FROM Item";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -72,8 +72,8 @@ class Item extends BaseModel {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             ":categorie_id" => $categoryId
-        ])
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     
@@ -96,8 +96,8 @@ class Item extends BaseModel {
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             ":condition" => $condition
-        ])
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -130,7 +130,7 @@ class Item extends BaseModel {
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':search_term', $searchTerm);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -164,7 +164,7 @@ class Item extends BaseModel {
         $stmt->execute([
             ":id" => $id
         ]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
     
 

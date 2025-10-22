@@ -85,7 +85,7 @@
                     WHERE login = :login 
                     LIMIT 1";
 
-            $stmt = $this->pdo->prepare($sql);
+            $stmt = $this->db->prepare($sql);
 
             return $stmt->execute([
                 ':login' => $id,
@@ -103,7 +103,7 @@
                     FROM {$this->table}";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
-            $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $admins = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             //retirer le MDP hashé pour la raison de la sécurité
             foreach ($admins as &$admin) {
@@ -118,7 +118,7 @@
                     FROM {$this->table}";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
 
         
@@ -138,7 +138,7 @@
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':admin_id', $adminId, \PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         
         /**

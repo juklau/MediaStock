@@ -24,28 +24,18 @@ CREATE TABLE `Pret`(
     `note_fin` VARCHAR(200) NOT NULL,
     `preteur_id` BIGINT UNSIGNED NOT NULL
 );
-<<<<<<< HEAD
-ALTER TABLE `Pret` ADD INDEX `pret_item_id_emprenteur_id_preteur_id_index`(
-=======
 ALTER TABLE
     `Pret` ADD INDEX `pret_item_id_emprunteur_id_preteur_id_index`(
->>>>>>> 14c76daf2ca6ee1901d238ad0b43305fc0308f43
         `item_id`,
         `emprunteur_id`,
         `preteur_id`
     );
-<<<<<<< HEAD
-ALTER TABLE `Pret` ADD INDEX `pret_item_id_index`(`item_id`);
-ALTER TABLE `Pret` ADD INDEX `pret_emprenteur_id_index`(`emprenteur_id`);
-ALTER TABLE `Pret` ADD INDEX `pret_preteur_id_index`(`preteur_id`);
-=======
 ALTER TABLE
     `Pret` ADD INDEX `pret_item_id_index`(`item_id`);
 ALTER TABLE
     `Pret` ADD INDEX `pret_emprunteur_id_index`(`emprunteur_id`);
 ALTER TABLE
     `Pret` ADD INDEX `pret_preteur_id_index`(`preteur_id`);
->>>>>>> 14c76daf2ca6ee1901d238ad0b43305fc0308f43
 CREATE TABLE `Administrateur`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `login` VARCHAR(50) NOT NULL,
@@ -59,7 +49,8 @@ CREATE TABLE `emprunteur`(
     -- peut être à modifier NOT NULL sur NULL!!!!
     `formation_id` BIGINT UNSIGNED NOT NULL
 );
-ALTER TABLE `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
+ALTER TABLE
+    `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
 CREATE TABLE `categorie`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `categorie` VARCHAR(50) NOT NULL
@@ -73,17 +64,6 @@ CREATE TABLE `sous_categorie`(
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
-<<<<<<< HEAD
-ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
-ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
-ALTER TABLE `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
-ALTER TABLE `emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
-ALTER TABLE `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
-ALTER TABLE `Pret` ADD CONSTRAINT `pret_emprenteur_id_foreign` FOREIGN KEY(`emprenteur_id`) REFERENCES `emprunteur`(`id`);
-ALTER TABLE `Pret` ADD CONSTRAINT `pret_item_id_foreign` FOREIGN KEY(`item_id`) REFERENCES `Item`(`id`);
-ALTER TABLE `sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
-    
-=======
 ALTER TABLE
     `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE
@@ -138,4 +118,3 @@ INSERT INTO `sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
 ('Rallonge', (SELECT id FROM categorie WHERE categorie = 'Connectique')),
 ('Adaptateur MAC', (SELECT id FROM categorie WHERE categorie = 'Autres')),
 ('Cle USB', (SELECT id FROM categorie WHERE categorie = 'Autres'));
->>>>>>> 14c76daf2ca6ee1901d238ad0b43305fc0308f43
