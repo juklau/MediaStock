@@ -19,6 +19,8 @@ services:
     - ./vendor:/var/www/html/vendor
     - ./composer.json:/var/www/html/composer.json
     - ./composer.lock:/var/www/html/composer.lock
+    #pour rendre accessible le dossier sql dans le conteneur web => permet que setup_db.php puisse le lire
+    - ./sql:/var/www/html/sql 
 
     # Script de setup (temporaire, si je le supprimerai après)
     # - ./scripts:/var/www/html/scripts
@@ -37,8 +39,8 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mediastock-db
-    # ports: 
-      # - "3306:3306"                   # ok en DEV; à NE PAS exposer en prod
+    ports: 
+      - "3306:3306"                   # ok en DEV; à NE PAS exposer en prod
     environment:
        MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
        MYSQL_DATABASE: ${DB_NAME}     # création de la BDD au premier démarrage
