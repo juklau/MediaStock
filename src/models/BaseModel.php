@@ -14,6 +14,7 @@
             $this->db = Database::getInstance()->getConnection();
         }
         
+
         /**
          * Obtenir tous les enregistrements de la table
          * 
@@ -27,6 +28,7 @@
             return $stmt->fetchAll();
         }
         
+
         /**
          * Obtenir les détails d'un élément (défini par primary key = id)
          * 
@@ -43,6 +45,7 @@
             return $stmt->fetch();
         }
         
+
         /**
          * Créer un nouvel enregistrement
          * 
@@ -72,6 +75,7 @@
             return false;
         }
         
+
         /**
          * Mettre à jour un enregistrement
          * 
@@ -102,6 +106,7 @@
             return $stmt->execute();
         }
         
+        
         /**
          * Suppression d'un enregistrement
          * 
@@ -117,6 +122,7 @@
             return $stmt->execute();
         }
         
+
         /**
          * Rechercher des enregistrements par une valeur de champ spécifique
          * 
