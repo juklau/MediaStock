@@ -18,13 +18,14 @@ class Emprunteur extends BaseModel {
         return $stmt->fetchAll();
     }
 
+
     /**
      * Obtenir un emprunteur avec des informations de formation
      * 
      * @param int $id
      * @return array|false
      */
-    public function getWithFormation(int $id):array {
+    public function getWithFormation(int $id):array|false {
         $sql = "SELECT e.*, f.formation 
                  FROM {$this->table} e
                  JOIN Formation f ON e.formation_id = f.id
@@ -38,6 +39,7 @@ class Emprunteur extends BaseModel {
         return $stmt->fetch();
     }
 
+
     /**
      * récupérer tous les emprunteurs liés à une formation donnée via son formation_id
      * interroge la base
@@ -47,6 +49,7 @@ class Emprunteur extends BaseModel {
     public function getByFormation(int $formationId):array {
         return $this->findBy('formation_id', $formationId);
     }
+
 
     /**
      * Obtenir les emprunteurs par rôle
@@ -58,6 +61,8 @@ class Emprunteur extends BaseModel {
         return $this->findBy('role', $role);
     }
 
+    //OU
+
     public function getByRole2(string $role): array{
         $sql = "SELECT * 
                 FROM {this->table}
@@ -66,6 +71,7 @@ class Emprunteur extends BaseModel {
         $stmt->execute([':role' => $role]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     /**
      * Rechercher des emprunteurs par nom ou prénom.... =>searchTerm p.ex %Mar%
@@ -90,6 +96,7 @@ class Emprunteur extends BaseModel {
         ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     /**
      * Obtenir des prêts actifs pour un emprunteur
@@ -204,6 +211,7 @@ class Emprunteur extends BaseModel {
         ]);
     }
 
+    
     /**
      * Obtenir le nom de la tabla
      * 
