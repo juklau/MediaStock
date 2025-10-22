@@ -1,2 +1,4 @@
 
 .env
+setup_db.php
+.idea
