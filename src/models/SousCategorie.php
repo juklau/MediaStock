@@ -5,11 +5,11 @@ class SousCategorie extends BaseModel {
     protected $table = 'sous_categorie';
 
     /**
-     * Obtenin toutes les sous-catégories avec les informations de leur catégorie parente
+     * Obtenir toutes les sous-catégories avec les informations de leur catégorie parente
      * 
      * @return array
      */
-    public function getAllWithCategory() {
+    public function getAllWithCategory():array {
         $sql = "SELECT sc.*, c.categorie 
                 FROM {$this->table} sc
                 JOIN categorie c ON sc.categorie_id = c.id";
@@ -25,7 +25,7 @@ class SousCategorie extends BaseModel {
      * @param int $id
      * @return array|false
      */
-    public function getWithCategory(int $id) {
+    public function getWithCategory(int $id): array|false {
         $sql = "SELECT sc.*, c.categorie 
                  FROM {$this->table} sc
                  JOIN categorie c ON sc.categorie_id = c.id
@@ -44,7 +44,7 @@ class SousCategorie extends BaseModel {
      * @param int $subcategoryId
      * @return array
      */
-    public function getSubcategoryItems(int $subcategoryId) {
+    public function getSubcategoryItems(int $subcategoryId):array {
 
         // Tout d'abord, récupérez la sous-catégorie pour trouver son category_id
         $subcategory = $this->getById($subcategoryId);
@@ -58,8 +58,9 @@ class SousCategorie extends BaseModel {
         return $itemModel->findBy('categorie_id', $subcategory['categorie_id']);
     }
 
+    //OU
 
-    public function getSubcategoryItems(int $subcategoryId){  //????
+    public function getSubcategoryItems2(int $subcategoryId): array{  //????
         $itemModel = new Item();
         $sql = "SELECT i.*
                 FROM {$itemModel->getTable()} i
@@ -81,11 +82,13 @@ class SousCategorie extends BaseModel {
      * @param int $categoryId
      * @return array
      */
-    public function getByCategory(int $categoryId) {
+    public function getByCategory(int $categoryId):array {
         return $this->findBy('categorie_id', $categoryId);
     }
 
-    public function getByCategory2($categoryId){
+    //OU 
+
+    public function getByCategory2(int $categoryId):array {
        
         $sql = "SELECT sc.*
                 FROM {$this->table} sc
@@ -107,7 +110,7 @@ class SousCategorie extends BaseModel {
      * @param int $categoryId
      * @return int|false
      */
-    public function createSubcategory(string $name, int $categoryId) {
+    public function createSubcategory(string $name, int $categoryId): int|false {
         $data = [
             'sous_categorie' => $name,
             'categorie_id' => $categoryId
@@ -116,8 +119,9 @@ class SousCategorie extends BaseModel {
         return $this->create($data);
     }
 
+    //OU
 
-    public function createSubcategory2(string $name, int $categoryId){
+    public function createSubcategory2(string $name, int $categoryId): int|false{
         $sql = "INSERT INTO sous_categorie (sous_categorie, categorie_id) 
                 VALUES (:name, :categorie_id)";
         $stmt = $this->db->prepare($sql);
@@ -128,6 +132,7 @@ class SousCategorie extends BaseModel {
         return (int) $this->db->lastInsertId(); //=>comme create()
     }
 
+
     /**
      * Mettre à jour la catégorie d'une sous-catégorie
      * 
@@ -135,7 +140,7 @@ class SousCategorie extends BaseModel {
      * @param int $newCategoryId
      * @return bool
      */
-    public function updateCategory(int $id, int $newCategoryId) {
+    public function updateCategory(int $id, int $newCategoryId):bool {
         $data = [
             'categorie_id' => $newCategoryId
         ];
@@ -143,7 +148,9 @@ class SousCategorie extends BaseModel {
         return $this->update($id, $data);
     }
 
-    public function updateCategory(int $id, int $newCategoryId): bool {
+    //OU
+
+    public function updateCategory2(int $id, int $newCategoryId): bool {
         $sql = "UPDATE {$this->table} 
                 SET categorie_id = :newCategoryId 
                 WHERE id = :id";
@@ -161,7 +168,7 @@ class SousCategorie extends BaseModel {
      * 
      * @return string
      */
-    public function getTable() {
+    public function getTable():string {
         return $this->table;
     }
 }

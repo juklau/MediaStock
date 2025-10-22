@@ -15,7 +15,7 @@
         // en PHP '\\' === '\' dans une chaîne!!
         // Si une classe commence par le namespace Models\, alors cherche son fichier dans src/models/
         'Models\\' => __DIR__ . '/../src/models/',
-        // 'Config\\' => __DIR__ . '/../config/',
+        'Config\\' => __DIR__ . '/../config/',
         // 'Controllers\\' => __DIR__ . '/../src/controllers/',
         // 'Controllers\\' => __DIR__ . '/../src/views/',
     ];

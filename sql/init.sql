@@ -41,17 +41,17 @@ CREATE TABLE `Administrateur`(
     `login` VARCHAR(50) NOT NULL,
     `mot_de_passe_hash` VARCHAR(100) NOT NULL
 );
-CREATE TABLE `emprunteur`(
+CREATE TABLE `Emprunteur`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `emprunteur_nom` VARCHAR(50) NOT NULL,
     `emprunteur_prenom` VARCHAR(50) NOT NULL,
     `role` ENUM('etudiant(e)', 'intervenant') NOT NULL,
     -- peut être à modifier NOT NULL sur NULL!!!!
-    `formation_id` BIGINT UNSIGNED NOT NULL
+    `formation_id` BIGINT UNSIGNED NULL
 );
 ALTER TABLE
     `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
-CREATE TABLE `categorie`(
+CREATE TABLE `Categorie`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `categorie` VARCHAR(50) NOT NULL
 );
@@ -59,7 +59,7 @@ CREATE TABLE `Formation`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `formation` VARCHAR(50) NULL
 );
-CREATE TABLE `sous_categorie`(
+CREATE TABLE `Sous_categorie`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
