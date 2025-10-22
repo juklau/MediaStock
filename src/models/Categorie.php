@@ -100,21 +100,21 @@ class Categorie extends BaseModel {
     public function getAllCategoryItems(int $categoryId):array {
         $sql = "SELECT i.* 
                  FROM Item i
-                --  WHERE i.categorie_id = :category_id_1
-                 WHERE i.categorie_id = :category_id
+                 WHERE i.categorie_id = :category_id_1
+                --  WHERE i.categorie_id = :category_id
                  UNION
                  SELECT i.* 
                  FROM Item i
                  JOIN sous_categorie sc ON i.categorie_id = sc.id
-                --  WHERE sc.categorie_id = :category_id_2";
-                 WHERE sc.categorie_id = :category_id";
+                 WHERE sc.categorie_id = :category_id_2";
+                //  WHERE sc.categorie_id = :category_id";
         $stmt = $this->db->prepare($sql);
-        // $stmt->bindParam(':category_id_1', $categoryId, \PDO::PARAM_INT);
-        // $stmt->bindParam(':category_id_2', $categoryId, \PDO::PARAM_INT);
-        // $stmt->execute();
-        $stmt->execute([
-            ":category_id" => $categoryId
-        ]);
+        $stmt->bindParam(':category_id_1', $categoryId, \PDO::PARAM_INT);
+        $stmt->bindParam(':category_id_2', $categoryId, \PDO::PARAM_INT);
+        $stmt->execute();
+        // $stmt->execute([
+        //     ":category_id" => $categoryId
+        // ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

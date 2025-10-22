@@ -1,12 +1,50 @@
 <?php
-
+require_once __DIR__ . '/autoload.php'; 
     // Fonction de chargement automatique => 
-    spl_autoload_register(function ($class) {
-        $file = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
-        if (file_exists($file)) {
-            require $file;
-            return true;
+    // spl_autoload_register(function ($class) {
+    //     $file = str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
+    //     if (file_exists($file)) {
+    //         require $file;
+    //         return true;
+    //     }
+    //     return false;
+    // });
+
+    $prefixes = [
+        // __DIR__ = le dossier du fichier actuel!!
+        // en PHP '\\' === '\' dans une chaîne!!
+        // Si une classe commence par le namespace Models\, alors cherche son fichier dans src/models/
+        'Models\\' => __DIR__ . '/../src/models/',
+        // 'Config\\' => __DIR__ . '/../config/',
+        // 'Controllers\\' => __DIR__ . '/../src/controllers/',
+        // 'Controllers\\' => __DIR__ . '/../src/views/',
+    ];
+
+    // Enregistrer le chargeur automatique => à appeler par PHP pour trouver la classe
+    // $class => p.ex. Models\Item
+    spl_autoload_register(function ($class) use ($prefixes) {
+
+        // rechercher le bon mapping
+        foreach ($prefixes as $prefix => $baseDir) {
+
+            // Vérifie si la classe commence par le préfixe
+            if (strpos($class, $prefix) === 0) { // p.ex si Models\Item commence par Models\
+
+                // Supprime le préfixe pour obtenir le nom relatif => Models\Item ==>Item
+                $relativeClass = substr($class, strlen($prefix));
+
+                // Construit le chemin du fichier => /../src/models/Item.php
+                // str_replace() transforme les \ en / (ou \ sur Windows)
+                $file = $baseDir . str_replace('\\', DIRECTORY_SEPARATOR, $relativeClass) . '.php';
+
+                // Inclut le fichier s’il existe
+                if (file_exists($file)) {
+                    require $file;
+                    return true;
+                }
+            }
         }
+
         return false;
     });
 
