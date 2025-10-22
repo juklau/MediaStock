@@ -87,3 +87,4 @@ volumes:
 networks:
   mediastock-network:
     driver: bridge
+    

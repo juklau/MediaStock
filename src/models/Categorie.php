@@ -9,7 +9,7 @@ class Categorie extends BaseModel {
      * 
      * @return array
      */
-    public function getAllWithSubcategories() {
+    public function getAllWithSubcategories():array {
         $categories = $this->getAll();
         $sousCategorie = new SousCategorie();
 
@@ -21,14 +21,16 @@ class Categorie extends BaseModel {
         return $categories;
     }
 
-    public function getAllWithSubcategories2(){
+    //OU
+
+    public function getAllWithSubcategories2():array {
         $sql = "SELECT c.id AS cat_id, c.categorie , sc.id AS sous_cat_id, sc.sous_categorie
                 FROM categorie c 
                 JOIN sous_categorie sc ON c.id = sc.categorie_id 
                 ORDER BY c.id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -38,7 +40,7 @@ class Categorie extends BaseModel {
      * @param int $id
      * @return array|false
      */
-    public function getWithSubcategories(int $id) {
+    public function getWithSubcategories(int $id):array|false  {
         $category = $this->getById($id);
 
         if ($category) {
@@ -68,12 +70,14 @@ class Categorie extends BaseModel {
      * @param int $categoryId
      * @return array
      */
-    public function getCategoryItems(int $categoryId) {
+    public function getCategoryItems(int $categoryId):array {
         $itemModel = new Item();
         return $itemModel->getByCategory($categoryId);
     }
 
-    public function getCategoryItems2(int $categoryId){
+    //OU
+
+    public function getCategoryItems2(int $categoryId):array {
         $sql = "SELECT i.* 
                 FROM Item i
                 JOIN categorie c ON i.categorie_id = c.id
@@ -82,7 +86,7 @@ class Categorie extends BaseModel {
         $stmt->execute([
             ":categorieId" => $categoryId
         ]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
     }
 
@@ -93,25 +97,28 @@ class Categorie extends BaseModel {
      * @param int $categoryId
      * @return array
      */
-    public function getAllCategoryItems(int $categoryId) {
+    public function getAllCategoryItems(int $categoryId):array {
         $sql = "SELECT i.* 
                  FROM Item i
-                --  WHERE i.categorie_id = :category_id_1
                  WHERE i.categorie_id = :category_id
+
                  UNION
                  SELECT i.* 
                  FROM Item i
                  JOIN sous_categorie sc ON i.categorie_id = sc.id
-                --  WHERE sc.categorie_id = :category_id_2";
-                 WHERE sc.categorie_id = :category_id";
+                 
+                 WHERE sc.categorie_id = :category_id"
+                 ;
+                 
         $stmt = $this->db->prepare($sql);
-        // $stmt->bindParam(':category_id_1', $categoryId, \PDO::PARAM_INT);
-        // $stmt->bindParam(':category_id_2', $categoryId, \PDO::PARAM_INT);
-        // $stmt->execute();
-        $stmt->execute([
-            ":category_id" => $categoryId
-        ]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->bindParam(':category_id_1', $categoryId, \PDO::PARAM_INT);
+        $stmt->bindParam(':category_id_2', $categoryId, \PDO::PARAM_INT);
+        $stmt->execute();
+        // $stmt->execute([
+        //     ":category_id" => $categoryId
+        // ]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
     }
 
 
@@ -122,7 +129,7 @@ class Categorie extends BaseModel {
      * @param array $subcategories
      * @return int|false
      */
-    public function createWithSubcategories(string $categoryName, array $subcategories = []) {
+    public function createWithSubcategories(string $categoryName, array $subcategories = []):int|false {
         $this->db->beginTransaction();
 
         try {
@@ -147,7 +154,9 @@ class Categorie extends BaseModel {
         }
     }
 
-    public function createWithSubcategories2(string $categoryName, array $subcategories = []){
+    //OU
+
+    public function createWithSubcategories2(string $categoryName, array $subcategories = []): int|false{
 
         $this->db->beginTransaction();
 
@@ -192,7 +201,7 @@ class Categorie extends BaseModel {
      * @param int $id
      * @return bool
      */
-    public function deleteWithSubcategories($id){
+    public function deleteWithSubcategories($id): bool{
 
         $this->db->beginTransaction();
 
@@ -229,7 +238,7 @@ class Categorie extends BaseModel {
      * 
      * @return string
      */
-    public function getTable() {
+    public function getTable():string {
         return $this->table;
     }
 }

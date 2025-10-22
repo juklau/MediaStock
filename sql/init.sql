@@ -32,43 +32,34 @@ CREATE TABLE `Pret`(
     `note_fin` VARCHAR(200) NOT NULL,
     `preteur_id` BIGINT UNSIGNED NOT NULL
 );
-<<<<<<< HEAD
-ALTER TABLE `Pret` ADD INDEX `pret_item_id_emprenteur_id_preteur_id_index`(
-=======
 ALTER TABLE
     `Pret` ADD INDEX `pret_item_id_emprunteur_id_preteur_id_index`(
->>>>>>> 14c76daf2ca6ee1901d238ad0b43305fc0308f43
         `item_id`,
         `emprunteur_id`,
         `preteur_id`
     );
-<<<<<<< HEAD
-ALTER TABLE `Pret` ADD INDEX `pret_item_id_index`(`item_id`);
-ALTER TABLE `Pret` ADD INDEX `pret_emprenteur_id_index`(`emprenteur_id`);
-ALTER TABLE `Pret` ADD INDEX `pret_preteur_id_index`(`preteur_id`);
-=======
 ALTER TABLE
     `Pret` ADD INDEX `pret_item_id_index`(`item_id`);
 ALTER TABLE
     `Pret` ADD INDEX `pret_emprunteur_id_index`(`emprunteur_id`);
 ALTER TABLE
     `Pret` ADD INDEX `pret_preteur_id_index`(`preteur_id`);
->>>>>>> 14c76daf2ca6ee1901d238ad0b43305fc0308f43
 CREATE TABLE `Administrateur`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `login` VARCHAR(50) NOT NULL,
     `mot_de_passe_hash` VARCHAR(100) NOT NULL
 );
-CREATE TABLE `emprunteur`(
+CREATE TABLE `Emprunteur`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `emprunteur_nom` VARCHAR(50) NOT NULL,
     `emprunteur_prenom` VARCHAR(50) NOT NULL,
     `role` ENUM('etudiant(e)', 'intervenant') NOT NULL,
     -- peut être à modifier NOT NULL sur NULL!!!!
-    `formation_id` BIGINT UNSIGNED NOT NULL
+    `formation_id` BIGINT UNSIGNED NULL
 );
-ALTER TABLE `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
-CREATE TABLE `categorie`(
+ALTER TABLE
+    `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
+CREATE TABLE `Categorie`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `categorie` VARCHAR(50) NOT NULL
 );
@@ -76,11 +67,12 @@ CREATE TABLE `Formation`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `formation` VARCHAR(50) NULL
 );
-CREATE TABLE `sous_categorie`(
+CREATE TABLE `Sous_categorie`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
+<<<<<<< HEAD
 <<<<<<< HEAD
 ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
@@ -91,6 +83,8 @@ ALTER TABLE `Pret` ADD CONSTRAINT `pret_item_id_foreign` FOREIGN KEY(`item_id`) 
 ALTER TABLE `sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
     
 =======
+=======
+>>>>>>> main
 ALTER TABLE
     `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE
@@ -145,4 +139,3 @@ INSERT INTO `sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
 ('Rallonge', (SELECT id FROM categorie WHERE categorie = 'Connectique')),
 ('Adaptateur MAC', (SELECT id FROM categorie WHERE categorie = 'Autres')),
 ('Cle USB', (SELECT id FROM categorie WHERE categorie = 'Autres'));
->>>>>>> 14c76daf2ca6ee1901d238ad0b43305fc0308f43

@@ -26,7 +26,7 @@ class Formation extends BaseModel {
      * @param int $formationId
      * @return array
      */
-    public function getFormationBorrowers($formationId) {
+    public function getFormationBorrowers(int $formationId):array {
         $emprunteurModel = new Emprunteur();
         return $emprunteurModel->getByFormation($formationId);
     }
@@ -38,7 +38,7 @@ class Formation extends BaseModel {
      * @param int $formationId
      * @return array
      */
-    public function getFormationBorrowersWithDetails($formationId) {
+    public function getFormationBorrowersWithDetails(int $formationId):array {
         $sql = "SELECT e.*, f.formation,
                         (SELECT COUNT(*) 
                         FROM Pret p 
@@ -63,7 +63,7 @@ class Formation extends BaseModel {
      * p.date_retour_prevue < CURDATE() => la date de retour prévue est dépassée
      * @return array
      */
-    public function getLoanStatsByFormation() {
+    public function getLoanStatsByFormation():array {
         $sql = "SELECT f.id, f.formation, 
                         COUNT(p.id) as total_prêts,
                         SUM(CASE WHEN p.date_retour_effective IS NULL THEN 1 ELSE 0 END) as prêts_actifs,
