@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/autoload.php'; 
     // Fonction de chargement automatique => 
     // spl_autoload_register(function ($class) {
