@@ -292,7 +292,6 @@ class Item extends BaseModel {
         ]);
     }
 
-
     /**
      * Supprimer un item
      * 

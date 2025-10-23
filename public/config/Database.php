@@ -1,4 +1,4 @@
-<!-- du prof au cas ou!!!! => elvileg az enyémmel is mÜködik!! -->
+
 <?php
 namespace Config;
 

@@ -11,6 +11,7 @@
          * @param string $password
          * @return array|false Returns admin data if authentication successful, false otherwise
          */
+
         public function authenticate(string $login, string $password):array|false {
             $sql = "SELECT * 
                     FROM {$this->table} 
@@ -55,6 +56,7 @@
          * @param string $password
          * @return int|false
          */
+
         public function createAdmin(string $login, string $password): int|false{
 
             // Vérification si le login existe déjà
@@ -91,6 +93,7 @@
          * @param string $newPassword
          * @return bool
          */
+
         public function updatePassword(int $id, string $newPassword): bool{
 
             // Hachage du nouveau mot de passe
@@ -102,6 +105,7 @@
                     WHERE login = :login 
                     LIMIT 1";
 
+
             $stmt = $this->db->prepare($sql);
 
             return $stmt->execute([
@@ -109,6 +113,7 @@
                 ':pass' => $passwordHash
             ]);
         }
+
 
 
         /**
@@ -121,6 +126,7 @@
                     FROM {$this->table}";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
+
             $admins = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             //retirer le MDP hashé pour la raison de la sécurité
@@ -137,6 +143,7 @@
                     FROM {$this->table}";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
+
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
 
@@ -149,6 +156,7 @@
          */
         public function getAdminLoans(int $adminId): array {
             $pretModel = new Pret();
+
             $sql = "SELECT p.*, i.nom as item_nom, 
                         e.emprunteur_nom, e.emprunteur_prenom
                     FROM {$pretModel->getTable()} p
@@ -158,9 +166,47 @@
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':admin_id', $adminId, \PDO::PARAM_INT);
             $stmt->execute();
+
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
+
+        /**
+         * Supprimer un admin
+         * 
+         * @param int $id => adminId
+         * @return bool
+         */
+        public function deleteAdmin(int $id): bool {
+            $sql = "DELETE FROM {$this->table}
+                    WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([
+                ":id" => $id
+            ]);
+        }
+
+         /**
+         * récupération l'id
+         * 
+         * @param string $name
+         * @return int|false
+         */
+        public function getByName(string $name):int|false{
+            $sql = "SELECT id
+                    FROM {$this->table} 
+                    WHERE login = :name";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
+            $stmt->execute();
+
+            // fetch() renvoie un tableau associatif comme ['id' => 3]
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            // extraire id et le convertir en int ou sinon return false
+            return $result ? (int)$result['id'] : false;
+        }
         
+
         /**
          * Obtenir le nom de table
          * 

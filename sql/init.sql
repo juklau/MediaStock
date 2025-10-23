@@ -52,7 +52,7 @@ CREATE TABLE `Emprunteur`(
     `formation_id` BIGINT UNSIGNED NULL
 );
 ALTER TABLE
-    `emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
+    `Emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
 CREATE TABLE `Categorie`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `categorie` VARCHAR(50) NOT NULL
@@ -68,23 +68,23 @@ CREATE TABLE `Sous_categorie`(
 );
 
 ALTER TABLE
-    `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
+    `Sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE
     `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
 ALTER TABLE
-    `emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
+    `Emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
 ALTER TABLE
-    `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
+    `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `Categorie`(`id`);
 ALTER TABLE
-    `Pret` ADD CONSTRAINT `pret_emprunteur_id_foreign` FOREIGN KEY(`emprunteur_id`) REFERENCES `emprunteur`(`id`);
+    `Pret` ADD CONSTRAINT `pret_emprunteur_id_foreign` FOREIGN KEY(`emprunteur_id`) REFERENCES `Emprunteur`(`id`);
 ALTER TABLE
     `Pret` ADD CONSTRAINT `pret_item_id_foreign` FOREIGN KEY(`item_id`) REFERENCES `Item`(`id`);
 ALTER TABLE
-    `sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
+    `Sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `Categorie`(`id`);
 
 
 INSERT INTO `Administrateur`(`login`, `mot_de_passe_hash`) VALUES
-('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhYz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz1Zz');
+('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhY');
 
 INSERT INTO `Formation`(`formation`) VALUES
 ('ECS1'),
@@ -104,20 +104,84 @@ INSERT INTO `Formation`(`formation`) VALUES
 ('Iris 1'),
 ('Iris 2');
 
-INSERT INTO `categorie`(`categorie`) VALUES
+INSERT INTO `Categorie`(`categorie`) VALUES
 ('Informatique'),
 ('Audio'),
 ('Connectique'),
 ('Autres');
 
-
 -- Insertion des sous-catégories avec SELECT pour garantir les bons ID
-INSERT INTO `sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
-('Souris', (SELECT id FROM categorie WHERE categorie = 'Informatique')),
-('Clavier', (SELECT id FROM categorie WHERE categorie = 'Informatique')),
-('Micro-cravate', (SELECT id FROM categorie WHERE categorie = 'Audio')),
-('Casque', (SELECT id FROM categorie WHERE categorie = 'Audio')),
-('Cable HDMI', (SELECT id FROM categorie WHERE categorie = 'Connectique')),
-('Rallonge', (SELECT id FROM categorie WHERE categorie = 'Connectique')),
-('Adaptateur MAC', (SELECT id FROM categorie WHERE categorie = 'Autres')),
-('Cle USB', (SELECT id FROM categorie WHERE categorie = 'Autres'));
+INSERT INTO `Sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
+('Souris', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
+('Clavier', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
+('Micro-cravate', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
+('Casque', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
+('Cable HDMI', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
+('Rallonge', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
+('Adaptateur MAC', (SELECT id FROM Categorie WHERE Categorie = 'Autres')),
+('Cle USB', (SELECT id FROM Categorie WHERE Categorie = 'Autres'));
+
+Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id`) VALUES
+('PC Portable', 'DELL','1','<i class="fa-solid fa-laptop"></i>','moyen','1'),
+('PC Portable', 'DELL','2','<i class="fa-solid fa-laptop"></i>','moyen','1'),
+('Apple TV', 'MAC','3','<i class="fa-solid fa-tv"></i>','bon','1'),
+('Micro cravate', 'QHOT','4','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','5','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','6','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','7','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','8','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','9','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','10','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','11','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', 'QHOT','12','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', '','13','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', '','14','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', '','15','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', '','16','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro cravate', '','17','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro', 'SENNHEISER','18','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro', 'SENNHEISER','19','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Micro', 'SENNHEISER','20','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Table de mixage ALTO', 'LIVE 1202','21','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Caisse de basses', 'THE BOX','22','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Enceinte', 'THE BOX','23','<i class="fa-solid fa-headphones"></i>','bon','2'),
+('Enceinte', 'THE BOX','24','<i class="fa-solid fa-headphones"></i>','bon','2'),
+('Transmetteur ', 'SENNHEISER','25','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Transmetteur ', 'SENNHEISER','26','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Transmetteur ', 'SENNHEISER','27','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Transmetteur ', 'SENNHEISER','28','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Transmetteur ', 'SENNHEISER','29','<i class="fa-solid fa-microphone"></i>','bon','2'),
+('Casque micro', 'Jabra','30','<i class="fa-solid fa-headphones"></i>','bon','2'),
+('Casque micro', 'JCV','31','<i class="fa-solid fa-headphones"></i>','bon','2'),
+('Multiprise','9 trou','32','<i class="fa-solid fa-plug"></i>','moyen','3'),
+('Multiprise','9 trou','33','<i class="fa-solid fa-plug"></i>','moyen','3'),
+('Multiprise','9 trou','34','<i class="fa-solid fa-plug"></i>','mauvais','3'),
+('Multiprise','4 trou','35','<i class="fa-solid fa-plug"></i>','moyen','3'),
+('Multiprise','3 trou','36','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Multiprise','3 trou','37','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Ralonge','noire','38','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Ralonge','blanche','39','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','QDOS USB-C to USBs','40','<i class="fa-solid fa-plug"></i>','mauvais','3'),
+('Adaptateur','UGREEN USB-C to USBs','41','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','SELORE USB-C to USBs','42','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','SELORE USB to USB-C','43','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','ACEELE USB to HDMI','44','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','SYNCWIRE USB to RJ45','45','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','USB-C to USB','46','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','ThunderBolt to VGA','47','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','ThunderBolt to VGA','48','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','ThunderBolt to VGA','49','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','ThunderBolt to VGA','50','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','ThunderBolt to VGA','51','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Adaptateur','ThunderBolt to VGA','52','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Chargeur AC','ASUS','53','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Chargeur AC','ASUS','54','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Câble HDMI','','55','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Câble HDMI','','56','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Câble HDMI','','57','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Câble HDMI','','58','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Câble HDMI','','59','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Câble HDMI','','60','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Câble HDMI','','61','<i class="fa-solid fa-plug"></i>','bon','3'),
+('Enceinte Portable','Fenton','62','<i class="fa-solid fa-headphones"></i>','bon','2'),
+('Micro','Fenton','63','<i class="fa-solid fa-microphone"></i>','bon','2');

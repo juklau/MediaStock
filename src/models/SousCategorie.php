@@ -132,7 +132,6 @@ class SousCategorie extends BaseModel {
         return (int) $this->db->lastInsertId(); //=>comme create()
     }
 
-
     /**
      * Mettre à jour la catégorie d'une sous-catégorie
      * 

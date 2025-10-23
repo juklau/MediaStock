@@ -106,7 +106,7 @@
             return $stmt->execute();
         }
         
-        
+
         /**
          * Suppression d'un enregistrement
          * 

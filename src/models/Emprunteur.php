@@ -18,7 +18,6 @@ class Emprunteur extends BaseModel {
         return $stmt->fetchAll();
     }
 
-
     /**
      * Obtenir un emprunteur avec des informations de formation
      * 
@@ -39,7 +38,6 @@ class Emprunteur extends BaseModel {
         return $stmt->fetch();
     }
 
-
     /**
      * récupérer tous les emprunteurs liés à une formation donnée via son formation_id
      * interroge la base
@@ -49,7 +47,6 @@ class Emprunteur extends BaseModel {
     public function getByFormation(int $formationId):array {
         return $this->findBy('formation_id', $formationId);
     }
-
 
     /**
      * Obtenir les emprunteurs par rôle
@@ -199,7 +196,7 @@ class Emprunteur extends BaseModel {
     /**
      * Supprimer un emprunteur
      * 
-     * @param int $emprunteurId
+     * @param int $id => emprunteurId
      * @return bool
      */
     public function deleteEmprunteur(int $id): bool {

@@ -1,5 +1,5 @@
 <?php
-// il faut que je laisse ici: codes du prof 
+
     /**
     * Chargeur automatique pour la couche d'accès aux données MediaStock
     *
@@ -22,6 +22,7 @@
     // Enregistrer le chargeur automatique => à appeler par PHP pour trouver la classe
     // $class => p.ex. Models\Item
     spl_autoload_register(function ($class) use ($prefixes) {
+
 
         // rechercher le bon mapping 
         foreach ($prefixes as $prefix => $baseDir) {
