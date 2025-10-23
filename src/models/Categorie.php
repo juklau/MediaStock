@@ -2,7 +2,7 @@
 namespace Models;
 
 class Categorie extends BaseModel {
-    protected $table = 'categorie';
+    protected $table = 'Categorie';
 
     /**
      *Obtenir toutes les catégories avec leurs sous-catégories

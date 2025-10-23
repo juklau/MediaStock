@@ -22,26 +22,44 @@
         exit;
     }
 
+
+   
     $login = $input['login'];
     $password = $input['mot_de_passe_hash'];
-   
+
+    //pour tester 
+    // $login =  "test";
+    // $password =  "test";
+
     try{
 
-       // instancier le model Emprunteur
+       // instancier le model Administrateur
         $administrateurModel = new Models\Administrateur();
 
-        $administrateurId = $administrateurModel->createAdmin($login, $password);
+        //récupération l'id du administrateur
+        $administrateurId = $administrateurModel->getByName($login);
 
-        if($administrateurId !== false){
+        if (!$administrateurId) {
+            $response = [
+                "success" => false,
+                "message" => "Administrateur introuvable avec le login fourni."
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
+        }
+
+        $adminNewPassword = $administrateurModel->updatePassword($administrateurId, $password);
+
+        if($adminNewPassword !== false){
             $response = [
                 "success" => true,
                 "admin_id" => $administrateurId, 
-                "message" => "Admin créé avec succès"
+                "message" => "Mot de passe mis à jour avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Échec de la création de l'admin"
+                "message" => "Échec de la mise à jour de l'admin"
             ];
         }
 

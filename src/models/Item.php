@@ -227,6 +227,7 @@ class Item extends BaseModel {
      * @param int $id
      * @return array|false
      */
+
     public function getItemByID(int $id): array|false{
         $sql = "SELECT * 
                 FROM {$this->table} 
@@ -235,8 +236,11 @@ class Item extends BaseModel {
         $stmt->execute([
             ":id" => $id
         ]);
+
         return $stmt->fetch();
     }
+
+
     
 
     /**
