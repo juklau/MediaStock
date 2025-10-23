@@ -2,7 +2,7 @@
 namespace Models;
 
 class SousCategorie extends BaseModel {
-    protected $table = 'sous_categorie';
+    protected $table = 'Sous_categorie';
 
     /**
      * Obtenir toutes les sous-catégories avec les informations de leur catégorie parente

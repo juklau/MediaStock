@@ -2,7 +2,7 @@
 namespace Models;
 
 class Emprunteur extends BaseModel {
-    protected $table = 'emprunteur';
+    protected $table = 'Emprunteur';
 
     /**
      * Obtenir tous les emprunteurs avec leurs informations de formation
