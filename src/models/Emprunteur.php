@@ -121,7 +121,7 @@ class Emprunteur extends BaseModel {
         $sql = "SELECT p.*, e.emprunteur_nom, e.emprunteur_prenom, i.nom as item_nom, i.qr_code
                  FROM {$pretModel->getTable()} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  WHERE p.emprunteur_id = :emprunteur_id
                  AND p.date_retour_effective IS NULL";
         $stmt = $this->db->prepare($sql);

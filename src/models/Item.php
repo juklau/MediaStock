@@ -12,7 +12,7 @@ class Item extends BaseModel {
     public function getAllWithCategory():array {
         $sql = "SELECT i.*, c.categorie 
                  FROM {$this->table} i
-                 JOIN categorie c ON i.categorie_id = c.id
+                 JOIN Categorie c ON i.categorie_id = c.id
                  ORDER BY c.categorie, i.nom";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -43,7 +43,7 @@ class Item extends BaseModel {
     public function getWithCategory(int $id):array|false {
         $sql = "SELECT i.*, c.categorie 
                  FROM {$this->table} i
-                 JOIN categorie c ON i.categorie_id = c.id
+                 JOIN Categorie c ON i.categorie_id = c.id
                  WHERE i.id = :id";
                 //  WHERE i.{$this->primaryKey} = :id";
         $stmt = $this->db->prepare($sql);
@@ -165,7 +165,7 @@ class Item extends BaseModel {
         $sql = "SELECT i.categorie_id, c.categorie, COUNT(*) AS disponible_count
                 FROM {$this->table} i
                 LEFT JOIN Pret p ON i.id = p.item_id AND p.date_retour_effective IS NULL
-                JOIN categorie c ON i.categorie_id = c.id
+                JOIN Categorie c ON i.categorie_id = c.id
                 WHERE p.id IS NULL
                 GROUP BY i.categorie_id
                 ORDER BY i.categorie_id";
@@ -240,8 +240,6 @@ class Item extends BaseModel {
         return $stmt->fetch();
     }
 
-
-    
 
     /**
      * Vérifiez si un article est disponible pour le prêt
