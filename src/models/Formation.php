@@ -77,6 +77,21 @@ class Formation extends BaseModel {
         return $stmt->fetchAll();
     }
 
+
+    /**
+     * Créer une nouvelle formation
+     * 
+     * @param string $name
+     * @return int|false
+     */
+    public function createFormation(string $name): int|false {
+        $data = [
+            'formation' => $name
+        ];
+
+        return $this->create($data);
+    }
+
     
     /**
      * Obtenir le nom de table
