@@ -27,10 +27,11 @@
    
     try{
 
-       // instancier le model Emprunteur
+       // instancier le model Administrateur
         $administrateurModel = new Models\Administrateur();
 
         $administrateurId = $administrateurModel->createAdmin($login, $password);
+        // $administrateurId = $administrateurModel->createAdmin("juklau", "juklau");
 
         if($administrateurId !== false){
             $response = [

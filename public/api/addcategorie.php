@@ -28,6 +28,7 @@
        // instancier le model Categorie
         $categorieModel = new Models\Categorie();
 
+        // $categorieId = $categorieModel->createCategory("maison");
         $categorieId = $categorieModel->createCategory($name);
 
         if($categorieId !== false){

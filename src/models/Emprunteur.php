@@ -199,7 +199,7 @@ class Emprunteur extends BaseModel {
     /**
      * Supprimer un emprunteur
      * 
-     * @param int $emprunteurId
+     * @param int $id => emprunteurId
      * @return bool
      */
     public function deleteEmprunteur(int $id): bool {

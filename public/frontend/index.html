@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MediaStock - Patrimoine informatique</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Header with coral background and centered logo -->
+    <header class="page-header">
+      <div class="bar"></div>
+      <div class="logo-container">
+        <img src="logo.png" alt="MediaStock Logo" class="logo-img" />
+      </div>
+    </header>
+
+    <div class="container py-4 flex-grow-1">
+      <!-- big action buttons - stack on mobile, side by side on larger screens -->
+      <div class="d-grid gap-2 d-md-flex justify-content-md-center actions-row">
+        <button
+          class="btn action-btn w-100 w-md-auto"
+          onclick="window.location.href='creation-pret.html'"
+        >
+          Crée un prêt
+        </button>
+        <button
+          class="btn action-btn w-100 w-md-auto"
+          onclick="window.location.href='restitution.html'"
+        >
+          Crée une restitution
+        </button>
+      </div>
+    </div>
+    <hr
+      class="w-100 m-0"
+      style="background-color: #ff9994; height: 4px; opacity: 1; border: 0"
+    />
+    <div class="container py-4 flex-grow-1">
+      <!-- Titre -->
+      <h2 class="text-center section-title mb-3">Patrimoine informatique</h2>
+
+      <!-- Filtres + Ajout - responsive layout -->
+      <div class="row g-2 mb-3 toolbar">
+        <div class="col-12 col-md-auto">
+          <a href="/Choixcat.html"
+            ><button class="btn btn-primary w-100">
+              <i class="fas fa-plus me-2"></i>Ajouter un élément
+            </button></a
+          >
+        </div>
+
+        <div class="col-12 col-md">
+          <div class="d-flex gap-2 justify-content-md-end">
+            <select id="categoryFilter" class="form-select w-50">
+              <option value="">catégorie</option>
+              <option value="informatique">Informatique</option>
+              <option value="audio">Audio</option>
+              <option value="connectiques">Connectiques</option>
+              <option value="autres">Autres</option>
+            </select>
+
+            <select id="statusFilter" class="form-select w-50">
+              <option value="">Disponibilité</option>
+              <option value="disponible">Disponible</option>
+              <option value="indisponible">Indisponible</option>
+              <option value="retard">Retard</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Liste des éléments -->
+      <div id="inventoryList" class="list-group mb-5">
+        <!-- JS injecte ici -->
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-3 border-top">
+      <p>Mentions légales</p>
+      <p>© 2025 MediaStock inc.</p>
+    </footer>
+
+    <!-- Offcanvas - Fiche produit -->
+    <div
+      class="offcanvas offcanvas-end offcanvas-fiche"
+      tabindex="-1"
+      id="ficheProduitOffcanvas"
+      aria-labelledby="ficheProduitLabel"
+    >
+      <div class="offcanvas-header-custom">
+        <button
+          type="button"
+          class="btn-close-custom"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="offcanvas-body p-0">
+        <!-- En-tête avec icône et nom -->
+        <div class="fiche-header">
+          <div class="fiche-icon-wrapper">
+            <div id="ficheIcon" class="fiche-icon-circle">
+              <i class="fas fa-box fa-3x"></i>
+            </div>
+          </div>
+          <h3 id="ficheNom" class="fiche-title">Nom du matériel</h3>
+          <div id="ficheEtat" class="fiche-badges">
+            <!-- Badges injectés ici -->
+          </div>
+        </div>
+
+        <!-- Corps de la fiche -->
+        <div class="fiche-content">
+          <!-- QR Code Card -->
+          <div class="fiche-card">
+            <div class="fiche-card-header">
+              <i class="fas fa-qrcode me-2"></i>
+              <span>QR Code du matériel</span>
+            </div>
+            <div class="fiche-card-body text-center">
+              <div id="ficheQRCode" class="qr-container">
+                <!-- QR code généré ici -->
+              </div>
+              <p class="text-muted small mt-2 mb-0">
+                Scannez pour accéder aux détails
+              </p>
+            </div>
+          </div>
+
+          <!-- Historique Card -->
+          <div class="fiche-card">
+            <div class="fiche-card-header">
+              <i class="fas fa-history me-2"></i>
+              <span>Historique des prêts</span>
+            </div>
+            <div class="fiche-card-body p-0">
+              <div id="ficheHistorique">
+                <!-- Historique injecté ici -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete confirmation modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center p-3">
+          <div class="modal-body">
+            <p class="mb-2">
+              Etes vous bien sûr de vouloir supprimer cette élément ?
+            </p>
+            <div
+              id="deleteIcon"
+              style="
+                width: 120px;
+                height: 120px;
+                margin: 0 auto;
+                border: 4px solid #ff9994;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 8px;
+              "
+            >
+              <!-- icon injected -->
+            </div>
+            <p id="deleteName" class="mt-3 fw-semibold">nom de l'élément</p>
+          </div>
+          <div class="modal-footer justify-content-center">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              annuler
+            </button>
+            <button
+              id="confirmDeleteBtn"
+              type="button"
+              class="btn"
+              style="background: #ff9994; color: #fff"
+            >
+              validé
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

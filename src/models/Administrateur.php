@@ -147,7 +147,44 @@
             $stmt->execute();
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
+
+        /**
+         * Supprimer un admin
+         * 
+         * @param int $id => adminId
+         * @return bool
+         */
+        public function deleteAdmin(int $id): bool {
+            $sql = "DELETE FROM {$this->table}
+                    WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([
+                ":id" => $id
+            ]);
+        }
+
+         /**
+         * récupération l'id
+         * 
+         * @param string $name
+         * @return int|false
+         */
+        public function getByName(string $name):int|false{
+            $sql = "SELECT id
+                    FROM {$this->table} 
+                    WHERE login = :name";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
+            $stmt->execute();
+
+            // fetch() renvoie un tableau associatif comme ['id' => 3]
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            // extraire id et le convertir en int ou sinon return false
+            return $result ? (int)$result['id'] : false;
+        }
         
+
         /**
          * Obtenir le nom de table
          * 
