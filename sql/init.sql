@@ -1,3 +1,4 @@
+
 USE mediastock;
 -- même que le dump.sql du prof
 -- il faut enlever les accents !!!
@@ -10,6 +11,7 @@ CREATE TABLE `Item`(
     `etat` ENUM('bon', 'moyen', 'mauvais') NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
+
 ALTER TABLE
     `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 
@@ -64,6 +66,7 @@ CREATE TABLE `Sous_categorie`(
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
+
 ALTER TABLE
     `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE
