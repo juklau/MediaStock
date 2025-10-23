@@ -35,7 +35,7 @@
         }
 
         // Supprimer une formation
-        $delete = $formationModel->deleteFormation(int $formationId);
+        $delete = $formationModel->deleteFormation((int) $formationId);
     
 
         if($delete){
