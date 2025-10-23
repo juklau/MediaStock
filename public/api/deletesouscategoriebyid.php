@@ -5,49 +5,48 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-     // Vérifier si le nom de admin est fourni
-    if (!isset($_GET['login'])) {
+    // Vérifier si l'id de categorie est fourni et valide
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'login de l'admin' manquant"
+            "message" => "Paramètre 'id' manquant ou invalide"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $adminLogin = $_GET['login'];
+    $sousCategorieId = $_GET['id'];
 
-    $emprunteurId = $_GET['id'];
+    try{
 
-    try{ //////////////////////////à finir!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // instancier le model SousCategorie
+        $sousCategorieModel = new Models\SousCategorie();
 
-        // instancier le model Emprunteur
-        $emprunteurModel = new Models\Emprunteur();
+        $sousCategorie = $sousCategorieModel->getById($sousCategorieId);
 
-        $emprunteur = $emprunteurModel->getById($emprunteurId);
-
-        if(!$emprunteur){
+        if(!$sousCategorie){
             $response = [
                 "success" => false,
-                "message" => "Aucun emprunteur trouvé avec l'ID fourni."
+                "message" => "Aucun sous-categorie trouvé avec l'ID fourni."
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
         }
 
-        // Supprimer l'emprunteur
-        $delete = $emprunteurModel->deleteEmprunteur($emprunteurId);
-       
+        // Supprimer une sous-catégorie et toutes ses sous-catégories
+        $delete = $sousCategorieModel->delete($sousCategorieId);
+      
+
         if($delete){
             $response = [
                 "success" => true,
                 // "data" => $delete, 
-                "message" => "L'emprunteur supprimé avec succès"
+                "message" => "Suppression de la sous-catégorie et de ses sous-catégories réussie"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucune donnée trouvée avec l'ID fourni."
+                "message" => "La suppression a échoué : la sous-catégorie n'existe plus ou une erreur est survenue."
             ];
         }
 

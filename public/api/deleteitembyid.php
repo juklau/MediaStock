@@ -5,49 +5,47 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si le nom de sous-categorie est fourni
-    if (!isset($_GET['sous_categorie'])) {
+    // Vérifier si l'id de l'item est fourni et valide
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'nom de sous-categorie' manquant"
+            "message" => "Paramètre 'id' manquant ou invalide"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $sousCategorieName = $_GET['sous_categorie'];
+    $itemId = $_GET['id'];
 
     try{
-        
-        // instancier le model Sous_categorie
-        $sousCategorieModel = new Models\SousCategorie();
 
-        //récuperation Id du catégorie
-        $sousCategorieId = (int)$sousCategorieModel->getByName($sousCategorieName);
+        // instancier le model Item
+        $itemModel = new Models\Item();
 
-        if(!$sousCategorieId){
+        $item = $itemModel->getById($itemId);
+
+        if(!$item){
             $response = [
                 "success" => false,
-                "message" => "Aucun sous-categorie trouvé avec le nom fourni."
+                "message" => "Aucun item trouvé avec l'ID fourni."
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
         }
 
-        // Supprimer une catégorie et toutes ses sous-catégories
-        $delete = $categorieModel->deleteWithSubcategories($categorieId);
-        // $delete = $categorieModel->deleteWithSubcategories(6);
-
+        // Supprimer l'item sans vérifier sa disponibilité!!!!
+        $delete = $itemModel->delete($itemId);
+       
         if($delete){
             $response = [
                 "success" => true,
                 // "data" => $delete, 
-                "message" => "Suppression de la catégorie et de ses sous-catégories réussie"
+                "message" => "L'item supprimé avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "La suppression a échoué : la sous-catégorie n'existe plus ou une erreur est survenue."
+                "message" => "La suppression a échoué : l'item n'existe plus ou une erreur est survenue."
             ];
         }
 

@@ -1,11 +1,12 @@
 <?php
+
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'id de categorie est fourni et valide
+    // Vérifier si l'ID est fourni et valide
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
         $response = [
             "success" => false,
@@ -15,38 +16,27 @@
         exit;
     }
 
-    $categorieId = $_GET['id'];
+    $itemId = (int)$_GET['id'];
 
     try{
 
-        // instancier le model Categorie
-        $categorieModel = new Models\Categorie();
+        // instancier le model Pret
+        $pretModel = new Models\Pret();
 
-        $categorie = $categorieModel->getById($categorieId);
+        // Obtenir l'historique de prêt d'un article
+        // selon item_id!!!!
+        $pretHistory = $pretModel->getItemLoanHistory($itemId);
 
-        if(!$categorie){
-            $response = [
-                "success" => false,
-                "message" => "Aucun categorie trouvé avec l'ID fourni."
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            exit;
-        }
-
-        // Supprimer une catégorie et toutes ses sous-catégories
-        $delete = $categorieModel->deleteWithSubcategories($categorieId);
-        // $delete = $categorieModel->deleteWithSubcategories(6);
-
-        if($delete){
+        if (!empty($pretHistory)){
             $response = [
                 "success" => true,
-                // "data" => $delete, 
-                "message" => "Suppression de la catégorie et de ses sous-catégories réussie"
+                "data" => $pretHistory, 
+                "message" => "Historique de prêt récupéré avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "La suppression a échoué : la catégorie n'existe plus ou une erreur est survenue."
+                "message" => "Aucun donnée de prêt trouvée pour cet article."
             ];
         }
 

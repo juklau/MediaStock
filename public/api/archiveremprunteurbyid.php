@@ -5,58 +5,58 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si le nom de formation est fourni
-    if (!isset($_GET['formation'])) {
+     // Vérifier si le nom de admin est fourni
+    if (!isset($_GET['id'])) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'nom de formation' manquant"
+            "message" => "Paramètre id de l'emprunteur manquant"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $formationName = $_GET['formation'];
+    $emprunteurId = (int)$_GET['id'];
 
     try{
 
-        // instancier le model Formation
-        $formationModel = new Models\Formation();
+        // instancier le model Emprunteur
+        $emprunteurModel = new Models\Emprunteur();
 
-        //récuperation Id du formation
-        $formationId = (int)$formationModel->getByName($formationName);
+        $emprunteur = $emprunteurModel->getById($emprunteurId);
 
-        if(!$formationId){
+        if(!$emprunteur){
             $response = [
                 "success" => false,
-                "message" => "Aucun formation trouvé avec le nom fourni."
+                "message" => "Aucun emprunteur trouvé avec l'ID fourni."
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
         }
 
-        // Vérifier s'il y a des emprunteurs liés à cette formation
-        if ($formationModel->hasEmprunteurs($formationId)) {
+        $activePrets = $emprunteurModel->getActiveLoans($emprunteurId);
+
+        // Vérifier si l'emprunteur n'a pas un prêt en cours
+        if (!empty($activePrets)) {
             $response = [
                 "success" => false,
-                "message" => "Impossible de supprimer la formation : des emprunteurs y sont encore liés."
+                "message" => "L'emprunteur ne peut pas être archivé car il a au moins un prêt en cours."
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
         }
 
-        // Supprimer une formation
-        $delete = $formationModel->deleteFormation($formationId);
-    
-        if($delete){
+        // archiver l'emprunteur
+        $archived = $emprunteurModel->archiveEmprunteur($emprunteurId);
+
+        if($archived){
             $response = [
                 "success" => true,
-                // "data" => $delete, 
-                "message" => "Suppression de la formation réussie"
+                "message" => "L'emprunteur a été archivé avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "La suppression a échoué : la formation n'existe plus ou une erreur est survenue."
+                "message" =>  "L'archivage a échoué : une erreur est survenue."
             ];
         }
 
