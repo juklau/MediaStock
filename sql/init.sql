@@ -108,15 +108,15 @@ INSERT INTO `Categorie`(`categorie`) VALUES
 ('Autres');
 
 -- Insertion des sous-catégories avec SELECT pour garantir les bons ID
-INSERT INTO `Sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
-('Souris', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
-('Clavier', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
-('Micro-cravate', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
-('Casque', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
-('Cable HDMI', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
-('Rallonge', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
-('Adaptateur MAC', (SELECT id FROM Categorie WHERE Categorie = 'Autres')),
-('Cle USB', (SELECT id FROM Categorie WHERE Categorie = 'Autres'));
+-- INSERT INTO `Sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
+-- ('Souris', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
+-- ('Clavier', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
+-- ('Micro-cravate', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
+-- ('Casque', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
+-- ('Cable HDMI', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
+-- ('Rallonge', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
+-- ('Adaptateur MAC', (SELECT id FROM Categorie WHERE Categorie = 'Autres')),
+-- ('Cle USB', (SELECT id FROM Categorie WHERE Categorie = 'Autres'));
 
 Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id`) VALUES
 ('PC Portable', 'DELL','1','<i class="fa-solid fa-laptop"></i>','moyen','1'),
