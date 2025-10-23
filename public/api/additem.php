@@ -20,7 +20,7 @@
 
         $response = [
             "success" => false,
-            "message" => "Champs obligatoires manquants: nom, qr_code, image_url, etat , categorie_id,"
+            "message" => "Champs obligatoires manquants: nom, qr_code, image_url, etat , categorie_id"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;

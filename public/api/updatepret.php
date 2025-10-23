@@ -10,39 +10,33 @@
     // // lire le contenu JSON envoyé
     $input = json_decode(file_get_contents('php://input'), true);
 
-    // Vérifier si les éléments obligatoires sont fournis
-    if (!isset($input['id']) || !isset($input['qr_code'])) {
+    // Vérifier si l'ID du prêt est fourni
+    if (!isset($input['id']) || !is_numeric($input['id']) || (int)$input['id'] <= 0) {
 
         $response = [
             "success" => false,
-            "message" => "Champs obligatoires manquants: id, qr_code"
+            "message" => "Paramètre 'id' du prêt manquant ou invalide"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $itemId = (int)$input['id'];
-    $qrCode = $input['qr_code'];
-
+    $pretId = (int)$input['id'];
+    
 
     // Construire dynamiquement les champs à mettre à jour
     $data = [];
 
-    if (isset($input['nom'])) {
-        $data['nom'] = $input['nom'];
+    if (isset($input['date_sortie'])) {
+        $data['date_sortie'] = $input['date_sortie'];
     }
-    if (array_key_exists('model', $input)) {
-        $data['model'] = $input['model']; // peut être null
-    }
-    if (isset($input['image_url'])) {
-        $data['image_url'] = $input['image_url'];
-    }
-    if (isset($input['etat'])) {
-        $data['etat'] = $input['etat'];
+
+    if (isset($input['date_retour_prevue'])) {
+        $data['date_retour_prevue'] = $input['date_retour_prevue'];
     }
     
-    if (isset($input['categorie_id'])) {
-        $data['categorie_id'] = (int)$input['categorie_id'];
+    if (isset($input['note_debut'])) {
+        $data['note_debut'] = $input['note_debut'];
     }
 
     if(empty($data)){
@@ -57,34 +51,47 @@
 
     try{
 
-        // instancier le model Item
-        $itemModel = new Models\Item();
+       // instancier le model Pret
+        $pretModel = new Models\Pret();
 
-        //vérification si l'item existe 
-        $item = $itemModel->getById($itemId);
+        //vérification si le prêt existe
+        $pret = $pretModel->getById($pretId);
 
-        if (!$item){
+        if (!$pret){
             $response = [
             "success" => false,
-            "message" => "Item introuvable"
+            "message" => "Prêt introuvable"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
         }
 
-        //mise à jour de l'item
-        $itemUpdated = $itemModel->update($itemId, $data);
 
-        if($itemUpdated){
+        // Vérifier que le prêt est encore actif
+        // s'il n'est pas actif => on ne peut pas modifier => pour préserver l'intégrité
+        if (!empty($pret['date_retour_effective'])) {
+            $response = [
+                "success" => false,
+                "message" => "Le prêt est déjà clôturé et ne peut pas être modifié."
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
+        }
+
+
+        //mise à jour du prêt
+        $pretUpdated = $pretModel->update($pretId, $data);
+
+        if($pretUpdated){
             $response = [
                 "success" => true,
-                "item_id" => $itemId, 
-                "message" => "Item mis à jour avec succès"
+                "pret_id" => $pretId, 
+                "message" => "Prêt mis à jour avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Échec de la mise à jour de l'item"
+                "message" => "Échec de la mise à jour du prêt"
             ];
         }
 

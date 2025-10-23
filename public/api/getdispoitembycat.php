@@ -5,47 +5,36 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'id de categorie est fourni et valide
+    // Vérifier si l'ID de la catégorie est fourni et valide
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'id' manquant ou invalide"
+            "message" => "Paramètre 'categorie_id' manquant ou invalide"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $adminId = $_GET['id'];
+    $idCategorie = (int)$_GET['id'];
 
     try{
 
-        // instancier le model Administrateur
-        $administrateurModel = new Models\Administrateur();
+        // instancier le model Item
+        $itemModel = new Models\Item();
 
-        $admin = $administrateurModel->getById($adminId);
+        // obtenir les éléments d'une item
+        $items = $itemModel->getAvailableItemsByCategory($idCategorie);
 
-        if(!$admin){
-            $response = [
-                "success" => false,
-                "message" => "Aucun administrateur trouvé avec l'ID fourni."
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            exit;
-        }
-
-        // Supprimer l'admin
-        $delete = $administrateurModel->deleteAdmin($adminId);
-       
-        if($delete){
+        if($items){
             $response = [
                 "success" => true,
-                // "data" => $delete, 
-                "message" => "L'administrateur supprimé avec succès"
+                "data" => $items, 
+                "message" => "Connexion réussi"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "La suppression a échoué : l'administrateur n'existe plus ou une erreur est survenue."
+                "message" => "Aucun donnée trouvée avec l'Id fourni."
             ];
         }
 
