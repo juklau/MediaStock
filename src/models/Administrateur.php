@@ -11,8 +11,11 @@
          * @param string $password
          * @return array|false Returns admin data if authentication successful, false otherwise
          */
-        public function authenticate( string $login, string $password) {
-            $sql = "SELECT * FROM {$this->table} WHERE login = :login";
+
+        public function authenticate(string $login, string $password):array|false {
+            $sql = "SELECT * 
+                    FROM {$this->table} 
+                    WHERE login = :login";
             $stmt = $this->db->prepare($sql);
 
             // bindParam() : méthode qui lie une variable PHP à un paramètre nommé dans la requête SQL
@@ -40,10 +43,13 @@
          * @param string $password
          * @return int|false
          */
-        public function createAdmin(string $login, string $password): bool{
+
+        public function createAdmin(string $login, string $password): int|false{
 
             // Vérification si le login existe déjà
-            $sql = "SELECT COUNT(*) FROM {$this->table} WHERE login = :login";
+            $sql = "SELECT COUNT(*) 
+                    FROM {$this->table} 
+                    WHERE login = :login";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':login', $login);
             $stmt->execute();
@@ -74,7 +80,8 @@
          * @param string $newPassword
          * @return bool
          */
-        public function updatePassword(string $id, string $newPassword): bool{
+
+        public function updatePassword(int $id, string $newPassword): bool{
 
             // Hachage du nouveau mot de passe
             $passwordHash = password_hash($newPassword, PASSWORD_BCRYPT);
@@ -85,13 +92,16 @@
                     WHERE login = :login 
                     LIMIT 1";
 
-            $stmt = $this->pdo->prepare($sql);
+
+            $stmt = $this->db->prepare($sql);
 
             return $stmt->execute([
                 ':login' => $id,
                 ':pass' => $passwordHash
             ]);
         }
+
+
 
         /**
          * Récuperer tous les admin sans le MDP hashé
@@ -103,7 +113,8 @@
                     FROM {$this->table}";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
-            $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $admins = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             //retirer le MDP hashé pour la raison de la sécurité
             foreach ($admins as &$admin) {
@@ -113,12 +124,14 @@
         }
 
         //OU
+
         public function getAllSecure2(): array{
             $sql = "SELECT id, login 
                     FROM {$this->table}";
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
 
         
@@ -130,7 +143,9 @@
          */
         public function getAdminLoans(int $adminId): array {
             $pretModel = new Pret();
-            $sql = "SELECT p.*, i.nom as item_nom, e.emprunteur_nom, e.emprunteur_prenom
+
+            $sql = "SELECT p.*, i.nom as item_nom, 
+                        e.emprunteur_nom, e.emprunteur_prenom
                     FROM {$pretModel->getTable()} p
                     JOIN Item i ON p.item_id = i.id
                     JOIN emprunteur e ON p.emprunteur_id = e.id
@@ -138,7 +153,8 @@
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':admin_id', $adminId, \PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
         
         /**
