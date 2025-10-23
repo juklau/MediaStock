@@ -1,35 +1,56 @@
-
-
 <?php
+  namespace Config;
 
-    declare(strict_types=1);
+  class Database{
 
-    //connexion PDO à la base applicative
+    private static $instance = null;
+    private $connection;
 
-    //function database(): PDO{
+    private $host; // 'mysql' est le nom du service dans docker-compose.yml
+    private $db;
+    private $user;
+    private $pass;
 
-        $host = getenv('DB_HOST') ?: 'mysql'; // 'mysql' est le nom du service dans docker-compose.yml
-        $db   = getenv('DB_NAME') ?: 'mediastock';
-        $user = getenv('DB_USER') ?: 'root';
-        // $user = getenv('DB_USER') ?: 'mediastock';
-        $pass = getenv('DB_PASSWORD') ?: '';
+    private function __construct(){
 
-        // PDO utilise dsn (data source name) pour se connecter
-        $dsn  = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+        // Valeurs par défaut sensées
+        $this->host = getenv('DB_HOST') ?: 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
+        $this->db   = getenv('DB_NAME') ?: 'mediastock';
+        $this->user = getenv('DB_USER') ?: 'mediastock';
+        $this->pass = getenv('DB_PASSWORD') ?: '';
 
-        $options = [
+      try {
+        //connexion PDO à la base applicative
+        $this->connection = new \PDO("mysql:host={$this->host};dbname={$this->db};charset=utf8mb4",
+                $this->user,
+                $this->pass
+            );
 
-          // pour gérer les erreurs, on choisit de lancer des exceptions
-          PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        // pour gérer les erreurs, on choisit de lancer des exceptions
+        $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-          // les résultats sont renvoyés en tableaux associatifs (clés = noms de colonnes) => pas besoin d'indices numériques
-          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        ];
+        // les résultats sont renvoyés en tableaux associatifs (clés = noms de colonnes) => pas besoin d'indices numériques
+        $this->connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        $this->connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+      } catch(\PDOException $e){
+         // Ne pas exposer les creds en prod
+          die("Connection failed: " . $e->getMessage());
+      }
+    }
 
-        return new PDO($dsn, $user, $pass, $options);
+    //pour garantir qu'il y a 1 seul objet de cette classe dans toute l'application
+    // static => possible appeler sans créer d'objet
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self(); //=> new NomDeLaClasse()
+        }
+        return self::$instance;
+    }
+    
+    public function getConnection() {  //son utilisation: $pdo = Database::getInstance()->getConnection();
+        return $this->connection;
+    }
 
-    // }
-
-   
+  }
 
 ?>
