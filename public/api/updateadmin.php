@@ -8,40 +8,40 @@
     header('Access-Control-Allow-Methods: POST');
 
     // lire le contenu JSON envoyé
-    $input = json_decode(file_get_contents('php://input'), true);
+    // $input = json_decode(file_get_contents('php://input'), true);
 
     // Vérifier si les éléments obligatoires sont fournis
-    if (!isset($input['login']) || 
-        !isset($input['mot_de_passe_hash'])) {
+    // if (!isset($input['login']) || 
+    //     !isset($input['mot_de_passe_hash'])) {
 
-        $response = [
-            "success" => false,
-            "message" => "Champs obligatoires manquants: login, mot_de_passe_hash"
-        ];
-        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        exit;
-    }
+    //     $response = [
+    //         "success" => false,
+    //         "message" => "Champs obligatoires manquants: login, mot_de_passe_hash"
+    //     ];
+    //     echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    //     exit;
+    // }
 
-    $login = $input['login'];
-    $password = $input['mot_de_passe_hash'];
-   
+    $login =  "test"; #$input['login']
+    $password =  "test"; #$input['mot_de_passe_hash']
+
     try{
 
        // instancier le model Emprunteur
         $administrateurModel = new Models\Administrateur();
+        $administrateurId = $administrateurModel->getByName($login);
+        $adminNewPassword = $administrateurModel->updatePassword($administrateurId, $password);
 
-        $administrateurId = $administrateurModel->createAdmin($login, $password);
-
-        if($administrateurId !== false){
+        if($adminNewPassword !== false){
             $response = [
                 "success" => true,
-                "admin_id" => $administrateurId, 
-                "message" => "Admin créé avec succès"
+                "admin_id" => $adminNewPassword, 
+                "message" => "Admin mis à jour avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Échec de la création de l'admin"
+                "message" => "Échec de la mise à jour de l'admin"
             ];
         }
 
