@@ -1,45 +1,49 @@
 <?php
-
     require_once __DIR__ . '/../autoload.php';
+
+    // à vérifier si ca marche!!!!
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET');
+    header('Access-Control-Allow-Methods: POST');
 
-    // Vérifier si l'ID est fourni et valide
-    if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
+    // lire le contenu JSON envoyé
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    // Vérifier si les éléments obligatoires sont fournis
+    if (!isset($input['formation'])) {
+
         $response = [
             "success" => false,
-            "message" => "Paramètre 'id' manquant ou invalide"
+            "message" => "Champ 'formation' obligatoire manque"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $id = (int)$_GET['id'];
-
+    $name = $input['formation'];
+   
     try{
 
-        // instancier le model Item
-        $itemModel = new Models\Item();
+       // instancier le model Formation
+        $formationModel = new Models\Formation();
 
-        // obtenir les éléments d'une item
-        $item = $itemModel->getItemByID($id);
+        $formationId = $formationModel->createFormation($name);
 
-        if($item){
+        if($formationId !== false){
             $response = [
                 "success" => true,
-                "data" => $item, 
-                "message" => "Connexion réussi"
+                "formation_id" => $formationId, 
+                "message" => "Formation créée avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec l'Id fourni."
+                "message" => "Échec de la création de la formation"
             ];
         }
 
-        // afficher en JSON le résultat
+        // afficher en JSON le résultat value:.....; flags:.....
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }catch(PDOException $e){
         $response = [

@@ -75,20 +75,6 @@ class Categorie extends BaseModel {
         return $itemModel->getByCategory($categoryId);
     }
 
-    //OU
-
-    public function getCategoryItems2(int $categoryId):array {
-        $sql = "SELECT i.* 
-                FROM Item i
-                JOIN categorie c ON i.categorie_id = c.id
-                WHERE i.categorie_id = :categorieId";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            ":categorieId" => $categoryId
-        ]);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-    }
 
 
     /**
@@ -230,6 +216,20 @@ class Categorie extends BaseModel {
             $this->db->rollBack();
             return false;
         }
+    }
+
+    /**
+     * Créer une nouvelle catégorie
+     * 
+     * @param string $name
+     * @return int|false
+     */
+    public function createCategory(string $name): int|false {
+        $data = [
+            'categorie' => $name
+        ];
+
+        return $this->create($data);
     }
 
 

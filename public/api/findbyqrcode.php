@@ -1,22 +1,22 @@
 <?php
-
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'ID est fourni et valide
-    if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
+    // Vérifier si le qr_code de l'item est fourni et valide
+    // !is_numeric($_GET['qr_code']) || ||  (int)$_GET['id'] <= 0 ===> à remettre quand on changera le type de qr_code
+    if (!isset($_GET['qr_code'])) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'id' manquant ou invalide"
+            "message" => "Paramètre 'qr_code' manquant ou invalide"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $id = (int)$_GET['id'];
+    $qrCode = $_GET['qr_code'];
 
     try{
 
@@ -24,7 +24,7 @@
         $itemModel = new Models\Item();
 
         // obtenir les éléments d'une item
-        $item = $itemModel->getItemByID($id);
+        $item = $itemModel->findByQrCode($qrCode);
 
         if($item){
             $response = [
@@ -35,7 +35,7 @@
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec l'Id fourni."
+                "message" => "Aucun donnée trouvée avec le QR code fourni."
             ];
         }
 

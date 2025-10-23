@@ -1,41 +1,40 @@
 <?php
-
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'ID est fourni et valide
-    if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
+    // Vérifier si l'état de l'item est fourni
+    if (!isset($_GET['etat'])) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'id' manquant ou invalide"
+            "message" => "Paramètre 'etat' manquant"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $id = (int)$_GET['id'];
+    $etat = $_GET['etat'];
 
     try{
 
         // instancier le model Item
         $itemModel = new Models\Item();
 
-        // obtenir les éléments d'une item
-        $item = $itemModel->getItemByID($id);
+        // obtenir les éléments des items
+        $items = $itemModel->getByCondition($etat);
 
-        if($item){
+        if($items){
             $response = [
                 "success" => true,
-                "data" => $item, 
+                "data" => $items, 
                 "message" => "Connexion réussi"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec l'Id fourni."
+                "message" => "Aucun donnée trouvée."
             ];
         }
 

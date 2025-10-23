@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 
-=======
 USE mediastock;
 -- même que le dump.sql du prof
 -- il faut enlever les accents !!!
->>>>>>> main
 CREATE TABLE `Item`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `nom` VARCHAR(50) NOT NULL,
@@ -14,13 +11,10 @@ CREATE TABLE `Item`(
     `etat` ENUM('bon', 'moyen', 'mauvais') NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
-<<<<<<< HEAD
-ALTER TABLE `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
-=======
+
 ALTER TABLE
     `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 
->>>>>>> main
 CREATE TABLE `Pret`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `item_id` BIGINT UNSIGNED NOT NULL,
@@ -72,19 +66,7 @@ CREATE TABLE `Sous_categorie`(
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
-<<<<<<< HEAD
-<<<<<<< HEAD
-ALTER TABLE `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
-ALTER TABLE `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
-ALTER TABLE `emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
-ALTER TABLE `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
-ALTER TABLE `Pret` ADD CONSTRAINT `pret_emprenteur_id_foreign` FOREIGN KEY(`emprenteur_id`) REFERENCES `emprunteur`(`id`);
-ALTER TABLE `Pret` ADD CONSTRAINT `pret_item_id_foreign` FOREIGN KEY(`item_id`) REFERENCES `Item`(`id`);
-ALTER TABLE `sous_categorie` ADD CONSTRAINT `sous_categorie_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `categorie`(`id`);
-    
-=======
-=======
->>>>>>> main
+
 ALTER TABLE
     `sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE

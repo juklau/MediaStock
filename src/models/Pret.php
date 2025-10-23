@@ -81,19 +81,19 @@ class Pret extends BaseModel {
                 ORDER BY p.date_sortie DESC, p.id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
     /**
      * Obtenir des prêts qui sont en retard
      * 
-     * @return array
+     * @return array|false
      */
-    public function getOverdueLoans():array {
+    public function getOverdueLoans():array|false {
         $today = date('Y-m-d'); //p.ex: '2025-12-22'
-        $sql = "SELECT p.*, 
-                        i.nom AS item_nom, i.model AS item_model, i.qr_code, 
+        $sql = "SELECT p.*, i.id,
+                        i.nom AS item_nom, i.model AS item_model, i.qr_code, i.image_url
                         e.emprunteur_nom, e.emprunteur_prenom
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
@@ -195,11 +195,11 @@ class Pret extends BaseModel {
      * @param string $note_fin
      * @return bool
      */
-    public function cloturerPret(int $pret_id, DateTime $date_retour_effective, string $note_fin): bool{
+    public function cloturerPret(int $pret_id, \DateTime $date_retour_effective, string $note_fin): bool{
         $sql = "UPDATE {$this->table}
                 SET date_retour_effective = :dre, note_fin = :note_fin
                 WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':dre'      => $date_retour_effective->format('Y-m-d'),
             ':note_fin' => $note_fin,
@@ -258,15 +258,15 @@ class Pret extends BaseModel {
      * @param string $note_debut
      * @return int|false
      */
-    public function nouveauPret(int $item_id, int $emprunteur_id,int $preteur_id, ?DateTime $date_sortie = null,
-        ?DateTime $date_retour_prevue = null,string $note_debut = ''): int|false {
+    public function nouveauPret(int $item_id, int $emprunteur_id,int $preteur_id, \DateTime $date_sortie = null,
+        \DateTime $date_retour_prevue = null,string $note_debut = ''): int|false {
 
         if ($date_sortie === null) {
-            $date_sortie = new DateTime(); // aujourd’hui
+            $date_sortie = new \DateTime(); // aujourd’hui
         }
 
         if ($date_retour_prevue === null) {
-            $date_retour_prevue = (new DateTime())->modify('+2 weeks');
+            $date_retour_prevue = (new \DateTime())->modify('+2 weeks');
         }
 
         $sql = "INSERT INTO {$this->table} (

@@ -30,7 +30,7 @@ class Item extends BaseModel {
                 FROM Item";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
 
@@ -57,9 +57,9 @@ class Item extends BaseModel {
      * Obtenir les items d'un catégorie
      * 
      * @param int $categoryId
-     * @return array
+     * @return array|false
      */
-    public function getByCategory(int $categoryId):array {
+    public function getByCategory(int $categoryId):array|false {
         return $this->findBy('categorie_id', $categoryId);
     }
 
@@ -83,9 +83,9 @@ class Item extends BaseModel {
      * Obtenir la liste des items par une condition (état)
      * 
      * @param string $condition ('bon', 'moyen', 'mauvais')
-     * @return array
+     * @return array|false
      */
-    public function getByCondition(string $condition):array {
+    public function getByCondition(string $condition):array|false {
         return $this->findBy('etat', $condition);
     }
 
@@ -107,7 +107,7 @@ class Item extends BaseModel {
 
     /**
      * Trouver un item par son QR code
-     * 
+     * à modifier pour int !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      * @param string $qrCode
      * @return array|false
      */
@@ -137,7 +137,7 @@ class Item extends BaseModel {
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':search_term', $searchTerm);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
 
@@ -156,14 +156,35 @@ class Item extends BaseModel {
         return $stmt->fetchAll();
     }
 
+    /**
+     * Compter le nombre d'items disponibles par catégorie
+     * 
+     * @return array Tableau associatif avec categorie_name et nombre d'items disponibles
+     */
+    public function countAvailableItemsByCategory(): array {
+        $sql = "SELECT i.categorie_id, c.categorie, COUNT(*) AS disponible_count
+                FROM {$this->table} i
+                LEFT JOIN Pret p ON i.id = p.item_id AND p.date_retour_effective IS NULL
+                JOIN categorie c ON i.categorie_id = c.id
+                WHERE p.id IS NULL
+                GROUP BY i.categorie_id
+                ORDER BY i.categorie_id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    
+
 
     /**
      * Afficher les noms et modèles des items disponibles (non prêtés actuellement)
      * 
-     * @return array
+     * @return array|false
      */
-    public function getAvailableItemNames(): array {
-        $sql = "SELECT i.nom, i.model 
+    public function getAvailableItemNames(): array|false {
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url,
                 FROM {$this->table} i
                 -- si la sous-requête ne trouve aucune ligne correspondante.
                 -- il faut que item ne soit pas dans ce liste
@@ -178,30 +199,25 @@ class Item extends BaseModel {
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
 
     /**
      * Afficher les items actuellement indisponibles (en prêt actif)
-     * 
-     * @return array
+     * changé
+     * @return array|false
      */
-    public function afficheItemIndisponible(): array {
-        $sql = "SELECT i.nom, i.model 
-                FROM Item i
-                -- il faut que item soit dans ce liste
-                WHERE EXISTS (
-                    SELECT 1
-                    FROM Pret p 
-                    WHERE p.item_id = i.id
-                    AND p.date_retour_effective IS NULL
-                )
+    public function afficheItemIndisponible(): array|false {
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, p.date_retour_prevue
+                FROM {$this->table} i
+                JOIN Pret p ON i.id = p.item_id
+                WHERE p.date_retour_effective IS NULL
                 ORDER BY i.nom ASC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
     
@@ -209,9 +225,10 @@ class Item extends BaseModel {
      * afficher un seul matériel par ID
      * 
      * @param int $id
-     * @return array
+     * @return array|false
      */
-    public function getItemByID(int $id){
+
+    public function getItemByID(int $id): array|false{
         $sql = "SELECT * 
                 FROM {$this->table} 
                 WHERE id = :id";
@@ -220,7 +237,7 @@ class Item extends BaseModel {
             ":id" => $id
         ]);
 
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $stmt->fetch();
     }
 
 

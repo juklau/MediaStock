@@ -1,5 +1,4 @@
 <?php
-
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
@@ -10,7 +9,7 @@
     $itemModel = new Models\Item();
 
     // obtenir tous les items
-    $items = $itemModel->getAll();
+    $items = $itemModel->countAvailableItemsByCategory();
 
     // afficher en JSON le résultat
     echo json_encode($items);

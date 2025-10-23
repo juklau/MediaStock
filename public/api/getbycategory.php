@@ -1,12 +1,11 @@
 <?php
-
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'ID est fourni et valide
+    // Vérifier si l'ID de la catégorie est fourni et valide
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
         $response = [
             "success" => false,
@@ -24,12 +23,12 @@
         $itemModel = new Models\Item();
 
         // obtenir les éléments d'une item
-        $item = $itemModel->getItemByID($id);
+        $items = $itemModel->getByCategory($id);
 
-        if($item){
+        if($items){
             $response = [
                 "success" => true,
-                "data" => $item, 
+                "data" => $items, 
                 "message" => "Connexion réussi"
             ];
         }else{

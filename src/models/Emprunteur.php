@@ -65,11 +65,11 @@ class Emprunteur extends BaseModel {
 
     public function getByRole2(string $role): array{
         $sql = "SELECT * 
-                FROM {this->table}
+                FROM {$this->table}
                 WHERE role = :role";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':role' => $role]);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
 
@@ -94,7 +94,7 @@ class Emprunteur extends BaseModel {
             ':search_term_nom' => $searchTerm,
             ':search_term_prenom' => $searchTerm
         ]);
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
 

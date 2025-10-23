@@ -1,35 +1,34 @@
 <?php
-
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'ID est fourni et valide
+    // Vérifier si l'emprenteur_id est fourni et valide
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'id' manquant ou invalide"
+            "message" => "Paramètre 'emprunteur_id' manquant ou invalide"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $id = (int)$_GET['id'];
+    $emprunteurId = (int)$_GET['id'];
 
     try{
 
-        // instancier le model Item
-        $itemModel = new Models\Item();
+        // instancier le model Emprunteur
+        $emprunteurModel = new Models\Emprunteur();
 
         // obtenir les éléments d'une item
-        $item = $itemModel->getItemByID($id);
+        $items = $emprunteurModel->getLoanHistory($emprunteurId);
 
-        if($item){
+        if($items){
             $response = [
                 "success" => true,
-                "data" => $item, 
+                "data" => $items, 
                 "message" => "Connexion réussi"
             ];
         }else{
