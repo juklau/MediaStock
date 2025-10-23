@@ -75,7 +75,7 @@ class Item extends BaseModel {
         $stmt->execute([
             ":categorie_id" => $categoryId
         ]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     
@@ -101,7 +101,7 @@ class Item extends BaseModel {
         $stmt->execute([
             ":condition" => $condition
         ]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 

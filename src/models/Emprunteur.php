@@ -168,12 +168,12 @@ class Emprunteur extends BaseModel {
         //Valider le rôle (ENUM)
         $allowed = ['etudiant(e)', 'intervenant'];
         if (!in_array($role, $allowed, true)) {
-            throw new InvalidArgumentException("role doit être 'etudiant(e)' ou 'intervenant'");
+            throw new \InvalidArgumentException("role doit être 'etudiant(e)' ou 'intervenant'");
         }
 
         //Règle métier : formation obligatoire pour les étudiants
         if ($role === 'etudiant(e)' && $formation_id === null) {
-            throw new InvalidArgumentException("formation_id est requis pour un(e) etudiant(e).");
+            throw new \InvalidArgumentException("formation_id est requis pour un(e) etudiant(e).");
         }
 
         //INSERT (on passe NULL pour intervenant)
@@ -181,18 +181,18 @@ class Emprunteur extends BaseModel {
                 VALUES (:nom, :prenom, :role, :formation_id)";
         $stmt = $this->db->prepare($sql);
         //explication dans le doc réalisation MediaStock
-        $stmt->bindValue(':nom', $nom, PDO::PARAM_STR);
-        $stmt->bindValue(':prenom', $prenom, PDO::PARAM_STR);
-        $stmt->bindValue(':role', $role, PDO::PARAM_STR);
+        $stmt->bindValue(':nom', $nom, \PDO::PARAM_STR);
+        $stmt->bindValue(':prenom', $prenom,  \PDO::PARAM_STR);
+        $stmt->bindValue(':role', $role, \PDO::PARAM_STR);
         // si intervenant → formation_id NULL
         if ($formation_id === null) {
-            $stmt->bindValue(':formation_id', null, PDO::PARAM_NULL);
+            $stmt->bindValue(':formation_id', null, \PDO::PARAM_NULL);
         } else {
-            $stmt->bindValue(':formation_id', $formation_id, PDO::PARAM_INT);
+            $stmt->bindValue(':formation_id', $formation_id, \PDO::PARAM_INT);
         }
         $stmt->execute();
 
-        return (int)$this->pdo->lastInsertId();
+        return (int)$this->db->lastInsertId();
     }
 
 
