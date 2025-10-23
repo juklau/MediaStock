@@ -5,53 +5,44 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si le nom de formation est fourni
-    if (!isset($_GET['formation'])) {
+    // Vérifier si le nom de categorie est fourni
+    if (!isset($_GET['sous_categorie'])) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'nom de formation' manquant"
+            "message" => "Paramètre 'nom de sous-categorie' manquant"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $formationName = $_GET['formation'];
+    $sousCategorieName = $_GET['sous_categorie'];
 
     try{
+        
+        // instancier le model Sous_categorie
+        $sousCategorieModel = new Models\SousCategorie();
 
-        // instancier le model Formation
-        $formationModel = new Models\Formation();
+        //récuperation Id du catégorie
+        $sousCategorieId = (int)$sousCategorieModel->getByName($sousCategorieName);
 
-        //récuperation Id du formation
-        $formationId = (int)$formationModel->getByName($formationName);
-
-        if(!$formationId){
+        if(!$sousCategorieId){
             $response = [
                 "success" => false,
-                "message" => "Aucun formation trouvé avec le nom fourni."
+                "message" => "Aucun sous-categorie trouvé avec le nom fourni."
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
         }
 
-        // Vérifier s'il y a des emprunteurs liés à cette formation
-        if ($formationModel->hasEmprunteurs($formationId)) {
-            $response = [
-                "success" => false,
-                "message" => "Impossible de supprimer la formation : des emprunteurs y sont encore liés."
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            exit;
-        }
+        // Supprimer une catégorie et toutes ses sous-catégories
+        $delete = $categorieModel->deleteWithSubcategories($categorieId);
+        // $delete = $categorieModel->deleteWithSubcategories(6);
 
-        // Supprimer une formation
-        $delete = $formationModel->deleteFormation($formationId);
-    
         if($delete){
             $response = [
                 "success" => true,
                 // "data" => $delete, 
-                "message" => "Suppression de la formation réussie"
+                "message" => "Suppression de la catégorie et de ses sous-catégories réussie"
             ];
         }else{
             $response = [

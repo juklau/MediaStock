@@ -128,6 +128,24 @@ class Formation extends BaseModel {
         ]);
     }
 
+    /**
+     * Vérifie si une formation est liée à des emprunteurs
+     * 
+     * @param int $formationId
+     * @return bool
+     */
+    public function hasEmprunteurs(int $formationId): bool {
+        $sql = "SELECT COUNT(*) 
+                FROM emprunteur 
+                WHERE formation_id = :formation_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':formation_id', $formationId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        return $count > 0;
+    }
+
     
     /**
      * Obtenir le nom de table

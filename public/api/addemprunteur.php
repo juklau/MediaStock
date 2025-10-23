@@ -14,7 +14,7 @@
     if (!isset($input['emprunteur_nom']) || 
         !isset($input['emprunteur_prenom']) || 
         !isset($input['role']) ||
-        // !isset($input['formation_id'])
+        !isset($input['formation_id'])
         ) {
 
         $response = [

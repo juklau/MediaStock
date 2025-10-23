@@ -1,3 +1,4 @@
+
 USE mediastock;
 -- même que le dump.sql du prof
 -- il faut enlever les accents !!!
@@ -10,6 +11,7 @@ CREATE TABLE `Item`(
     `etat` ENUM('bon', 'moyen', 'mauvais') NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
+
 ALTER TABLE
     `Item` ADD INDEX `item_categorie_id_index`(`categorie_id`);
 
@@ -64,6 +66,7 @@ CREATE TABLE `Sous_categorie`(
     `sous_categorie` VARCHAR(50) NOT NULL,
     `categorie_id` BIGINT UNSIGNED NOT NULL
 );
+
 ALTER TABLE
     `Sous_categorie` ADD INDEX `sous_categorie_categorie_id_index`(`categorie_id`);
 ALTER TABLE
@@ -107,16 +110,16 @@ INSERT INTO `Categorie`(`categorie`) VALUES
 ('Connectique'),
 ('Autres');
 
--- Insertion des sous-catégories avec SELECT pour garantir les bons ID
-INSERT INTO `Sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
-('Souris', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
-('Clavier', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
-('Micro-cravate', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
-('Casque', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
-('Cable HDMI', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
-('Rallonge', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
-('Adaptateur MAC', (SELECT id FROM Categorie WHERE Categorie = 'Autres')),
-('Cle USB', (SELECT id FROM Categorie WHERE Categorie = 'Autres'));
+-- Insertion des sous-catégories avec SELECT pour garantir les bons ID => pour les tests
+-- INSERT INTO `Sous_categorie` (`sous_categorie`, `categorie_id`) VALUES
+-- ('Souris', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
+-- ('Clavier', (SELECT id FROM Categorie WHERE Categorie = 'Informatique')),
+-- ('Micro-cravate', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
+-- ('Casque', (SELECT id FROM Categorie WHERE Categorie = 'Audio')),
+-- ('Cable HDMI', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
+-- ('Rallonge', (SELECT id FROM Categorie WHERE Categorie = 'Connectique')),
+-- ('Adaptateur MAC', (SELECT id FROM Categorie WHERE Categorie = 'Autres')),
+-- ('Cle USB', (SELECT id FROM Categorie WHERE Categorie = 'Autres'));
 
 Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id`) VALUES
 ('PC Portable', 'DELL','1','<i class="fa-solid fa-laptop"></i>','moyen','1'),
