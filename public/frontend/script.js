@@ -154,6 +154,39 @@ window.onload = function(){
   chargerMateriels();
 };
 
+//Scanner QR code pour creer ou restituer un materiel //
+
+const qrReader = document.getElementById("qr-reader");
+
+function startQrScan(targetPage) {
+  qrReader.style.display = "block";
+
+  const html5QrCode = new Html5Qrcode("qr-reader");
+
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    (decodedText, decodedResult) => {
+      console.log("QR Code détecté :", decodedText);
+      html5QrCode.stop();
+      qrReader.style.display = "none";
+
+      // Rediriger vers la page correspondante en passant le code QR
+      window.location.href = `${targetPage}?code=${encodeURIComponent(decodedText)}`;
+    },
+    (errorMessage) => {
+      // Scan en cours
+    }
+  ).catch(err => {
+    console.error("Impossible d'accéder à la caméra :", err);
+  });
+}
+
+// Boutons
+document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
+document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
+
+
 // **************************************************** fin js page principale **********************************************************************
 
 
