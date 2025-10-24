@@ -7,6 +7,7 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST');
 
+
     // // lire le contenu JSON envoyé
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -20,6 +21,7 @@
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
+
 
     $itemId = (int)$input['id'];
     $qrCode = $input['qr_code'];
