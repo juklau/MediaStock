@@ -35,7 +35,7 @@
          * @param int $id
          * @return array|false
          */
-        public function getById($id) {
+        public function getById($id): int  {
             $sql = "SELECT * 
                     FROM {$this->table} 
                     WHERE {$this->primaryKey} = :id";

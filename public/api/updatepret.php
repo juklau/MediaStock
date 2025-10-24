@@ -91,6 +91,7 @@
         }else{
             $response = [
                 "success" => false,
+
                 "message" => "Échec de la mise à jour du prêt"
             ];
         }
