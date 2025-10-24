@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            //vérification si username et password existent
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Simulation de la connexion
                 alert(`Connexion réussie pour ${username}`);
                 
-                // Ici vous pourriez rediriger vers le tableau de bord administrateur
+                // Ici vous pourriez rediriger vers le tableau de bord administrateur!!!!!!!!!!
                 // window.location.href = 'dashboard.html';
             } else {
                 alert('Veuillez remplir tous les champs');
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
         });
         
-        // Clic sur les cartes
+         // Clic sur une carte → affiche type et quantité
         card.addEventListener('click', function() {
             const equipmentType = this.querySelector('.card-title').textContent;
             const quantity = this.querySelector('.display-4').textContent;
@@ -52,7 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Animation d'apparition au scroll
+     // Fait apparaître les cartes lorsqu’elles entrent dans le viewport
+    //  Sur le scroll, si la carte est visible, elle passe en opacité 1 et remonte à sa position.
     function animateCards() {
         equipmentCards.forEach(card => {
             const cardTop = card.getBoundingClientRect().top;
@@ -82,9 +84,12 @@ document.addEventListener('DOMContentLoaded', function() {
             newValue = Math.max(0, newValue); // Ne pas aller en dessous de 0
             
             if (newValue !== currentValue) {
+                // varier aléatoirement de -1, 0 ou +1 (sans passer sous 0).
+                // Colore en vert si ça augmente, en rouge si ça baisse
                 quantity.style.color = newValue > currentValue ? '#28a745' : '#dc3545';
                 quantity.textContent = newValue;
                 
+                // revient au noir après 1s
                 setTimeout(() => {
                     quantity.style.color = '#000';
                 }, 1000);
@@ -113,7 +118,7 @@ function handleLoginError(message) {
             if (errorDiv.parentNode) {
                 errorDiv.parentNode.removeChild(errorDiv);
             }
-        }, 5000);
+        }, 5000); // => 5 secondes
     }
 }
 
@@ -132,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
+        // => il faudrait pas augmenter???????????? ce n'est pas un mdp fort!!!!!!!!!!!!!!
         passwordInput.addEventListener('input', function() {
             if (this.value.length < 6) {
                 this.style.borderColor = '#dc3545';
