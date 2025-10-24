@@ -26,7 +26,7 @@ if (isset($_SESSION['login']) && isset($_SESSION['mot_de_passe_hash'])) {
                 // afficher en JSON le résultat
                 // echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             // Rediriger vers la page d'accueil ou tableau de bord
-            header("Location: index.php");
+            header("Location: ../frontend/index.html");
             exit();
         } else {
             $response = [

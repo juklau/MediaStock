@@ -334,6 +334,62 @@ class Pret extends BaseModel {
         return $stmt->fetch(); // Renvoie une seule ligne (ou false si aucune n'existe)
     }
 
+    public function getLoanByItemId(int $id):array|false {
+        $sql = "SELECT p.item_id,
+                        e.emprunteur_nom, e.emprunteur_prenom,
+                        a.login as preteur_login
+                 FROM {$this->table} p
+                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Administrateur a ON p.preteur_id = a.id
+                 WHERE p.id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(); // Renvoie une seule ligne (ou false si aucune n'existe)
+    }
+
+    /**
+     * Mettre à jour les détails d'un prêt d'article
+     * 
+     * @param int $id
+     * @param DateTime $dateSortie
+     * @param DateTime $dateRetourPrevue
+     * @param DateTime $dateRetourEffective
+     * @param string $noteDebut
+     * @param string $noteFin
+     * @return bool
+     */
+    public function updateItemLoan(
+        int $id,
+        \DateTime $dateSortie,
+        \DateTime $dateRetourPrevue,
+        \DateTime $dateRetourEffective,
+        string $noteDebut,
+        string $noteFin
+    ): bool {
+        $sql = "UPDATE {$this->table}
+                SET date_sortie = :date_sortie,
+                    date_retour_prevue = :date_retour_prevue,
+                    date_retour_effective = :date_retour_effective,
+                    note_debut = :note_debut,
+                    note_fin = :note_fin
+                WHERE id = :id
+                AND date_retour_effective IS NULL";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':date_sortie', $dateSortie->format('Y-m-d'), \PDO::PARAM_STR);
+        $stmt->bindValue(':date_retour_prevue', $dateRetourPrevue->format('Y-m-d'), \PDO::PARAM_STR);
+        $stmt->bindValue(':date_retour_effective', $dateRetourEffective->format('Y-m-d'), \PDO::PARAM_STR);
+        $stmt->bindValue(':note_debut', $noteDebut, \PDO::PARAM_STR);
+        $stmt->bindValue(':note_fin', $noteFin, \PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0; // ✅ renvoie true si au moins une ligne modifiée
+    }
+
+
 
     /**
      * Obtenir le nom de la table
