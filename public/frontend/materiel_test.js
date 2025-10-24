@@ -45,7 +45,69 @@ async function getCategorieIdFromName(nomCategorie) {
     }
 }
 
-const categorieId = null;
+// ============================================================
+// ========== Génération du QRcode              ===============
+// ============================================================
+
+function genererQRCode(materielId) {
+    const qrcodeDisplay = document.getElementById('qrcodeDisplay');
+    
+    // Nettoyer l'affichage précédent
+    qrcodeDisplay.innerHTML = '';
+    
+    // Créer un conteneur pour le QR code
+    const qrContainer = document.createElement('div');
+    qrContainer.id = 'qrcode';
+    qrContainer.style.padding = '20px';
+    qrContainer.style.backgroundColor = 'white';
+    qrContainer.style.borderRadius = '10px';
+    qrContainer.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+    qrcodeDisplay.appendChild(qrContainer);
+    
+    
+    // Générer le QR code avec l'ID
+    qrcodeInstance = new QRCode(qrContainer, {
+      text: materielId.toString(),
+      width: 256,
+      height: 256,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    
+    console.log('QR Code généré pour l\'ID:', materielId);
+}
+
+
+/**
+ * Affiche le message de succès
+ */
+function afficherMessageSucces(materielId) {
+    const messageSucces = document.getElementById('messageSucces');
+    const messageTexte = document.getElementById('messageTexte');
+    
+    messageTexte.textContent = `Matériel ajouté avec succès ! ID: ${materielId}`;
+    messageSucces.classList.remove('d-none');
+    
+    // Masquer le message après 5 secondes
+    setTimeout(() => {
+      messageSucces.classList.add('d-none');
+    }, 5000);
+}
+
+/**
+ * Affiche les boutons d'actions (télécharger, partager, imprimer)
+ */
+function afficherActions() {
+  const actionsDiv = document.getElementById('qrcodeActions');
+  actionsDiv.style.display = 'flex';
+}
+
+
+
+
+
+
 
 document.addEventListener('DOMContentLoaded', async () => {
   const category = localStorage.getItem('selectedCategory');
@@ -53,7 +115,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (!category) return;
 
-  categorieId = await getCategorieIdFromName(category);
+  const categorieId = await getCategorieIdFromName(category);
 
   if (categorieId) {
     console.log("ID de la catégorie :", categorieId);
@@ -74,17 +136,16 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     const icon = localStorage.getItem("selectedIcon");
     const categorie = localStorage.getItem("selectedCategory");
 
-    if (!nom || !icon || !categorie) {
-      alert("Veuillez saisir le nom du matériel et sélectionner une catégorie.");
+    if (!nom || !icon ) {
+      alert("Veuillez saisir le nom du matériel.");
       return;
     }
 
     //récuperer il du catégorie
     const categorieId = await getCategorieIdFromName(categorie);
-    if(!categorie){
+    if(!categorieId){
       alert("Impossible de récuperer l'Id");
     }
-
 
     // Construction des données à envoyer
     const payload = {
@@ -93,7 +154,7 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
       qr_code: "temporaire", // sera remplacé par l'ID retourné
       image_url: `/images/icons/${icon}.png`, // ou autre logique
       etat: "bon", // par défaut
-      categorie_id: getCategorieIdFromName(categorie) // fonction à définir
+      categorie_id: categorieId
     };
 
     try {
