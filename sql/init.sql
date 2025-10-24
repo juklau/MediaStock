@@ -73,6 +73,8 @@ ALTER TABLE
     `Pret` ADD CONSTRAINT `pret_preteur_id_foreign` FOREIGN KEY(`preteur_id`) REFERENCES `Administrateur`(`id`);
 ALTER TABLE
     `Emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
+-- pour éviter la suppression l'emprunteur qui cause problème
+ALTER TABLE `Emprunteur` ADD COLUMN `archived` TINYINT(1) DEFAULT 0;
 ALTER TABLE
     `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `Categorie`(`id`);
 ALTER TABLE

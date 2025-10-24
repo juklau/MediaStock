@@ -1,8 +1,6 @@
 <?php
     require_once __DIR__ . '/../autoload.php';
 
-    // à vérifier si ca marche!!!!
-
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST');
@@ -10,59 +8,61 @@
     // lire le contenu JSON envoyé
     $input = json_decode(file_get_contents('php://input'), true);
 
-    // Vérifier si les éléments obligatoires sont fournis
-    if (!isset($input['login']) || 
-        !isset($input['mot_de_passe_hash'])) {
-
+    // Vérifier les paramètres
+    if (!isset($input['id']) || !is_numeric($input['id']) || (int)$input['id'] <= 0) {
         $response = [
             "success" => false,
-            "message" => "Champs obligatoires manquants: login, mot_de_passe_hash"
+            "message" => "Paramètre 'id' manquant ou invalide"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-   
-    $login = $input['login'];
-    $password = $input['mot_de_passe_hash'];
+    if (!isset($input['note_fin'])) {
+        $response = [
+            "success" => false,
+            "message" => "Paramètre 'note_fin' manquant"
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
 
-    //pour tester 
-    // $login =  "test";
-    // $password =  "test";
+    $itemId = (int)$input['id'];  //=>selon item_id et pas id de prêt!!!
+    $noteFin = $input['note_fin'];
 
     try{
 
-       // instancier le model Administrateur
-        $administrateurModel = new Models\Administrateur();
+        // instancier le model Pret
+        $pretModel = new Models\Pret();
 
-        //récupération l'id du administrateur
-        $administrateurId = $administrateurModel->getByName($login);
+        // Vérifier s'il y a un prêt actif pour cet item
+        $pretActif = $pretModel->getCurrentItemLoan($itemId);
 
-        if (!$administrateurId) {
+        if(!$pretActif){
             $response = [
                 "success" => false,
-                "message" => "Administrateur introuvable avec le login fourni."
+                "message" => "Aucun prêt actif trouvé pour cet article."
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
         }
 
-        $adminNewPassword = $administrateurModel->updatePassword($administrateurId, $password);
+        // clôturer le prêt
+        $pretClotured = $pretModel->endLoan($pretActif['id'], null, $noteFin);
 
-        if($adminNewPassword !== false){
+        if($pretClotured){
             $response = [
                 "success" => true,
-                "admin_id" => $administrateurId, 
-                "message" => "Mot de passe mis à jour avec succès"
+                "message" => "Le prêt a été clôturé avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Échec de la mise à jour de l'admin"
+                "message" => "La clôture a échoué : une erreur est survenue."
             ];
         }
 
-        // afficher en JSON le résultat value:.....; flags:.....
+        // afficher en JSON le résultat
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }catch(PDOException $e){
         $response = [

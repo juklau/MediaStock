@@ -12,7 +12,7 @@ class Item extends BaseModel {
     public function getAllWithCategory():array {
         $sql = "SELECT i.*, c.categorie 
                  FROM {$this->table} i
-                 JOIN categorie c ON i.categorie_id = c.id
+                 JOIN Categorie c ON i.categorie_id = c.id
                  ORDER BY c.categorie, i.nom";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -43,7 +43,7 @@ class Item extends BaseModel {
     public function getWithCategory(int $id):array|false {
         $sql = "SELECT i.*, c.categorie 
                  FROM {$this->table} i
-                 JOIN categorie c ON i.categorie_id = c.id
+                 JOIN Categorie c ON i.categorie_id = c.id
                  WHERE i.id = :id";
                 //  WHERE i.{$this->primaryKey} = :id";
         $stmt = $this->db->prepare($sql);
@@ -165,7 +165,7 @@ class Item extends BaseModel {
         $sql = "SELECT i.categorie_id, c.categorie, COUNT(*) AS disponible_count
                 FROM {$this->table} i
                 LEFT JOIN Pret p ON i.id = p.item_id AND p.date_retour_effective IS NULL
-                JOIN categorie c ON i.categorie_id = c.id
+                JOIN Categorie c ON i.categorie_id = c.id
                 WHERE p.id IS NULL
                 GROUP BY i.categorie_id
                 ORDER BY i.categorie_id";
@@ -175,16 +175,36 @@ class Item extends BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+
+    /**
+     * Récupérer les items disponibles par catégorie
+     * 
+     * @param int $idCategorie
+     * @return array Tableau associatif avec nom d'item disponible, model, image_url
+     */
+    public function getAvailableItemsByCategory(int $idCategorie): array {
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url
+                FROM {$this->table} i
+                LEFT JOIN Pret p ON i.id = p.item_id AND p.date_retour_effective IS NULL
+                WHERE p.id IS NULL
+                AND i.categorie_id = :categorie_id
+                ORDER BY i.nom";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ":categorie_id" => $idCategorie
+        ]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     
-
-
     /**
      * Afficher les noms et modèles des items disponibles (non prêtés actuellement)
      * 
      * @return array|false
      */
     public function getAvailableItemNames(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url,
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url
                 FROM {$this->table} i
                 -- si la sous-requête ne trouve aucune ligne correspondante.
                 -- il faut que item ne soit pas dans ce liste
@@ -240,8 +260,6 @@ class Item extends BaseModel {
         return $stmt->fetch();
     }
 
-
-    
 
     /**
      * Vérifiez si un article est disponible pour le prêt

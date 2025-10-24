@@ -2,7 +2,7 @@
 namespace Models;
 
 class Emprunteur extends BaseModel {
-    protected $table = 'emprunteur';
+    protected $table = 'Emprunteur';
 
     /**
      * Obtenir tous les emprunteurs avec leurs informations de formation
@@ -99,9 +99,9 @@ class Emprunteur extends BaseModel {
      * Obtenir des prêts actifs pour un emprunteur
      * 
      * @param int $emprunteurId
-     * @return array
+     * @return array|false
      */
-    public function getActiveLoans(int $emprunteurId):array {
+    public function getActiveLoans(int $emprunteurId):array|false {
         $pretModel = new Pret();
         $sql = "SELECT p.*, i.nom as item_nom, i.qr_code
                  FROM {$pretModel->getTable()} p
@@ -121,7 +121,7 @@ class Emprunteur extends BaseModel {
         $sql = "SELECT p.*, e.emprunteur_nom, e.emprunteur_prenom, i.nom as item_nom, i.qr_code
                  FROM {$pretModel->getTable()} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  WHERE p.emprunteur_id = :emprunteur_id
                  AND p.date_retour_effective IS NULL";
         $stmt = $this->db->prepare($sql);
@@ -202,6 +202,24 @@ class Emprunteur extends BaseModel {
     public function deleteEmprunteur(int $id): bool {
         $sql = "DELETE FROM {$this->table}
                 WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ":id" => $id
+        ]);
+    }
+
+
+    /**
+     * Archiver un emprunteur
+     * 
+     * @param int $id => emprunteurId
+     * @return bool
+     */
+    public function archiveEmprunteur(int $id): bool {
+         $sql = "UPDATE {$this->table} 
+                SET archived = 1 
+                WHERE id = :id";
+
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ":id" => $id

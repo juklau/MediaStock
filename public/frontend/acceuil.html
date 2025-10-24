@@ -34,28 +34,34 @@
                         <div class="card-body p-5">
                             <h3 class="text-center mb-4" style="color: #FF9994; font-size: 1.2rem; font-weight: 400; text-decoration: underline;">Êtes-vous administrateur ?</h3>
 
-                            <form action="public/login.php" id="loginForm">
+                            <form action="../login.php" method="post" id="loginForm">
                                 <div class="mb-4">
                                     <label for="username" class="form-label" style="color: #FF9994; font-weight: 400; text-decoration: underline;">Nom d'utilisateur :</label>
-                                    <input type="text" class="form-control form-control-lg border-0 bg-light rounded-3" 
+                                    <input type="text" name="username" class="form-control form-control-lg border-0 bg-light rounded-3" 
                                            id="username" placeholder="Entrez votre nom d'utilisateur">
                                 </div>
                                 
                                 <div class="mb-4">
                                     <label for="password" class="form-label" style="color: #FF9994; font-weight: 400; text-decoration: underline;">Mot de passe :</label>
-                                    <input type="password" class="form-control form-control-lg border-0 bg-light rounded-3" 
+                                    <input type="password" name="password" class="form-control form-control-lg border-0 bg-light rounded-3" 
                                            id="password" placeholder="Entrez votre mot de passe">
                                 </div>
                                 
                                 <div class="text-center">
-                                    <a href="/index.html" 
-                                       class="btn btn-lg text-white rounded-3 px-5" 
-                                       style="background-color: #FF9994; color: #000 !important; font-weight: 400;">
-                                      Se Connecter
-                                    </a>
-                                  </div>
+                                    <button type="submit" 
+                                            class="btn btn-lg text-white rounded-3 px-5" 
+                                            style="background-color: #FF9994; color: #000 !important; font-weight: 400;">
+                                        Se Connecter
+                                    </button>
+                                </div>
                                   
                             </form>
+
+                            <!-- Ajoute SweetAlert2 -->
+                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                            <script src="../frontend/alert.js"></script>
+
                         </div>
                     </div>
                 </div>

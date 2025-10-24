@@ -1,4 +1,3 @@
--- Active: 1708044290264@@localhost@3306
 <?php
     require_once __DIR__ . '/../autoload.php';
 
@@ -8,49 +7,92 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST');
 
-    // lire le contenu JSON envoyé
-    // $input = json_decode(file_get_contents('php://input'), true);
+    // // lire le contenu JSON envoyé
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    // Vérifier si les éléments obligatoires sont fournis
-    // if (!isset($input['date_sortie']) || 
-    //     !isset($input['date_retour_prevue']) ||
-    //     !isset($input['date_retour_effective']) ||
-    //     !isset($input['note_debut']) ||
-    //     !isset($input['note_fin'])) {
-        
+    // Vérifier si l'ID du prêt est fourni
+    if (!isset($input['id']) || !is_numeric($input['id']) || (int)$input['id'] <= 0) {
 
-    //     $response = [
-    //         "success" => false,
-    //         "message" => "Champs obligatoires manquants: date_sortie, date_retour_prevue, date_retour_effective, note_debut, note_fin"
-    //     ];
-    //     echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    //     exit;
-    // }
+        $response = [
+            "success" => false,
+            "message" => "Paramètre 'id' du prêt manquant ou invalide"
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
 
-    // Récupération des données
-    $dateSortie = new DateTime("2025-12-31"); #$input['date_sortie']
-    $dateRetourPrevue = new DateTime("2025-12-31"); #$input['date_retour_prevue']
-    $dateRetourEffective = new DateTime("2025-12-31"); #$input['date_retour_effective']
-    $noteDebut = "test"; #$input;['note_debut']
-    $noteFin = "test"; #$input['note_fin']
+    $pretId = (int)$input['id'];
+    
+
+    // Construire dynamiquement les champs à mettre à jour
+    $data = [];
+
+    if (isset($input['date_sortie'])) {
+        $data['date_sortie'] = $input['date_sortie'];
+    }
+
+    if (isset($input['date_retour_prevue'])) {
+        $data['date_retour_prevue'] = $input['date_retour_prevue'];
+    }
+    
+    if (isset($input['note_debut'])) {
+        $data['note_debut'] = $input['note_debut'];
+    }
+
+    if(empty($data)){
+        $response = [
+            "success" => false,
+            "message" => "Aucun champ à mettre à jour fourni"
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
+    
 
     try{
 
-       // instancier le model Emprunteur
+       // instancier le model Pret
         $pretModel = new Models\Pret();
-        $pretId = $pretModel->getLoanByItemId(id: 2);
-        $pretUpdated = $pretModel->updateItemLoan($pretId, $dateSortie, $dateRetourPrevue, $dateRetourEffective, $noteDebut, $noteFin);
 
-        if($pretUpdated !== false){
+        //vérification si le prêt existe
+        $pret = $pretModel->getById($pretId);
+
+        if (!$pret){
+            $response = [
+            "success" => false,
+            "message" => "Prêt introuvable"
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+        }
+
+
+        // Vérifier que le prêt est encore actif
+        // s'il n'est pas actif => on ne peut pas modifier => pour préserver l'intégrité
+        if (!empty($pret['date_retour_effective'])) {
+            $response = [
+                "success" => false,
+                "message" => "Le prêt est déjà clôturé et ne peut pas être modifié."
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
+        }
+
+
+        //mise à jour du prêt
+        $pretUpdated = $pretModel->update($pretId, $data);
+
+        if($pretUpdated){
             $response = [
                 "success" => true,
-                "pret_id" => $pretUpdated, 
-                "message" => "Pret mis à jour avec succès"
+                "pret_id" => $pretId, 
+                "message" => "Prêt mis à jour avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Échec de la mise à jour du pret"
+
+                "message" => "Échec de la mise à jour du prêt"
             ];
         }
 

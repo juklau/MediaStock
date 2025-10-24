@@ -7,41 +7,86 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: POST');
 
-    // lire le contenu JSON envoyé
+
+    // // lire le contenu JSON envoyé
     $input = json_decode(file_get_contents('php://input'), true);
 
     // Vérifier si les éléments obligatoires sont fournis
-    if (!isset($input['login']) || 
-        !isset($input['mot_de_passe_hash'])) {
+    if (!isset($input['id']) || !isset($input['qr_code'])) {
 
         $response = [
             "success" => false,
-            "message" => "Champs obligatoires manquants: login, mot_de_passe_hash"
+            "message" => "Champs obligatoires manquants: id, qr_code"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $login = $input['login']; 
-    $password = $input['mot_de_passe_hash'];
+
+    $itemId = (int)$input['id'];
+    $qrCode = $input['qr_code'];
+
+
+    // Construire dynamiquement les champs à mettre à jour
+    $data = [];
+
+    if (isset($input['nom'])) {
+        $data['nom'] = $input['nom'];
+    }
+    if (array_key_exists('model', $input)) {
+        $data['model'] = $input['model']; // peut être null
+    }
+    if (isset($input['image_url'])) {
+        $data['image_url'] = $input['image_url'];
+    }
+    if (isset($input['etat'])) {
+        $data['etat'] = $input['etat'];
+    }
+    
+    if (isset($input['categorie_id'])) {
+        $data['categorie_id'] = (int)$input['categorie_id'];
+    }
+
+    if(empty($data)){
+        $response = [
+            "success" => false,
+            "message" => "Aucun champ à mettre à jour fourni"
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+    }
+    
 
     try{
 
-       // instancier le model Emprunteur
-        $administrateurModel = new Models\Administrateur();
-        $administrateurId = $administrateurModel->getByName($login);
-        $adminNewPassword = $administrateurModel->updatePassword($administrateurId, $password);
+        // instancier le model Item
+        $itemModel = new Models\Item();
 
-        if($adminNewPassword !== false){
+        //vérification si l'item existe 
+        $item = $itemModel->getById($itemId);
+
+        if (!$item){
+            $response = [
+            "success" => false,
+            "message" => "Item introuvable"
+        ];
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
+        }
+
+        //mise à jour de l'item
+        $itemUpdated = $itemModel->update($itemId, $data);
+
+        if($itemUpdated){
             $response = [
                 "success" => true,
-                "admin_id" => $adminNewPassword, 
-                "message" => "Admin mis à jour avec succès"
+                "item_id" => $itemId, 
+                "message" => "Item mis à jour avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Échec de la mise à jour de l'admin"
+                "message" => "Échec de la mise à jour de l'item"
             ];
         }
 

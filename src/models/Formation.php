@@ -12,7 +12,7 @@ class Formation extends BaseModel {
     public function getAllWithBorrowerCount(): array {
         $sql = "SELECT f.id, f.formation, COUNT(e.id) AS nombre_emprunteur 
                  FROM {$this->table} f
-                 LEFT JOIN emprunteur e ON f.id = e.formation_id
+                 LEFT JOIN Emprunteur e ON f.id = e.formation_id
                  GROUP BY f.id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -69,7 +69,7 @@ class Formation extends BaseModel {
                         SUM(CASE WHEN p.date_retour_effective IS NULL THEN 1 ELSE 0 END) as prêts_actifs,
                         SUM(CASE WHEN p.date_retour_effective IS NULL AND p.date_retour_prevue < CURDATE() THEN 1 ELSE 0 END) as prêts_en_retard
                  FROM {$this->table} f
-                 LEFT JOIN emprunteur e ON f.id = e.formation_id
+                 LEFT JOIN Emprunteur e ON f.id = e.formation_id
                  LEFT JOIN Pret p ON e.id = p.emprunteur_id
                  GROUP BY f.id, f.formation";
         $stmt = $this->db->prepare($sql);
@@ -126,6 +126,24 @@ class Formation extends BaseModel {
         return $stmt->execute([
             ":id" => $id
         ]);
+    }
+
+    /**
+     * Vérifie si une formation est liée à des emprunteurs
+     * 
+     * @param int $formationId
+     * @return bool
+     */
+    public function hasEmprunteurs(int $formationId): bool {
+        $sql = "SELECT COUNT(*) 
+                FROM Emprunteur 
+                WHERE formation_id = :formation_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':formation_id', $formationId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        return $count > 0;
     }
 
     

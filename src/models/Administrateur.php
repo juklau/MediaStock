@@ -38,11 +38,11 @@
         #récupération l'id
         #@param string $name
         #@return int|false*/
-        public function getByName(string $name): int | false
-        {
+        public function getByName(string $name):int|false{
             $sql = "SELECT id
-            FROM {$this->table} 
-            WHERE login = :name";
+                    FROM {$this->table} 
+                    WHERE login = :name";
+
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
             $stmt->execute();
@@ -166,7 +166,7 @@
                         e.emprunteur_nom, e.emprunteur_prenom
                     FROM {$pretModel->getTable()} p
                     JOIN Item i ON p.item_id = i.id
-                    JOIN emprunteur e ON p.emprunteur_id = e.id
+                    JOIN Emprunteur e ON p.emprunteur_id = e.id
                     WHERE p.preteur_id = :admin_id";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':admin_id', $adminId, \PDO::PARAM_INT);

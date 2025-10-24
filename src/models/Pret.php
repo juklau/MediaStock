@@ -17,7 +17,7 @@ class Pret extends BaseModel {
                         a.login as preteur_login
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -38,7 +38,7 @@ class Pret extends BaseModel {
                         a.login as preteur_login
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.id = :id";
                 //  WHERE p.{$this->primaryKey} = :id";
@@ -60,7 +60,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  WHERE p.date_retour_effective IS NULL";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -76,7 +76,7 @@ class Pret extends BaseModel {
                     e.emprunteur_nom, e.emprunteur_prenom
                 FROM {$this->table} p
                 JOIN Item i ON p.item_id = i.id
-                JOIN emprunteur e ON p.emprunteur_id = e.id
+                JOIN Emprunteur e ON p.emprunteur_id = e.id
                 WHERE date_retour_effective IS NULL
                 ORDER BY p.date_sortie DESC, p.id DESC";
         $stmt = $this->db->prepare($sql);
@@ -97,7 +97,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  WHERE p.date_retour_effective IS NULL 
                  AND p.date_retour_prevue < :today";
         $stmt = $this->db->prepare($sql);
@@ -131,7 +131,7 @@ class Pret extends BaseModel {
                     e.emprunteur_prenom, e.role
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id 
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id 
                  WHERE p.emprunteur_id = :emprunteur_id";
         $stmt = $this->db->prepare($sql);
         
@@ -153,7 +153,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom,
                         a.login as preteur_login
                  FROM {$this->table} p
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.item_id = :item_id";
         $stmt = $this->db->prepare($sql);
@@ -165,7 +165,7 @@ class Pret extends BaseModel {
 
     /**
      * Mettre fin à un prêt en fixant la date de retour effective et la note finale
-     * ?????????????????????????????????? pour le type de $returnDate
+     * 
      * @param int $id
      * @param string $returnDate
      * @param string $finalNote
@@ -301,7 +301,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom,
                         a.login as preteur_login
                  FROM {$this->table} p
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.item_id = :item_id
                  ORDER BY p.date_sortie DESC";
@@ -324,7 +324,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom,
                         a.login as preteur_login
                  FROM {$this->table} p
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.item_id = :item_id
                  AND p.date_retour_effective IS NULL";

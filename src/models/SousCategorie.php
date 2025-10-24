@@ -2,7 +2,7 @@
 namespace Models;
 
 class SousCategorie extends BaseModel {
-    protected $table = 'sous_categorie';
+    protected $table = 'Sous_categorie';
 
     /**
      * Obtenir toutes les sous-catégories avec les informations de leur catégorie parente
@@ -12,7 +12,7 @@ class SousCategorie extends BaseModel {
     public function getAllWithCategory():array {
         $sql = "SELECT sc.*, c.categorie 
                 FROM {$this->table} sc
-                JOIN categorie c ON sc.categorie_id = c.id";
+                JOIN Categorie c ON sc.categorie_id = c.id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -28,7 +28,7 @@ class SousCategorie extends BaseModel {
     public function getWithCategory(int $id): array|false {
         $sql = "SELECT sc.*, c.categorie 
                  FROM {$this->table} sc
-                 JOIN categorie c ON sc.categorie_id = c.id
+                 JOIN Categorie c ON sc.categorie_id = c.id
                  WHERE sc.id = :id";
                 //  WHERE sc.{$this->primaryKey} = :id";
         $stmt = $this->db->prepare($sql);
@@ -64,7 +64,7 @@ class SousCategorie extends BaseModel {
         $itemModel = new Item();
         $sql = "SELECT i.*
                 FROM {$itemModel->getTable()} i
-                JOIN sous_categorie sc ON i.categorie_id = sc.categorie_id
+                JOIN Sous_categorie sc ON i.categorie_id = sc.categorie_id
                 WHERE sc.id = :subcategoryId";
 
         $stmt = $this->db->prepare($sql);
@@ -122,7 +122,7 @@ class SousCategorie extends BaseModel {
     //OU
 
     public function createSubcategory2(string $name, int $categoryId): int|false{
-        $sql = "INSERT INTO sous_categorie (sous_categorie, categorie_id) 
+        $sql = "INSERT INTO Sous_categorie (sous_categorie, categorie_id) 
                 VALUES (:name, :categorie_id)";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -159,6 +159,28 @@ class SousCategorie extends BaseModel {
             ':newCategoryId' => $newCategoryId,
             ':id' => $id
         ]);
+    }
+
+
+     /**
+     * récupération l'id
+     * 
+     * @param string $name
+     * @return int|false
+     */
+    public function getByName(string $name):int|false{
+        $sql = "SELECT id
+                FROM {$this->table} 
+                WHERE sous_categorie = :name";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
+        $stmt->execute();
+
+        // fetch() renvoie un tableau associatif comme ['id' => 3]
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        // extraire id et le convertir en int ou sinon return false
+        return $result ? (int)$result['id'] : false;
     }
 
 
