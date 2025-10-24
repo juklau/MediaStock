@@ -77,10 +77,8 @@
             <div class="row g-4">
               <!-- Périphérique informatique -->
               <div class="col-6 col-md-6 col-lg-6">
-                <a href="materiel.html" class="text-decoration-none">
-                  <div
-                    class="card h-100 shadow-sm border-3 rounded-4 equipment-card"
-                  >
+                <a href="materiel.html" class="text-decoration-none" onclick="localStorage.setItem('selectedCategory', 'Informatique')">
+                  <div class="card h-100 shadow-sm border-3 rounded-4 equipment-card">
                     <div class="card-body text-center p-4">
                       <div class="mb-3">
                         <i
@@ -105,10 +103,8 @@
 
               <!-- Périphérique audio -->
               <div class="col-6 col-md-6 col-lg-6">
-                <a href="materiel.html" class="text-decoration-none">
-                  <div
-                    class="card h-100 shadow-sm border-3 rounded-4 equipment-card"
-                  >
+                <a href="materiel.html" class="text-decoration-none" onclick="localStorage.setItem('selectedCategory', 'Audio')">
+                  <div class="card h-100 shadow-sm border-3 rounded-4 equipment-card">
                     <div class="card-body text-center p-4">
                       <div class="mb-3">
                         <i
@@ -133,7 +129,7 @@
 
               <!-- Connectiques -->
               <div class="col-6 col-md-6 col-lg-6">
-                <a href="materiel.html" class="text-decoration-none">
+                <a href="materiel.html" class="text-decoration-none" onclick="localStorage.setItem('selectedCategory', 'Connectique')">
                   <div
                     class="card h-100 shadow-sm border-3 rounded-4 equipment-card"
                   >
@@ -149,10 +145,8 @@
                         style="
                           font-weight: 400;
                           opacity: 0.69;
-                          font-size: 0.9rem;
-                        "
-                      >
-                        Connectiques
+                          font-size: 0.9rem;">
+                          Connectique
                       </h5>
                     </div>
                   </div>
@@ -161,10 +155,8 @@
 
               <!-- Autres -->
               <div class="col-6 col-md-6 col-lg-6">
-                <a href="materiel.html" class="text-decoration-none">
-                  <div
-                    class="card h-100 shadow-sm border-3 rounded-4 equipment-card"
-                  >
+                <a href="materiel.html" class="text-decoration-none" onclick="localStorage.setItem('selectedCategory', 'Autres')">
+                  <div class="card h-100 shadow-sm border-3 rounded-4 equipment-card">
                     <div class="card-body text-center p-4">
                       <div class="mb-3">
                         <i
