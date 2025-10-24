@@ -27,7 +27,7 @@ async function chargerMateriels() {
 }
 
 /**
- * Afficher les matériels
+ * Afficher les matériels depuis l'API
  */
 function renderItems() {
   const categoryFilter = document.getElementById("categoryFilter").value;
@@ -35,35 +35,50 @@ function renderItems() {
   const container = document.getElementById("inventoryList");
   container.innerHTML = "";
 
+  fetch(' /../api/getitemsavailability.php')
+    .then(response => response.json())
+    .then(data => {
+      console.log('All Items:', data);
+
+      const items = data.data; // les matériels renvoyés par ton API
+
   items.forEach(item => {
+        // Appliquer les filtres
     if ((categoryFilter && item.categorie !== categoryFilter) ||
-        (statusFilter && item.status !== statusFilter)) {
+            (statusFilter && ((item.is_available ? 'disponible' : 'indisponible') !== statusFilter))) {
       return;
     }
 
-    const statusClass = `status-${item.status}`;
+        const statusClass = `status-${item.statut}`;
+
     const listItem = document.createElement("div");
     listItem.className = "list-group-item";
-    listItem.dataset.itemId = item.id; // Ajouter l'ID comme data attribute
+        listItem.dataset.itemId = item.id;
 
     listItem.innerHTML = `
       <div class="left">
-        <div class="item-icon"><i class="fas ${item.icone}"></i></div>
+            <div class="item-icon"><i class="${item.image_url}"></i></div>
         <div class="item-meta">
-          <div><strong>${item.nom}</strong></div>
-          <div><span class="status-dot ${statusClass}"></span>${item.status}</div>
+              <div><strong>${item.nom}</strong> ${item.model}</div>
+              <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
         </div>
       </div>
       <div class="item-right">
-        ${item.status === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout}</div>`}
+            ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
         <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
       </div>
     `;
+
     container.appendChild(listItem);
   });
   
   // Attacher les gestionnaires de clic après le rendu
   attachClickHandlers();
+    })
+    .catch(error => {
+      console.error('Erreur lors du chargement des matériels :', error);
+      container.innerHTML = `<div class="error">Impossible de charger les matériels.</div>`;
+    });
 }
 
 // Nouvelle fonction pour attacher les gestionnaires de clic sur les items
