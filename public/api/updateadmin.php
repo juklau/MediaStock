@@ -22,7 +22,6 @@
         exit;
     }
 
-
    
     $login = $input['login'];
     $password = $input['mot_de_passe_hash'];
