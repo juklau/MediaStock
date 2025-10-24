@@ -1,100 +1,106 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MediaStock - Gestion d'inventaire</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-</head>
-<body class="bg-white">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MediaStock - Gestion d'inventaire</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-white">
 
-  <!-- Header -->
-    <header class="position-relative" style="background-color: #FF9994; height: 60px;">
-        <div class="container h-100">
-            <div class="row h-100 align-items-center justify-content-center">
-                <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
-                    <!-- Logo MediaStock qui colle aux bords -->
-                    <div class="position-relative" style="z-index: 2; height: 100%; display: flex; align-items: center; justify-content: center;">
-                        <img src="/public/frontend/logo.png" alt="MediaStock" 
-                             class="img-fluid" style="height: 100%; width: auto; object-fit: contain;">
-                    </div>
-                </div>
-            </div>
+    <!-- Header -->
+      <header class="position-relative" style="background-color: #FF9994; height: 60px;">
+          <div class="container h-100">
+              <div class="row h-100 align-items-center justify-content-center">
+                  <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
+                      <!-- Logo MediaStock qui colle aux bords -->
+                      <div class="position-relative" 
+                            style="z-index: 2; 
+                            height: 100%; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center;">
+                          <img src="logo.png" alt="MediaStock" class="img-fluid" style="height: 100%; width: auto; object-fit: contain;">
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </header>
+
+    <!-- Main -->
+    <main class="container text-center py-4">
+
+      <!-- Bouton retour -->
+              <div class="row mb-4">
+                  <div class="col-12">
+                      <a href="Choixcat.html" class="btn btn-outline-secondary">
+                          <i class="fas fa-arrow-left me-2"></i>
+                      </a>
+                  </div>
+              </div>
+      <h1 class="h4 fw-normal mt-5 mb-5">Ajouter votre matériel</h1>
+
+      <!-- Image produit -->
+      <div class="mb-3">
+        <div class="mb-3" id="icon-container" class="mb-3 d-flex justify-content-center align-items-center" style="max-width:360px;">
+      </div>
+
+      <!-- Champ nom (centré, responsive) -->
+      <form class="mb-5" id="materielForm">
+        <div class="d-flex justify-content-center">
+          <input type="text" id="materielNom" class="form-control text-center" placeholder="Veuillez saisir le nom de du matériel" style="max-width:420px;" required>
         </div>
-    </header>
+      </form>
 
-  <!-- Main -->
-  <main class="container text-center py-4">
-    <!-- Bouton retour -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <a href="Choixcat.html" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i>
-                    </a>
-                </div>
-            </div>
-    <h1 class="h4 fw-normal mt-3 mb-3">Ajouter votre matériel</h1>
-
-    <!-- Image produit -->
-    <div class="mb-3">
-      <div class="mb-3" id="icon-container" class="mb-3 d-flex justify-content-center align-items-center" style="max-width:360px;">
-    </div>
-
-    <!-- Champ nom (centré, responsive) -->
-    <form class="mb-3" id="materielForm">
-      <div class="d-flex justify-content-center">
-        <input type="text" id="materielNom" class="form-control text-center" placeholder="Veuillez saisir le nom de du matériel" style="max-width:420px;" required>
+      <!-- Bouton générer -->
+      <div class="mb-5">
+        <button type="button" id="btnAjouterBD" class="btn" style="background:#FF9994; color:#111; border-radius:10px; padding:10px 20px;">
+          Ajouter à la Base De Données
+        </button>
       </div>
-    </form>
 
-    <!-- Bouton générer -->
-    <div class="mb-3">
-      <button type="button" id="btnAjouterBD" class="btn" style="background:#FF9994; color:#111; border-radius:10px; padding:10px 20px;">
-         Ajouter à la Base De Données
-      </button>
-    </div>
-
-    <!-- Message de succès -->
-    <div id="messageSucces" class="alert alert-success d-none mb-3" role="alert">
-      <i class="fas fa-check-circle me-2"></i>
-      <span id="messageTexte"></span>
-    </div>
-
-    <!-- QR code -->
-    <div class="mb-3" id="qrcodeContainer">
-      <div id="qrcodeDisplay" class="d-flex justify-content-center">
-        <div class="text-muted">Le QR code apparaîtra ici après l'ajout</div>
+      <!-- Message de succès -->
+      <div id="messageSucces" class="alert alert-success d-none mb-3" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span id="messageTexte"></span>
       </div>
-    </div>
 
-    <!-- Actions -->
-    <div class="d-flex justify-content-center gap-3" id="qrcodeActions" style="display:none !important;">
-      <button id="btnTelecharger" class="btn d-flex align-items-center gap-2" style="background:#FF9994; color:#111; border-radius:8px; padding:8px 14px;">
-        <i class="fa fa-download"></i> Télécharger
-      </button>
-      <button id="btnPartager" class="btn d-flex align-items-center justify-content-center" style="background:#FF9994; color:#111; border-radius:8px; width:44px; height:40px; padding:0;">
-        <i class="fa fa-share"></i>
-      </button>
-      <button id="btnImprimer" class="btn d-flex align-items-center justify-content-center" style="background:#FF9994; color:#111; border-radius:8px; width:44px; height:40px; padding:0;">
-        <i class="fa fa-print"></i>
-      </button>
-    </div>
-    <h6 class="mt-5" style="opacity: 0.69;" >Si Vous ne pouvez imprimer le QR code , vous pouvez le retrouve dans la fiche produit</h6>
-  </main>
+      <!-- QR code -->
+      <div class="mb-3" id="qrcodeContainer">
+        <div id="qrcodeDisplay" class="d-flex justify-content-center">
+          <div class="text-muted">Le QR code apparaîtra ici après l'ajout</div>
+        </div>
+      </div>
 
-  <!-- Footer -->
-  <footer class="fixed-bottom">
-    <div class="d-flex justify-content-between align-items-center" style="background:#FF9994; height:48px; padding:0 16px;">
-      <div><a href="#" class="text-dark text-decoration-none">Mentions légale</a></div>
-      <div class="text-dark">© 2025 MediaStock inc</div>
-    </div>
-  </footer>
+      <!-- Actions -->
+      <div class="d-flex justify-content-center gap-3" id="qrcodeActions" style="display:none !important;">
+        <button id="btnTelecharger" class="btn d-flex align-items-center gap-2" style="background:#FF9994; color:#111; border-radius:8px; padding:8px 14px;">
+          <i class="fa fa-download"></i> Télécharger
+        </button>
+        <button id="btnPartager" class="btn d-flex align-items-center justify-content-center" style="background:#FF9994; color:#111; border-radius:8px; width:44px; height:40px; padding:0;">
+          <i class="fa fa-share"></i>
+        </button>
+        <button id="btnImprimer" class="btn d-flex align-items-center justify-content-center" style="background:#FF9994; color:#111; border-radius:8px; width:44px; height:40px; padding:0;">
+          <i class="fa fa-print"></i>
+        </button>
+      </div>
+      <h6 class="mt-5" style="opacity: 0.69;" >Si Vous ne pouvez imprimer le QR code, vous pouvez le retrouver dans la fiche produit</h6>
+    </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Bibliothèque QRCode.js pour générer les QR codes -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="/materiel.js"></script>
+    <!-- Footer -->
+    <footer class="fixed-bottom">
+      <div class="d-flex justify-content-between align-items-center" style="background:#FF9994; height:48px; padding:0 16px;">
+        <div><a href="#" class="text-dark text-decoration-none">Mentions légale</a></div>
+        <div class="text-dark">© 2025 MediaStock inc</div>
+      </div>
+    </footer>
 
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Bibliothèque QRCode.js pour générer les QR codes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="/materiel.js"></script>
+
+  </body>
 </html>
