@@ -28,120 +28,103 @@ if (selectedIcon && iconContainer) {
 
 
 // ============================================================
-// ========== AJOUTE DANS LA BASE DE DONNEES ===============
+// ==========  récupération id du catégorie               ===============
+// ============================================================
+async function getCategorieIdFromName(nomCategorie) {
+    try {
+      const response = await fetch(`/api/getidbynamecat.php?nom=${encodeURIComponent(nomCategorie)}`);
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        return result.data; // l'ID de la catégorie
+      } else {
+        console.warn("Catégorie non trouvée :", result.message);
+        return null;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'ID de catégorie :", error);
+      return null;
+    }
+}
+
+
+
+// ============================================================
+// ========== Ajoute dans la bdd                ===============
 // ============================================================
 
 
 document.getElementById('btnAjouterBD').addEventListener('click', async () => {
-  const nomInput = document.getElementById('materielNom');
-  const nom = nomInput.value.trim();
-  const icon = localStorage.getItem("selectedIcon");
-  const categorie = localStorage.getItem("selectedCategory");
+    const nomInput = document.getElementById('materielNom');
+    const nom = nomInput.value.trim();
+    const icon = localStorage.getItem("selectedIcon");
+    const categorie = localStorage.getItem("selectedCategory");
 
-  if (!nom || !icon || !categorie) {
-    alert("Veuillez saisir le nom du matériel et sélectionner une catégorie.");
-    return;
-  }
-
-  // Construction des données à envoyer
-  const payload = {
-    nom: nom,
-    model: null,
-    qr_code: "temporaire", // sera remplacé par l'ID retourné
-    image_url: `/images/icons/${icon}.png`, // ou autre logique
-    etat: "bon", // par défaut
-    categorie_id: getCategorieIdFromName(categorie) // fonction à définir
-  };
-
-  try {
-    // Envoi à l'API PHP
-    const response = await fetch('/api/additem.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    // réponse à transformer en objet js
-    const result = await response.json();
-
-    if (result.success && result.item_id) {
-      const itemId = result.item_id;
-
-      // Mettre à jour le QR code avec l'ID réel
-      genererQRCode(itemId);
-      afficherMessageSucces(itemId);
-      afficherActions();
-
-      // Mémoriser l’ID pour les actions suivantes
-      currentMaterielId = itemId;
-
-      // Désactiver le bouton
-      const btn = document.getElementById('btnAjouterBD');
-      btn.disabled = true;
-      btn.textContent = 'Matériel ajouté ✓';
-      btn.style.opacity = '0.7';
-
-    } else {
-      alert("Erreur : " + result.message);
+    if (!nom || !icon || !categorie) {
+      alert("Veuillez saisir le nom du matériel et sélectionner une catégorie.");
+      return;
     }
 
-  } catch (error) {
-    console.error("Erreur lors de l'ajout :", error);
-    alert("Une erreur est survenue lors de l'ajout.");
-  }
+    //récuperer il du catégorie
+    const categorieId = await getCategorieIdFromName(categorie);
+    if(!categorie){
+      alert("Impossible de récuperer l'Id");
+    }
+
+
+    // Construction des données à envoyer
+    const payload = {
+      nom: nom,
+      model: null,
+      qr_code: "temporaire", // sera remplacé par l'ID retourné
+      image_url: `/images/icons/${icon}.png`, // ou autre logique
+      etat: "bon", // par défaut
+      categorie_id: getCategorieIdFromName(categorie) // fonction à définir
+    };
+
+    try {
+      // Envoi à l'API PHP
+      const response = await fetch('/api/additem.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // réponse à transformer en objet js
+      const result = await response.json();
+
+      if (result.success && result.item_id) {
+        const itemId = result.item_id;
+
+        // Mettre à jour le QR code avec l'ID réel
+        genererQRCode(itemId);
+        afficherMessageSucces(itemId);
+        afficherActions();
+
+        // Mémoriser l’ID pour les actions suivantes
+        currentMaterielId = itemId;
+
+        // Désactiver le bouton
+        const btn = document.getElementById('btnAjouterBD');
+        btn.disabled = true;
+        btn.textContent = 'Matériel ajouté ✓';
+        btn.style.opacity = '0.7';
+
+      } else {
+        alert("Erreur : " + result.message);
+      }
+
+    } catch (error) {
+      console.error("Erreur lors de l'ajout :", error);
+      alert("Une erreur est survenue lors de l'ajout.");
+    }
 });
 
+
 // ============================================================
-// ========== SYSTÈME DE GÉNÉRATION DE QR CODE ===============
+// ========== Génération du QRcode              ===============
 // ============================================================
 
-let qrcodeInstance = null; // Instance du QR code généré
-let currentMaterielId = null; // ID du matériel ajouté
-
-/**
- * Récupère le prochain ID disponible (auto-incrémenté)
- * Dans une vraie application, cet ID viendrait de MySQL
- */
-function getNextId() {
-  // Récupérer le dernier ID utilisé depuis localStorage
-  let lastId = localStorage.getItem('lastMaterielId');
-  if (!lastId) {
-    lastId = 0;
-  }
-  // Incrémenter et sauvegarder
-  const nextId = parseInt(lastId) + 1;
-  localStorage.setItem('lastMaterielId', nextId);
-  return nextId;
-}
-
-/**
- * Simule l'ajout d'un matériel à la base de données
- * Retourne l'ID généré
- */
-// function ajouterMaterielBD(nomMateriel) {
-//   // Générer un ID auto-incrémenté
-//   const materielId = getNextId();
-  
-//   // Simuler l'ajout à la base de données (localStorage pour l'instant)
-//   const materiel = {
-//     id: materielId,
-//     nom: nomMateriel,
-//     icon: selectedIcon,
-//     dateAjout: new Date().toISOString()
-//   };
-  
-//   // Sauvegarder dans localStorage (remplacer par appel API MySQL plus tard)
-//   let materiels = JSON.parse(localStorage.getItem('materiels') || '[]');
-//   materiels.push(materiel);
-//   localStorage.setItem('materiels', JSON.stringify(materiels));
-  
-//   console.log('Matériel ajouté:', materiel);
-//   return materielId;
-// }
-
-/**
- * Génère un QR code contenant l'ID du matériel
- */
 function genererQRCode(materielId) {
     const qrcodeDisplay = document.getElementById('qrcodeDisplay');
     
@@ -171,88 +154,69 @@ function genererQRCode(materielId) {
     console.log('QR Code généré pour l\'ID:', materielId);
 }
 
-/**
- * Affiche le message de succès
- */
-function afficherMessageSucces(materielId) {
-    const messageSucces = document.getElementById('messageSucces');
-    const messageTexte = document.getElementById('messageTexte');
-    
-    messageTexte.textContent = `Matériel ajouté avec succès ! ID: ${materielId}`;
-    messageSucces.classList.remove('d-none');
-    
-    // Masquer le message après 5 secondes
-    setTimeout(() => {
-      messageSucces.classList.add('d-none');
-    }, 5000);
-}
 
-/**
- * Affiche les boutons d'actions (télécharger, partager, imprimer)
- */
-function afficherActions() {
-  const actionsDiv = document.getElementById('qrcodeActions');
-  actionsDiv.style.display = 'flex';
-}
 
-/**
- * Télécharge le QR code en format PNG
- */
+// ==============================================================
+// ========== Télécharge le QR code en format PNG ===============
+// ==============================================================
+
 function telechargerQRCode() {
-  if (!qrcodeInstance || !currentMaterielId) {
-    alert('Veuillez d\'abord générer un QR code');
-    return;
-  }
-  
-  const canvas = document.querySelector('#qrcode canvas');
-  if (canvas) {
-    const url = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.download = `QRCode_Materiel_${currentMaterielId}.png`;
-    link.href = url;
-    link.click();
-    console.log('QR Code téléchargé');
-  }
+    if (!qrcodeInstance || !currentMaterielId) {
+      alert('Veuillez d\'abord générer un QR code');
+      return;
+    }
+    
+    const canvas = document.querySelector('#qrcode canvas');
+    if (canvas) {
+      const url = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `QRCode_Materiel_${currentMaterielId}.png`;
+      link.href = url;
+      link.click();
+      console.log('QR Code téléchargé');
+    }
 }
 
 /**
  * Partage le QR code (via Web Share API si disponible)
  */
-async function partagerQRCode() {
-  if (!qrcodeInstance || !currentMaterielId) {
-    alert('Veuillez d\'abord générer un QR code');
-    return;
-  }
+// async function partagerQRCode() {
+//   if (!qrcodeInstance || !currentMaterielId) {
+//     alert('Veuillez d\'abord générer un QR code');
+//     return;
+//   }
   
-  const canvas = document.querySelector('#qrcode canvas');
-  if (canvas) {
-    canvas.toBlob(async (blob) => {
-      const file = new File([blob], `QRCode_Materiel_${currentMaterielId}.png`, { type: 'image/png' });
+//   const canvas = document.querySelector('#qrcode canvas');
+//   if (canvas) {
+//     canvas.toBlob(async (blob) => {
+//       const file = new File([blob], `QRCode_Materiel_${currentMaterielId}.png`, { type: 'image/png' });
       
-      // Vérifier si l'API Web Share est disponible
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            title: 'QR Code Matériel',
-            text: `QR Code pour le matériel ID: ${currentMaterielId}`,
-            files: [file]
-          });
-          console.log('QR Code partagé avec succès');
-        } catch (err) {
-          console.log('Partage annulé ou erreur:', err);
-        }
-      } else {
-        // Fallback: télécharger si le partage n'est pas disponible
-        alert('Le partage n\'est pas disponible sur ce navigateur. Le QR code va être téléchargé.');
-        telechargerQRCode();
-      }
-    });
-  }
-}
+//       // Vérifier si l'API Web Share est disponible
+//       if (navigator.share && navigator.canShare({ files: [file] })) {
+//         try {
+//           await navigator.share({
+//             title: 'QR Code Matériel',
+//             text: `QR Code pour le matériel ID: ${currentMaterielId}`,
+//             files: [file]
+//           });
+//           console.log('QR Code partagé avec succès');
+//         } catch (err) {
+//           console.log('Partage annulé ou erreur:', err);
+//         }
+//       } else {
+//         // Fallback: télécharger si le partage n'est pas disponible
+//         alert('Le partage n\'est pas disponible sur ce navigateur. Le QR code va être téléchargé.');
+//         telechargerQRCode();
+//       }
+//     });
+//   }
+// }
 
-/**
- * Imprime le QR code
- */
+
+// ==============================================================
+// ==========           Imprime le QR code ======================
+// ==============================================================
+
 function imprimerQRCode() {
   if (!qrcodeInstance || !currentMaterielId) {
     alert('Veuillez d\'abord générer un QR code');
@@ -312,6 +276,106 @@ function imprimerQRCode() {
   
   console.log('QR Code envoyé à l\'impression');
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+// ========== SYSTÈME DE GÉNÉRATION DE QR CODE ===============
+// ============================================================
+
+let qrcodeInstance = null; // Instance du QR code généré
+let currentMaterielId = null; // ID du matériel ajouté
+
+/**
+ * Récupère le prochain ID disponible (auto-incrémenté)
+ * Dans une vraie application, cet ID viendrait de MySQL
+ */
+function getNextId() {
+  // Récupérer le dernier ID utilisé depuis localStorage
+  let lastId = localStorage.getItem('lastMaterielId');
+  if (!lastId) {
+    lastId = 0;
+  }
+  // Incrémenter et sauvegarder
+  const nextId = parseInt(lastId) + 1;
+  localStorage.setItem('lastMaterielId', nextId);
+  return nextId;
+}
+
+/**
+ * Simule l'ajout d'un matériel à la base de données
+ * Retourne l'ID généré
+ */
+// function ajouterMaterielBD(nomMateriel) {
+//   // Générer un ID auto-incrémenté
+//   const materielId = getNextId();
+  
+//   // Simuler l'ajout à la base de données (localStorage pour l'instant)
+//   const materiel = {
+//     id: materielId,
+//     nom: nomMateriel,
+//     icon: selectedIcon,
+//     dateAjout: new Date().toISOString()
+//   };
+  
+//   // Sauvegarder dans localStorage (remplacer par appel API MySQL plus tard)
+//   let materiels = JSON.parse(localStorage.getItem('materiels') || '[]');
+//   materiels.push(materiel);
+//   localStorage.setItem('materiels', JSON.stringify(materiels));
+  
+//   console.log('Matériel ajouté:', materiel);
+//   return materielId;
+// }
+
+/**
+ * Génère un QR code contenant l'ID du matériel
+ */
+
+
+/**
+ * Affiche le message de succès
+ */
+function afficherMessageSucces(materielId) {
+    const messageSucces = document.getElementById('messageSucces');
+    const messageTexte = document.getElementById('messageTexte');
+    
+    messageTexte.textContent = `Matériel ajouté avec succès ! ID: ${materielId}`;
+    messageSucces.classList.remove('d-none');
+    
+    // Masquer le message après 5 secondes
+    setTimeout(() => {
+      messageSucces.classList.add('d-none');
+    }, 5000);
+}
+
+/**
+ * Affiche les boutons d'actions (télécharger, partager, imprimer)
+ */
+function afficherActions() {
+  const actionsDiv = document.getElementById('qrcodeActions');
+  actionsDiv.style.display = 'flex';
+}
+
+
 
 
 
