@@ -42,38 +42,38 @@ function renderItems() {
 
       const items = data.data; // les matériels renvoyés par ton API
 
-  items.forEach(item => {
+      items.forEach(item => {
         // Appliquer les filtres
-    if ((categoryFilter && item.categorie !== categoryFilter) ||
+        if ((categoryFilter && item.categorie !== categoryFilter) ||
             (statusFilter && ((item.is_available ? 'disponible' : 'indisponible') !== statusFilter))) {
-      return;
-    }
+          return;
+        }
 
         const statusClass = `status-${item.statut}`;
 
-    const listItem = document.createElement("div");
-    listItem.className = "list-group-item";
+        const listItem = document.createElement("div");
+        listItem.className = "list-group-item";
         listItem.dataset.itemId = item.id;
 
-    listItem.innerHTML = `
-      <div class="left">
+        listItem.innerHTML = `
+          <div class="left">
             <div class="item-icon"><i class="${item.image_url}"></i></div>
-        <div class="item-meta">
+            <div class="item-meta">
               <div><strong>${item.nom}</strong> ${item.model}</div>
               <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
-        </div>
-      </div>
-      <div class="item-right">
+            </div>
+          </div>
+          <div class="item-right">
             ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
-        <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
-      </div>
-    `;
+            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        `;
 
-    container.appendChild(listItem);
-  });
-  
-  // Attacher les gestionnaires de clic après le rendu
-  attachClickHandlers();
+        container.appendChild(listItem);
+      });
+
+      // Attacher les gestionnaires de clic après le rendu
+      attachClickHandlers();
     })
     .catch(error => {
       console.error('Erreur lors du chargement des matériels :', error);
