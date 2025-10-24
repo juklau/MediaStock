@@ -36,6 +36,7 @@
                             <h3 class="text-center mb-4" style="color: #FF9994; font-size: 1.2rem; font-weight: 400; text-decoration: underline;">Êtes-vous administrateur ?</h3>
 
                             <form action="../login.php" method="post" id="loginForm">
+
                                 <div class="mb-4">
                                     <label for="username" class="form-label" style="color: #FF9994; font-weight: 400; text-decoration: underline;">Nom d'utilisateur :</label>
                                     <input type="text" name="username" class="form-control form-control-lg border-0 bg-light rounded-3" 
@@ -47,19 +48,6 @@
                                     <input type="password" name="password" class="form-control form-control-lg border-0 bg-light rounded-3" 
                                            id="password" placeholder="Entrez votre mot de passe">
                                 </div>
-                                
-                                <form id="loginForm">
-                                    <div class="mb-4">
-                                        <label for="username" class="form-label" style="color: #FF9994; font-weight: 400; text-decoration: underline;">Nom d'utilisateur :</label>
-                                        <input type="text" class="form-control form-control-lg border-0 bg-light rounded-3" 
-                                            id="username" placeholder="Entrez votre nom d'utilisateur">
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label for="password" class="form-label" style="color: #FF9994; font-weight: 400; text-decoration: underline;">Mot de passe :</label>
-                                        <input type="password" class="form-control form-control-lg border-0 bg-light rounded-3" 
-                                            id="password" placeholder="Entrez votre mot de passe">
-                                    </div>
                                     
                                     <div class="text-center">
                                         <button type="submit" 
@@ -249,7 +237,7 @@
         <script>
 
             //lancer une requête HTTP GET => reponse en json
-            fetch('/../api/getnbdispoparcat.php')
+            fetch('../api/getnbdispoparcat.php')
 
             // convertir la réponse en objet JS => p.ex.: [{ categorie: "Informatique", disponible_count: 12 },..]
             .then(response => response.json())
@@ -271,7 +259,7 @@
                             //création un div
                             const element = document.createElement('div');
 
-                            //remplirle div avec le nb d'articles disponibles
+                            //remplir le div avec le nb d'articles disponibles
                             element.textContent = `${cat.disponible_count}`;
                             
                             
