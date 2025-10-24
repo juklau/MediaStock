@@ -74,14 +74,24 @@ function genererQRCode(materielId) {
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H
     });
+
+    // Attendre que le canvas soit généré, puis lui ajouter un ID
+    setTimeout(() => {
+      const canvas = qrContainer.querySelector('canvas');
+      if (canvas) {
+        canvas.id = 'qrcode-canvas'; // ID nécessaire pour le téléchargement
+      }
+    }, 100); // petit délai pour laisser QRCode.js générer le canvas
     
     console.log('QR Code généré pour l\'ID:', materielId);
 }
 
 
-/**
- * Affiche le message de succès
- */
+
+// ============================================================
+// ========== Affiche le message de succès      ===============
+// ============================================================
+
 function afficherMessageSucces(materielId) {
     const messageSucces = document.getElementById('messageSucces');
     const messageTexte = document.getElementById('messageTexte');
@@ -104,9 +114,135 @@ function afficherActions() {
 }
 
 
+// ==============================================================
+// ========== Télécharge le QR code en format PNG ===============
+// ==============================================================
+
+function telechargerQRCode() {
+    if (!qrcodeInstance || !currentMaterielId) {
+      alert('Veuillez d\'abord générer un QR code');
+      return;
+    }
+    
+    const canvas = document.querySelector('#qrcode-canvas');
+    if (canvas) {
+      const url = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `QRCode_Materiel_${currentMaterielId}.png`;
+      link.href = url;
+      link.click();
+      console.log('QR Code téléchargé');
+    }
+}
+
+
+// ==============================================================
+// ==========           Imprime le QR code ======================
+// ==============================================================
+
+function imprimerQRCode() {
+  if (!qrcodeInstance || !currentMaterielId) {
+    alert('Veuillez d\'abord générer un QR code');
+    return;
+  }
+  
+  const qrcodeContainer = document.getElementById('qrcodeContainer');
+  const printWindow = window.open('', '_blank');
+  
+  // "write" n'est pas conseillé, mais il est tolérée dans les fenêtres ouvertes dynamiquement, comme içi
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>QR Code - Matériel ${currentMaterielId}</title>
+      <style>
+        body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          margin: 0;
+          font-family: Arial, sans-serif;
+        }
+        h1 {
+          margin-bottom: 20px;
+        }
+        .qr-container {
+          padding: 20px;
+          border: 2px solid #333;
+          border-radius: 10px;
+        }
+        @media print {
+          body {
+            padding: 20px;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Matériel ID: ${currentMaterielId}</h1>
+      <div class="qr-container">
+        ${qrcodeContainer.innerHTML}
+      </div>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+  printWindow.focus();
+  
+  // Attendre que l'image soit chargée avant d'imprimer
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 500);
+  
+  console.log('QR Code envoyé à l\'impression');
+}
+
+// =========================================================================
+// ==  Partage le QR code (via Web Share API si disponible)  ===============
+// =========================================================================
+
+// async function partagerQRCode() {
+//   if (!qrcodeInstance || !currentMaterielId) {
+//     alert('Veuillez d\'abord générer un QR code');
+//     return;
+//   }
+  
+//   const canvas = document.querySelector('#qrcode canvas');
+//   if (canvas) {
+//     canvas.toBlob(async (blob) => {
+//       const file = new File([blob], `QRCode_Materiel_${currentMaterielId}.png`, { type: 'image/png' });
+      
+//       // Vérifier si l'API Web Share est disponible
+//       if (navigator.share && navigator.canShare({ files: [file] })) {
+//         try {
+//           await navigator.share({
+//             title: 'QR Code Matériel',
+//             text: `QR Code pour le matériel ID: ${currentMaterielId}`,
+//             files: [file]
+//           });
+//           console.log('QR Code partagé avec succès');
+//         } catch (err) {
+//           console.log('Partage annulé ou erreur:', err);
+//         }
+//       } else {
+//         // Fallback: télécharger si le partage n'est pas disponible
+//         alert('Le partage n\'est pas disponible sur ce navigateur. Le QR code va être téléchargé.');
+//         telechargerQRCode();
+//       }
+//     });
+//   }
+// }
 
 
 
+
+// ============================================================
+// ==========            ÉVÉNEMENTS         ===================
+// ============================================================
 
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -126,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 // ============================================================
-// ========== Ajoute dans la bdd                ===============
+// ==========         Ajoute dans la bdd        ===============
 // ============================================================
 
 
@@ -194,3 +330,33 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
       alert("Une erreur est survenue lors de l'ajout.");
     }
 });
+
+
+// ============================================================
+// ==========       ÉVÉNEMENTS BOUTONS      ===================
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', async () =>{
+    // Événement: Télécharger le QR code
+  const btnTelecharger = document.getElementById('btnTelecharger');
+  if (btnTelecharger) {
+    btnTelecharger.addEventListener('click', telechargerQRCode);
+  }
+  
+  // // Événement: Partager le QR code
+  // const btnPartager = document.getElementById('btnPartager');
+  // if (btnPartager) {
+  //   btnPartager.addEventListener('click', partagerQRCode);
+  // }
+  
+  // Événement: Imprimer le QR code
+  const btnImprimer = document.getElementById('btnImprimer');
+  if (btnImprimer) {
+    btnImprimer.addEventListener('click', imprimerQRCode);
+  }
+  
+
+
+})
+
+

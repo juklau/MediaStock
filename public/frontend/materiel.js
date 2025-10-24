@@ -5,10 +5,10 @@ function choisirMateriel(icon) {
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  const category = localStorage.getItem('selectedCategory');
-  console.log("Catégorie sélectionnée :", category);
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//   const category = localStorage.getItem('selectedCategory');
+//   console.log("Catégorie sélectionnée :", category);
+// });
 
 //.............materiel.js.............//
 
@@ -30,22 +30,22 @@ if (selectedIcon && iconContainer) {
 // ============================================================
 // ==========  récupération id du catégorie               ===============
 // ============================================================
-async function getCategorieIdFromName(nomCategorie) {
-    try {
-      const response = await fetch(`/api/getidbynamecat.php?nom=${encodeURIComponent(nomCategorie)}`);
-      const result = await response.json();
+// async function getCategorieIdFromName(nomCategorie) {
+//     try {
+//       const response = await fetch(`/api/getidbynamecat.php?nom=${encodeURIComponent(nomCategorie)}`);
+//       const result = await response.json();
 
-      if (result.success && result.data) {
-        return result.data; // l'ID de la catégorie
-      } else {
-        console.warn("Catégorie non trouvée :", result.message);
-        return null;
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération de l'ID de catégorie :", error);
-      return null;
-    }
-}
+//       if (result.success && result.data) {
+//         return result.data; // l'ID de la catégorie
+//       } else {
+//         console.warn("Catégorie non trouvée :", result.message);
+//         return null;
+//       }
+//     } catch (error) {
+//       console.error("Erreur lors de la récupération de l'ID de catégorie :", error);
+//       return null;
+//     }
+// }
 
 
 
@@ -54,105 +54,105 @@ async function getCategorieIdFromName(nomCategorie) {
 // ============================================================
 
 
-document.getElementById('btnAjouterBD').addEventListener('click', async () => {
-    const nomInput = document.getElementById('materielNom');
-    const nom = nomInput.value.trim();
-    const icon = localStorage.getItem("selectedIcon");
-    const categorie = localStorage.getItem("selectedCategory");
+// document.getElementById('btnAjouterBD').addEventListener('click', async () => {
+//     const nomInput = document.getElementById('materielNom');
+//     const nom = nomInput.value.trim();
+//     const icon = localStorage.getItem("selectedIcon");
+//     const categorie = localStorage.getItem("selectedCategory");
 
-    if (!nom || !icon || !categorie) {
-      alert("Veuillez saisir le nom du matériel et sélectionner une catégorie.");
-      return;
-    }
+//     if (!nom || !icon || !categorie) {
+//       alert("Veuillez saisir le nom du matériel et sélectionner une catégorie.");
+//       return;
+//     }
 
-    //récuperer il du catégorie
-    const categorieId = await getCategorieIdFromName(categorie);
-    if(!categorie){
-      alert("Impossible de récuperer l'Id");
-    }
+//     //récuperer il du catégorie
+//     const categorieId = await getCategorieIdFromName(categorie);
+//     if(!categorie){
+//       alert("Impossible de récuperer l'Id");
+//     }
 
 
-    // Construction des données à envoyer
-    const payload = {
-      nom: nom,
-      model: null,
-      qr_code: "temporaire", // sera remplacé par l'ID retourné
-      image_url: `/images/icons/${icon}.png`, // ou autre logique
-      etat: "bon", // par défaut
-      categorie_id: getCategorieIdFromName(categorie) // fonction à définir
-    };
+//     // Construction des données à envoyer
+//     const payload = {
+//       nom: nom,
+//       model: null,
+//       qr_code: "temporaire", // sera remplacé par l'ID retourné
+//       image_url: `/images/icons/${icon}.png`, // ou autre logique
+//       etat: "bon", // par défaut
+//       categorie_id: getCategorieIdFromName(categorie) // fonction à définir
+//     };
 
-    try {
-      // Envoi à l'API PHP
-      const response = await fetch('/api/additem.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+//     try {
+//       // Envoi à l'API PHP
+//       const response = await fetch('/api/additem.php', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(payload)
+//       });
 
-      // réponse à transformer en objet js
-      const result = await response.json();
+//       // réponse à transformer en objet js
+//       const result = await response.json();
 
-      if (result.success && result.item_id) {
-        const itemId = result.item_id;
+//       if (result.success && result.item_id) {
+//         const itemId = result.item_id;
 
-        // Mettre à jour le QR code avec l'ID réel
-        genererQRCode(itemId);
-        afficherMessageSucces(itemId);
-        afficherActions();
+//         // Mettre à jour le QR code avec l'ID réel
+//         genererQRCode(itemId);
+//         afficherMessageSucces(itemId);
+//         afficherActions();
 
-        // Mémoriser l’ID pour les actions suivantes
-        currentMaterielId = itemId;
+//         // Mémoriser l’ID pour les actions suivantes
+//         currentMaterielId = itemId;
 
-        // Désactiver le bouton
-        const btn = document.getElementById('btnAjouterBD');
-        btn.disabled = true;
-        btn.textContent = 'Matériel ajouté ✓';
-        btn.style.opacity = '0.7';
+//         // Désactiver le bouton
+//         const btn = document.getElementById('btnAjouterBD');
+//         btn.disabled = true;
+//         btn.textContent = 'Matériel ajouté ✓';
+//         btn.style.opacity = '0.7';
 
-      } else {
-        alert("Erreur : " + result.message);
-      }
+//       } else {
+//         alert("Erreur : " + result.message);
+//       }
 
-    } catch (error) {
-      console.error("Erreur lors de l'ajout :", error);
-      alert("Une erreur est survenue lors de l'ajout.");
-    }
-});
+//     } catch (error) {
+//       console.error("Erreur lors de l'ajout :", error);
+//       alert("Une erreur est survenue lors de l'ajout.");
+//     }
+// });
 
 
 // ============================================================
 // ========== Génération du QRcode              ===============
 // ============================================================
 
-function genererQRCode(materielId) {
-    const qrcodeDisplay = document.getElementById('qrcodeDisplay');
+// function genererQRCode(materielId) {
+//     const qrcodeDisplay = document.getElementById('qrcodeDisplay');
     
-    // Nettoyer l'affichage précédent
-    qrcodeDisplay.innerHTML = '';
+//     // Nettoyer l'affichage précédent
+//     qrcodeDisplay.innerHTML = '';
     
-    // Créer un conteneur pour le QR code
-    const qrContainer = document.createElement('div');
-    qrContainer.id = 'qrcode';
-    qrContainer.style.padding = '20px';
-    qrContainer.style.backgroundColor = 'white';
-    qrContainer.style.borderRadius = '10px';
-    qrContainer.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-    qrcodeDisplay.appendChild(qrContainer);
+//     // Créer un conteneur pour le QR code
+//     const qrContainer = document.createElement('div');
+//     qrContainer.id = 'qrcode';
+//     qrContainer.style.padding = '20px';
+//     qrContainer.style.backgroundColor = 'white';
+//     qrContainer.style.borderRadius = '10px';
+//     qrContainer.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+//     qrcodeDisplay.appendChild(qrContainer);
     
     
-    // Générer le QR code avec l'ID
-    qrcodeInstance = new QRCode(qrContainer, {
-      text: materielId.toString(),
-      width: 256,
-      height: 256,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
-    });
+//     // Générer le QR code avec l'ID
+//     qrcodeInstance = new QRCode(qrContainer, {
+//       text: materielId.toString(),
+//       width: 256,
+//       height: 256,
+//       colorDark: "#000000",
+//       colorLight: "#ffffff",
+//       correctLevel: QRCode.CorrectLevel.H
+//     });
     
-    console.log('QR Code généré pour l\'ID:', materielId);
-}
+//     console.log('QR Code généré pour l\'ID:', materielId);
+// }
 
 
 
@@ -160,22 +160,22 @@ function genererQRCode(materielId) {
 // ========== Télécharge le QR code en format PNG ===============
 // ==============================================================
 
-function telechargerQRCode() {
-    if (!qrcodeInstance || !currentMaterielId) {
-      alert('Veuillez d\'abord générer un QR code');
-      return;
-    }
+// function telechargerQRCode() {
+//     if (!qrcodeInstance || !currentMaterielId) {
+//       alert('Veuillez d\'abord générer un QR code');
+//       return;
+//     }
     
-    const canvas = document.querySelector('#qrcode canvas');
-    if (canvas) {
-      const url = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = `QRCode_Materiel_${currentMaterielId}.png`;
-      link.href = url;
-      link.click();
-      console.log('QR Code téléchargé');
-    }
-}
+//     const canvas = document.querySelector('#qrcode canvas');
+//     if (canvas) {
+//       const url = canvas.toDataURL('image/png');
+//       const link = document.createElement('a');
+//       link.download = `QRCode_Materiel_${currentMaterielId}.png`;
+//       link.href = url;
+//       link.click();
+//       console.log('QR Code téléchargé');
+//     }
+// }
 
 /**
  * Partage le QR code (via Web Share API si disponible)
@@ -217,65 +217,65 @@ function telechargerQRCode() {
 // ==========           Imprime le QR code ======================
 // ==============================================================
 
-function imprimerQRCode() {
-  if (!qrcodeInstance || !currentMaterielId) {
-    alert('Veuillez d\'abord générer un QR code');
-    return;
-  }
+// function imprimerQRCode() {
+//   if (!qrcodeInstance || !currentMaterielId) {
+//     alert('Veuillez d\'abord générer un QR code');
+//     return;
+//   }
   
-  const qrcodeContainer = document.getElementById('qrcodeContainer');
-  const printWindow = window.open('', '_blank');
+//   const qrcodeContainer = document.getElementById('qrcodeContainer');
+//   const printWindow = window.open('', '_blank');
   
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>QR Code - Matériel ${currentMaterielId}</title>
-      <style>
-        body {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          margin: 0;
-          font-family: Arial, sans-serif;
-        }
-        h1 {
-          margin-bottom: 20px;
-        }
-        .qr-container {
-          padding: 20px;
-          border: 2px solid #333;
-          border-radius: 10px;
-        }
-        @media print {
-          body {
-            padding: 20px;
-          }
-        }
-      </style>
-    </head>
-    <body>
-      <h1>Matériel ID: ${currentMaterielId}</h1>
-      <div class="qr-container">
-        ${qrcodeContainer.innerHTML}
-      </div>
-    </body>
-    </html>
-  `);
+//   printWindow.document.write(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <title>QR Code - Matériel ${currentMaterielId}</title>
+//       <style>
+//         body {
+//           display: flex;
+//           flex-direction: column;
+//           justify-content: center;
+//           align-items: center;
+//           min-height: 100vh;
+//           margin: 0;
+//           font-family: Arial, sans-serif;
+//         }
+//         h1 {
+//           margin-bottom: 20px;
+//         }
+//         .qr-container {
+//           padding: 20px;
+//           border: 2px solid #333;
+//           border-radius: 10px;
+//         }
+//         @media print {
+//           body {
+//             padding: 20px;
+//           }
+//         }
+//       </style>
+//     </head>
+//     <body>
+//       <h1>Matériel ID: ${currentMaterielId}</h1>
+//       <div class="qr-container">
+//         ${qrcodeContainer.innerHTML}
+//       </div>
+//     </body>
+//     </html>
+//   `);
   
-  printWindow.document.close();
-  printWindow.focus();
+//   printWindow.document.close();
+//   printWindow.focus();
   
-  // Attendre que l'image soit chargée avant d'imprimer
-  setTimeout(() => {
-    printWindow.print();
-    printWindow.close();
-  }, 500);
+//   // Attendre que l'image soit chargée avant d'imprimer
+//   setTimeout(() => {
+//     printWindow.print();
+//     printWindow.close();
+//   }, 500);
   
-  console.log('QR Code envoyé à l\'impression');
-}
+//   console.log('QR Code envoyé à l\'impression');
+// }
 
 
 
@@ -354,26 +354,26 @@ function getNextId() {
 /**
  * Affiche le message de succès
  */
-function afficherMessageSucces(materielId) {
-    const messageSucces = document.getElementById('messageSucces');
-    const messageTexte = document.getElementById('messageTexte');
+// function afficherMessageSucces(materielId) {
+//     const messageSucces = document.getElementById('messageSucces');
+//     const messageTexte = document.getElementById('messageTexte');
     
-    messageTexte.textContent = `Matériel ajouté avec succès ! ID: ${materielId}`;
-    messageSucces.classList.remove('d-none');
+//     messageTexte.textContent = `Matériel ajouté avec succès ! ID: ${materielId}`;
+//     messageSucces.classList.remove('d-none');
     
-    // Masquer le message après 5 secondes
-    setTimeout(() => {
-      messageSucces.classList.add('d-none');
-    }, 5000);
-}
+//     // Masquer le message après 5 secondes
+//     setTimeout(() => {
+//       messageSucces.classList.add('d-none');
+//     }, 5000);
+// }
 
 /**
  * Affiche les boutons d'actions (télécharger, partager, imprimer)
  */
-function afficherActions() {
-  const actionsDiv = document.getElementById('qrcodeActions');
-  actionsDiv.style.display = 'flex';
-}
+// function afficherActions() {
+//   const actionsDiv = document.getElementById('qrcodeActions');
+//   actionsDiv.style.display = 'flex';
+// }
 
 
 
@@ -384,62 +384,62 @@ function afficherActions() {
 // ========== ÉVÉNEMENTS ET INITIALISATION ===================
 // ============================================================
 
-document.addEventListener('DOMContentLoaded', function() {
+// document.addEventListener('DOMContentLoaded', function() {
   
-    // Événement: Ajouter à la base de données
-    const btnAjouterBD = document.getElementById('btnAjouterBD');
-    if (btnAjouterBD) {
-      btnAjouterBD.addEventListener('click', async() => {
+//     // Événement: Ajouter à la base de données
+//     const btnAjouterBD = document.getElementById('btnAjouterBD');
+//     if (btnAjouterBD) {
+//       btnAjouterBD.addEventListener('click', async() => {
 
-        const nomInput = document.getElementById('materielNom');
-        const nomMateriel = nomInput.value.trim();
-        const icon = localStorage.getItem()
+//         const nomInput = document.getElementById('materielNom');
+//         const nomMateriel = nomInput.value.trim();
+//         const icon = localStorage.getItem()
         
-        // Validation
-        if (!nomMateriel) {
-          alert('Veuillez saisir le nom du matériel');
-          nomInput.focus();
-          return;
-        }
+//         // Validation
+//         if (!nomMateriel) {
+//           alert('Veuillez saisir le nom du matériel');
+//           nomInput.focus();
+//           return;
+//         }
         
-        // Ajouter à la BD et récupérer l'ID
-        currentMaterielId = ajouterMaterielBD(nomMateriel);
+//         // Ajouter à la BD et récupérer l'ID
+//         currentMaterielId = ajouterMaterielBD(nomMateriel);
         
-        // Générer le QR code avec l'ID
-        genererQRCode(currentMaterielId);
+//         // Générer le QR code avec l'ID
+//         genererQRCode(currentMaterielId);
         
-        // Afficher le message de succès
-        afficherMessageSucces(currentMaterielId);
+//         // Afficher le message de succès
+//         afficherMessageSucces(currentMaterielId);
         
-        // Afficher les boutons d'actions
-        afficherActions();
+//         // Afficher les boutons d'actions
+//         afficherActions();
         
-        // Désactiver le bouton après l'ajout
-        btnAjouterBD.disabled = true;
-        btnAjouterBD.textContent = 'Matériel ajouté ✓';
-        btnAjouterBD.style.opacity = '0.7';
-      });
-    }
+//         // Désactiver le bouton après l'ajout
+//         btnAjouterBD.disabled = true;
+//         btnAjouterBD.textContent = 'Matériel ajouté ✓';
+//         btnAjouterBD.style.opacity = '0.7';
+//       });
+//     }
   
-  // Événement: Télécharger le QR code
-  const btnTelecharger = document.getElementById('btnTelecharger');
-  if (btnTelecharger) {
-    btnTelecharger.addEventListener('click', telechargerQRCode);
-  }
+//   // Événement: Télécharger le QR code
+//   const btnTelecharger = document.getElementById('btnTelecharger');
+//   if (btnTelecharger) {
+//     btnTelecharger.addEventListener('click', telechargerQRCode);
+//   }
   
-  // Événement: Partager le QR code
-  const btnPartager = document.getElementById('btnPartager');
-  if (btnPartager) {
-    btnPartager.addEventListener('click', partagerQRCode);
-  }
+//   // Événement: Partager le QR code
+//   const btnPartager = document.getElementById('btnPartager');
+//   if (btnPartager) {
+//     btnPartager.addEventListener('click', partagerQRCode);
+//   }
   
-  // Événement: Imprimer le QR code
-  const btnImprimer = document.getElementById('btnImprimer');
-  if (btnImprimer) {
-    btnImprimer.addEventListener('click', imprimerQRCode);
-  }
+//   // Événement: Imprimer le QR code
+//   const btnImprimer = document.getElementById('btnImprimer');
+//   if (btnImprimer) {
+//     btnImprimer.addEventListener('click', imprimerQRCode);
+//   }
   
-});
+// });
 
 // ============================================================
 // ========== FIN DU SYSTÈME DE QR CODE ======================
