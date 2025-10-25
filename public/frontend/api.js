@@ -5,7 +5,7 @@
 
 const API = {
   // URL de base (pour le moment fichiers locaux, plus tard ce sera votre backend)
-  BASE_URL: './data',
+  
   
   /**
    * Récupérer tous les matériels

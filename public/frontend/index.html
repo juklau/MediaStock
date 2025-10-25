@@ -13,6 +13,9 @@
       rel="stylesheet"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="d-flex flex-column min-vh-100">
@@ -32,22 +35,26 @@
     </header>
 
     <div class="container py-4 flex-grow-1">
-      <!-- big action buttons - stack on mobile, side by side on larger screens -->
-      <div class="d-grid gap-2 d-md-flex justify-content-md-center actions-row">
-        <button
-          class="btn action-btn w-100 w-md-auto"
-          onclick="window.location.href='creation-pret.html'"
-        >
-          Crée un prêt
-        </button>
-        <button
-          class="btn action-btn w-100 w-md-auto"
-          onclick="window.location.href='restitution.html'"
-        >
-          Crée une restitution
-        </button>
-      </div>
-    </div>
+  <!-- big action buttons - stack on mobile, side by side on larger screens -->
+  <div class="d-grid gap-2 d-md-flex justify-content-md-center actions-row">
+    <button
+      class="btn action-btn w-100 w-md-auto"
+      id="scanPretBtn"
+    >
+      Crée un prêt
+    </button>
+    <button
+      class="btn action-btn w-100 w-md-auto"
+      id="scanRestitutionBtn"
+    >
+      Crée une restitution
+    </button>
+  </div>
+</div>
+
+<!-- Container pour le lecteur QR -->
+<div id="qr-reader" style="width: 300px; height: 300px; display:none; margin:auto;"></div>
+
     <hr
       class="w-100 m-0"
       style="background-color: #ff9994; height: 4px; opacity: 1; border: 0"
