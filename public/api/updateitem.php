@@ -5,18 +5,19 @@
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Accept');
 
 
     // // lire le contenu JSON envoyé
     $input = json_decode(file_get_contents('php://input'), true);
 
     // Vérifier si les éléments obligatoires sont fournis
-    if (!isset($input['id']) || !isset($input['qr_code'])) {
+    if (!isset($input['id'])) {
 
         $response = [
             "success" => false,
-            "message" => "Champs obligatoires manquants: id, qr_code"
+            "message" => "Champs obligatoires manquants: id "
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
@@ -24,7 +25,7 @@
 
 
     $itemId = (int)$input['id'];
-    $qrCode = $input['qr_code'];
+    // $qrCode = $input['qr_code'];
 
 
     // Construire dynamiquement les champs à mettre à jour
@@ -47,6 +48,10 @@
         $data['categorie_id'] = (int)$input['categorie_id'];
     }
 
+    if (isset($input['qr_code'])) {
+        $data['qr_code'] = $input['qr_code'];
+    }
+
     if(empty($data)){
         $response = [
             "success" => false,
@@ -56,7 +61,6 @@
         exit;
     }
     
-
     try{
 
         // instancier le model Item
@@ -81,6 +85,7 @@
             $response = [
                 "success" => true,
                 "item_id" => $itemId, 
+                "qr_code" => $data['qr_code'] ?? null,
                 "message" => "Item mis à jour avec succès"
             ];
         }else{
