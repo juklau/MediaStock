@@ -1,13 +1,44 @@
 //.............choix materiel.js.............//
-function choisirMateriel(icon) {
+
+// --------- Déclarations globales ---------
+// je n'arrive pas à remettre dans materiel_test.js ==> il ne veut par reconnaitre dans le console
+// j'ai remis dans materiel.js => il ne voit pas dans le console, même après une 
+// destruction avec volume de l'image!!!
+
+let qrcodeInstance = null;
+let currentMaterielId = null;
+
+
+// ============================================================
+// ==========  récupération d'icon    ===============
+// ============================================================
+
+ // Quand on clique sur une card, on récupère l'icône Font Awesome de la card => Choixcat.html
+document.querySelectorAll(".equipment-card").forEach((card) => {
+  card.addEventListener("click", () => {
+    const icon = card.querySelector("i");
+    if (!icon) return;
+
+    // Exemple : "fa-mouse" → on garde juste "mouse"
+    const iconClass = Array.from(icon.classList).find(
+      (c) => c.startsWith("fa-") && c !== "fas"
+    );
+    const iconName = iconClass ? iconClass.replace("fa-", "") : "";
+
+    // Sauvegarde dans localStorage
+    localStorage.setItem("selectedIcon", iconName);
+
+    // Redirection
+    window.location.href = "materiel.html";
+  });
+});
+
+
+
+function choisirMateriel(icon) {                  //..  Choixcat.html
       localStorage.setItem("selectedIcon", icon);
       window.location.href = "materiel.html";
 }
-
-
-
-
-
 
 const selectedIcon = localStorage.getItem("selectedIcon");
 const iconContainer = document.getElementById("icon-container");
@@ -44,6 +75,7 @@ async function getCategorieIdFromName(nomCategorie) {
       return null;
     }
 }
+
 
 // ============================================================
 // ========== Génération du QRcode              ===============
@@ -85,7 +117,6 @@ function genererQRCode(materielId) {
     
     console.log('QR Code généré pour l\'ID:', materielId);
 }
-
 
 
 // ============================================================
@@ -148,13 +179,15 @@ function imprimerQRCode() {
   
   const qrcodeContainer = document.getElementById('qrcodeContainer');
   const printWindow = window.open('', '_blank');
+
+  const idStr = String(currentMaterielId); // garanti une chaîne (pas "true"/"false")
   
   // "write" n'est pas conseillé, mais il est tolérée dans les fenêtres ouvertes dynamiquement, comme içi
   printWindow.document.write(`
     <!DOCTYPE html>
     <html>
     <head>
-      <title>QR Code - Matériel ${currentMaterielId}</title>
+      <title>QR Code - Matériel ${idStr}</title>
       <style>
         body {
           display: flex;
@@ -201,6 +234,7 @@ function imprimerQRCode() {
   console.log('QR Code envoyé à l\'impression');
 }
 
+
 // =========================================================================
 // ==  Partage le QR code (via Web Share API si disponible)  ===============
 // =========================================================================
@@ -238,12 +272,9 @@ function imprimerQRCode() {
 // }
 
 
-
-
 // ============================================================
 // ==========            ÉVÉNEMENTS         ===================
 // ============================================================
-
 
 document.addEventListener('DOMContentLoaded', async () => {
   const category = localStorage.getItem('selectedCategory');
@@ -265,7 +296,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ==========         Ajoute dans la bdd        ===============
 // ============================================================
 
-
 document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     const nomInput = document.getElementById('materielNom');
     const nom = nomInput.value.trim();
@@ -280,7 +310,8 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     //récuperer il du catégorie
     const categorieId = await getCategorieIdFromName(categorie);
     if(!categorieId){
-      alert("Impossible de récuperer l'Id");
+      alert("Impossible de récuperer l'Id de la catégorie");
+      return;
     }
 
     // Construction des données à envoyer
@@ -288,11 +319,11 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
       nom: nom,
       model: null,
       qr_code: "temporaire", // sera remplacé par l'ID retourné
-      image_url: `/images/icons/${icon}.png`, // ou autre logique
+      image_url: `fa-solid fa-${icon}`, // ou autre logique
       etat: "bon", // par défaut
       categorie_id: categorieId
     };
-
+    
     try {
       // Envoi à l'API PHP
       const response = await fetch('/api/additem.php', {
@@ -303,24 +334,51 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
 
       // réponse à transformer en objet js
       const result = await response.json();
+      
+      const itemId = Number(result.item_id);
+      console.log("Réponse updateitem.php:", result);
 
-      if (result.success && result.item_id) {
-        const itemId = result.item_id;
-
-        // Mettre à jour le QR code avec l'ID réel
-        genererQRCode(itemId);
-        afficherMessageSucces(itemId);
-        afficherActions();
+      if (result.success && Number.isFinite(itemId) && itemId > 0) {
 
         // Mémoriser l’ID pour les actions suivantes
         currentMaterielId = itemId;
 
-        // Désactiver le bouton
-        const btn = document.getElementById('btnAjouterBD');
-        btn.disabled = true;
-        btn.textContent = 'Matériel ajouté ✓';
-        btn.style.opacity = '0.7';
+         //  Mise à jour uniquement QR code avec l'Id réel
+        const updatePayload = {
+          id: itemId,
+          qr_code: String(itemId), // remplacer le qrcode "temporaire"
+        };
 
+        // let qrcodeId = itemId; //valeur par défaut
+
+         try{
+            const responseQRcode = await fetch('/api/updateitem.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(updatePayload)
+          });
+
+          // réponse à transformer en objet js
+          const resultUpdate = await responseQRcode.json();
+          console.log("Réponse updateitem.php:", resultUpdate);
+
+          if(resultUpdate.success && resultUpdate.qr_code === String(itemId)){
+            console.log("Appel de genererQRCode avec:", itemId);
+            genererQRCode(itemId);
+            afficherMessageSucces(itemId);
+            afficherActions();
+
+            // Désactiver le bouton
+            const btn = document.getElementById('btnAjouterBD');
+            btn.disabled = true;
+            btn.textContent = 'Matériel ajouté ✓';
+            btn.style.opacity = '0.7';
+          }else{
+            alert("Erreur lors de la mise à jour du QR code: " + resultUpdate.message)
+          }
+        } catch (error) {
+          console.warn("Erreur lors de la mise à jour du QR code :", error);
+        }
       } else {
         alert("Erreur : " + result.message);
       }
@@ -355,8 +413,4 @@ document.addEventListener('DOMContentLoaded', async () =>{
     btnImprimer.addEventListener('click', imprimerQRCode);
   }
   
-
-
 })
-
-
