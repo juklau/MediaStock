@@ -22,6 +22,7 @@ const API = {
       return JSON.parse(localStorage.getItem('materiels') || '[]');
     }
   },
+  
 
   /**
    * Récupérer un matériel par ID

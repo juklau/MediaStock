@@ -26,7 +26,7 @@ async function chargerMateriels() {
   }
 }
 
-/**
+/** 
  * Afficher les matériels depuis l'API
  */
 function renderItems() {
@@ -40,7 +40,7 @@ function renderItems() {
     .then(data => {
       console.log('All Items:', data);
 
-      const items = data.data; // les matériels renvoyés par ton API
+      const items = data.data; // les matériels renvoyés par API
 
       items.forEach(item => {
         // Appliquer les filtres
@@ -168,6 +168,10 @@ if (statusFilterEl) statusFilterEl.addEventListener('change', renderItems);
 window.onload = function(){
   chargerMateriels();
 };
+
+
+
+
 
 //Scanner QR code pour creer ou restituer un materiel //
 
