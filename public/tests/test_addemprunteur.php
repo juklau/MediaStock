@@ -1,15 +1,15 @@
 <?php
 // URL de l'API à tester
-$url = 'http://localhost/api/addadmin.php'; 
-
+$url = 'http://localhost/api/addemprunteur.php'; 
 // Données à envoyer
 $data = [
-    'login' => 'test' . rand(1000, 9999), // login unique pour éviter les doublons
-    'mot_de_passe_hash' =>'test' //addadmin qui vreera le hachage
+    'emprunteur_nom' => 'epejesi', 
+    'emprunteur_prenom' => 'miksa',
+    'role' => 'intervenant',
+    'formation_id' => null
 ];
 
-// test2360
-// test
+
 
 // Options de la requête HTTP
 $options = [

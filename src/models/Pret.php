@@ -217,7 +217,7 @@ class Pret extends BaseModel {
      * @param int $emprunteurId
      * @param int $preteurId
      * @param string $dateSortie
-     * @param string $dateRetourPrevue
+     * @param string $dateRetourPrevue 
      * @param string $noteDebut
      * @return int|false
      */
@@ -228,7 +228,7 @@ class Pret extends BaseModel {
 
         if ($dateRetourPrevue === null) {
             // Par défaut, dans 2 semaines à compter d'aujourd'hui
-            $dateRetourPrevue = date('Y-m-d', strtotime('+2 weeks'));
+            $dateRetourPrevue = date('Y-m-d', strtotime('+2 weeks')); 
         }
 
         $data = [

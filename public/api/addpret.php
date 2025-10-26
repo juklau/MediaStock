@@ -39,12 +39,12 @@
    
     try{
 
-        // instancier le model Pret
-        $pretModel = new Models\Pret();
+        // instancier le model Item
+        $itemModel = new Models\Item(); 
 
 
         // Vérifier si l'item est disponible
-        if (!$pretModel->isAvailable($itemId)) {
+        if (!$itemModel->isAvailable($itemId)) {
             $response = [
                 "success" => false,
                 "message" => "L'article n'est pas disponible pour le prêt : il est déjà emprunté."
@@ -54,7 +54,10 @@
         }
 
 
-        $loanId = $pretModel->createLoan($itemId, $emprunteurId, $preteurId, $dateSortie, $dateRetourPrevue , $noteDebut);
+         // instancier le model Pret
+        $pretModel = new Models\Pret(); 
+
+        $loanId = $pretModel->createLoan($itemId, $emprunteurId, $preteurId, $dateSortie, $dateRetourPrevu, $noteDebut);
 
         if($loanId !== false){
             $response = [
