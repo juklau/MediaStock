@@ -19,47 +19,41 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="d-flex flex-column min-vh-100">
+    
     <!-- Header with coral background and centered logo -->
-    <header class="position-relative" style="background-color: #FF9994; height: 60px;">
+    <header class="position-relative"
+      style="background-color: #ff9994; height: 60px">
       <div class="container h-100">
-          <div class="row h-100 align-items-center justify-content-center">
-              <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
-                  <!-- Logo MediaStock qui colle aux bords -->
-                  <div class="position-relative" style="z-index: 2; height: 100%; display: flex; align-items: center; justify-content: center;">
-                      <img src="logo.png" alt="MediaStock" 
-                           class="img-fluid" style="height: 100%; width: auto; object-fit: contain;">
-                  </div>
-              </div>
+        <div class="row h-100 align-items-center justify-content-center">
+          <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
+            <!-- Logo MediaStock qui colle aux bords -->
+            <div class="position-relative justify-content-center align-items-center d-flex h-100"
+              style="
+                z-index: 2;
+              ">
+              <img src="logo.png" alt="MediaStock" class="img-fluid h-100 w-auto object-fit-contain"/>
+            </div>
           </div>
+        </div>
       </div>
     </header>
 
     <div class="container py-4 flex-grow-1">
-  <!-- big action buttons - stack on mobile, side by side on larger screens -->
-  <div class="d-grid gap-2 d-md-flex justify-content-md-center actions-row">
-    <button
-      class="btn action-btn w-100 w-md-auto"
-      id="scanPretBtn"
-    >
-      Crée un prêt
-    </button>
-    <button
-      class="btn action-btn w-100 w-md-auto"
-      id="scanRestitutionBtn"
-    >
-      Crée une restitution
-    </button>
-  </div>
-</div>
+  
+      <!-- big action buttons - stack on mobile, side by side on larger screens -->
+      <div class="d-grid gap-2 d-md-flex justify-content-md-center actions-row">
+        <button class="btn action-btn w-100 w-md-auto" id="scanPretBtn">Crée un prêt</button>
+        <button class="btn action-btn w-100 w-md-auto" id="scanRestitutionBtn">Crée une restitution</button>
+      </div>
+    </div>
 
-<!-- Container pour le lecteur QR -->
-<div id="qr-reader" style="width: 300px; height: 300px; display:none; margin:auto;"></div>
+    <!-- Container pour le lecteur QR -->
+    <div id="qr-reader" class="d-none m-auto" style="width: 300px; height: 300px;"></div>
 
-    <hr
-      class="w-100 m-0"
-      style="background-color: #ff9994; height: 4px; opacity: 1; border: 0"
-    />
+    <hr class="w-100 m-0 border-0" style="background-color: #ff9994; height: 4px; opacity: 1;"/>
+    
     <div class="container py-4 flex-grow-1">
+        
       <!-- Titre -->
       <h2 class="text-center section-title mb-3">Patrimoine informatique</h2>
 
@@ -97,26 +91,20 @@
       </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="text-center text-muted py-3 border-top">
-      <p>Mentions légales</p>
-      <p>© 2025 MediaStock inc.</p>
+    <!-- Footer  => basé sur la page d'acceuil, afin que ça soit pareil partout!-->
+    <footer class="py-4" style="background-color: #FF9994;">
+        <div class="container">
+            <div class="text-center">
+                <p class="mb-0 text-dark" style="font-weight: 400; opacity: 0.69;">Mentions légales</p>
+                <p class="mb-0 text-dark" style="font-weight: 400; opacity: 0.69;">© 2025 MediaStock inc</p>
+            </div>
+        </div>
     </footer>
 
     <!-- Offcanvas - Fiche produit -->
-    <div
-      class="offcanvas offcanvas-end offcanvas-fiche"
-      tabindex="-1"
-      id="ficheProduitOffcanvas"
-      aria-labelledby="ficheProduitLabel"
-    >
+    <div class="offcanvas offcanvas-end offcanvas-fiche" tabindex="-1" id="ficheProduitOffcanvas" aria-labelledby="ficheProduitLabel">
       <div class="offcanvas-header-custom">
-        <button
-          type="button"
-          class="btn-close-custom"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-        >
+        <button type="button" class="btn-close-custom" data-bs-dismiss="offcanvas" aria-label="Close">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -124,9 +112,7 @@
         <!-- En-tête avec icône et nom -->
         <div class="fiche-header">
           <div class="fiche-icon-wrapper">
-            <div id="ficheIcon" class="fiche-icon-circle">
-              <i class="fas fa-box fa-3x"></i>
-            </div>
+            <div id="ficheIcon" class="fiche-icon-circle"><i class="fas fa-box fa-3x"></i></div>
           </div>
           <h3 id="ficheNom" class="fiche-title">Nom du matériel</h3>
           <div id="ficheEtat" class="fiche-badges">
@@ -146,9 +132,7 @@
               <div id="ficheQRCode" class="qr-container">
                 <!-- QR code généré ici -->
               </div>
-              <p class="text-muted small mt-2 mb-0">
-                Scannez pour accéder aux détails
-              </p>
+              <p class="text-muted small mt-2 mb-0">Scannez pour accéder aux détails</p>
             </div>
           </div>
 
@@ -167,48 +151,28 @@
         </div>
       </div>
     </div>
-
+ 
     <!-- Delete confirmation modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-3">
           <div class="modal-body">
-            <p class="mb-2">
-              Etes vous bien sûr de vouloir supprimer cette élément ?
-            </p>
-            <div
-              id="deleteIcon"
+            <p class="mb-2">Etes vous bien sûr de vouloir supprimer cette élément ?</p>
+            <div id="deleteIcon" class="d-flex align-items-center justify-content-center"
               style="
                 width: 120px;
                 height: 120px;
                 margin: 0 auto;
                 border: 4px solid #ff9994;
-                display: flex;
-                align-items: center;
-                justify-content: center;
                 border-radius: 8px;
-              "
-            >
+              ">
               <!-- icon injected -->
             </div>
             <p id="deleteName" class="mt-3 fw-semibold">nom de l'élément</p>
           </div>
           <div class="modal-footer justify-content-center">
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              data-bs-dismiss="modal"
-            >
-              annuler
-            </button>
-            <button
-              id="confirmDeleteBtn"
-              type="button"
-              class="btn"
-              style="background: #ff9994; color: #fff"
-            >
-              validé
-            </button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">annuler</button>
+            <button id="confirmDeleteBtn" type="button" class="btn"style="background: #ff9994; color: #fff">validé</button>
           </div>
         </div>
       </div>

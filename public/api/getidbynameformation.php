@@ -16,26 +16,27 @@
         exit;
     }
 
+   
     $name = trim($_GET['nom']);
 
     try{
 
-        // instancier le model Categorie
-        $categorieModel = new Models\Categorie();
+        // instancier le model Formation
+        $formationModel = new Models\Formation();
 
         // obtenir les éléments d'une item
-        $Id = $categorieModel->getByName($name);
+        $formationId = $formationModel->getByName($name);
 
-        if($Id){
+        if($formationId !== false){
             $response = [
                 "success" => true,
-                "categorie_id" => $Id, 
-                "message" => "Catégorie trouvée avec succès"
+                "formation_id" => $formationId, 
+                "message" => "Formation trouvée avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucune catégorie trouvée avec le nom fourni."
+                "message" => "Aucune formation trouvée avec le nom fourni."
             ];
         }
 

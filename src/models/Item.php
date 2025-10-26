@@ -1,7 +1,7 @@
 <?php
 namespace Models;
 
-class Item extends BaseModel {
+class Item extends BaseModel { 
     protected $table = 'Item';
 
     /**

@@ -1,27 +1,4 @@
-// Gestion du formulaire de connexion
-document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('loginForm');
-    
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            //vérification si username et password existent
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (username && password) {
-                // Simulation de la connexion
-                alert(`Connexion réussie pour ${username}`);
-                
-                // Ici vous pourriez rediriger vers le tableau de bord administrateur!!!!!!!!!!
-                // window.location.href = 'dashboard.html';
-            } else {
-                alert('Veuillez remplir tous les champs');
-            }
-        });
-    }
-});
+// Ce js n'est pas utilisé!!
 
 // Animation des cartes d'équipement
 document.addEventListener('DOMContentLoaded', function() {
@@ -91,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // revient au noir après 1s
                 setTimeout(() => {
-                    quantity.style.color = '#000';
+                    quantity.style.color = '#000'; 
                 }, 1000);
             }
         });
@@ -101,49 +78,76 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateQuantities, 30000);
 });
 
-// Gestion des erreurs de connexion
-function handleLoginError(message) {
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        // Créer un message d'erreur
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'alert alert-danger mt-3';
-        errorDiv.textContent = message;
-        
-        // Ajouter le message d'erreur
-        loginForm.appendChild(errorDiv);
-        
-        // Supprimer le message après 5 secondes
-        setTimeout(() => {
-            if (errorDiv.parentNode) {
-                errorDiv.parentNode.removeChild(errorDiv);
-            }
-        }, 5000); // => 5 secondes
-    }
-}
 
-// Validation des champs de connexion
-document.addEventListener('DOMContentLoaded', function() {
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
+// Gestion du formulaire de connexion
+// document.addEventListener('DOMContentLoaded', function() {
+//     const loginForm = document.getElementById('loginForm');
     
-    if (usernameInput && passwordInput) {
-        // Validation en temps réel
-        usernameInput.addEventListener('input', function() {
-            if (this.value.length < 3) {
-                this.style.borderColor = '#dc3545';
-            } else {
-                this.style.borderColor = '#28a745';
-            }
-        });
+//     if (loginForm) {
+//         loginForm.addEventListener('submit', function(e) {
+//             e.preventDefault();
+            
+//             //vérification si username et password existent
+//             const username = document.getElementById('username').value;
+//             const password = document.getElementById('password').value;
+            
+//             if (username && password) {
+//                 // Simulation de la connexion
+//                 alert(`Connexion réussie pour ${username}`);
+                
+//                 // Ici vous pourriez rediriger vers le tableau de bord administrateur!!!!!!!!!!
+//                 // window.location.href = 'dashboard.html';
+//             } else {
+//                 alert('Veuillez remplir tous les champs');
+//             }
+//         });
+//     }
+// });
+
+
+// // Gestion des erreurs de connexion
+// function handleLoginError(message) {
+//     const loginForm = document.getElementById('loginForm');
+//     if (loginForm) {
+//         // Créer un message d'erreur
+//         const errorDiv = document.createElement('div');
+//         errorDiv.className = 'alert alert-danger mt-3';
+//         errorDiv.textContent = message;
         
-        // => il faudrait pas augmenter???????????? ce n'est pas un mdp fort!!!!!!!!!!!!!!
-        passwordInput.addEventListener('input', function() {
-            if (this.value.length < 6) {
-                this.style.borderColor = '#dc3545';
-            } else {
-                this.style.borderColor = '#28a745';
-            }
-        });
-    }
-});
+//         // Ajouter le message d'erreur
+//         loginForm.appendChild(errorDiv);
+        
+//         // Supprimer le message après 5 secondes
+//         setTimeout(() => {
+//             if (errorDiv.parentNode) {
+//                 errorDiv.parentNode.removeChild(errorDiv);
+//             }
+//         }, 5000); // => 5 secondes
+//     }
+// }
+
+// // Validation des champs de connexion
+// document.addEventListener('DOMContentLoaded', function() {
+//     const usernameInput = document.getElementById('username');
+//     const passwordInput = document.getElementById('password');
+    
+//     if (usernameInput && passwordInput) {
+//         // Validation en temps réel
+//         usernameInput.addEventListener('input', function() {
+//             if (this.value.length < 3) {
+//                 this.style.borderColor = '#dc3545';
+//             } else {
+//                 this.style.borderColor = '#28a745';
+//             }
+//         });
+        
+//         // => il faudrait pas augmenter???????????? ce n'est pas un mdp fort!!!!!!!!!!!!!!
+//         passwordInput.addEventListener('input', function() {
+//             if (this.value.length < 6) {
+//                 this.style.borderColor = '#dc3545';
+//             } else {
+//                 this.style.borderColor = '#28a745';
+//             }
+//         });
+//     }
+// });

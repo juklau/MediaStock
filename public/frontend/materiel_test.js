@@ -139,9 +139,22 @@ function afficherMessageSucces(materielId) {
 /**
  * Affiche les boutons d'actions (télécharger, partager, imprimer)
  */
+// function afficherActions() {
+//   const actionsDiv = document.getElementById('qrcodeActions');
+//   actionsDiv.style.display = 'flex';
+// }
+
+/**
+ * Affiche les boutons d'actions (télécharger, imprimer)
+ */
 function afficherActions() {
-  const actionsDiv = document.getElementById('qrcodeActions');
-  actionsDiv.style.display = 'flex';
+  const actions = document.getElementById('qrcodeActions');
+  if (!actions) return;                 // sécurité
+
+  actions.classList.remove('d-none');   // enlève display:none
+  if (!actions.classList.contains('d-flex')) {
+    actions.style.display = 'flex';    // assure l'affichage en flex
+  }
 }
 
 
