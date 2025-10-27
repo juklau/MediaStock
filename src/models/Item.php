@@ -249,12 +249,12 @@ class Item extends BaseModel {
      */
 
     public function getItemByID(int $id): array|false{
-        $sql = "SELECT * 
+        $sql = "SELECT *  
                 FROM {$this->table} 
                 WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ":id" => $id
+            ":id" => $id 
         ]);
 
         return $stmt->fetch();

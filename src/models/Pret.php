@@ -52,7 +52,7 @@ class Pret extends BaseModel {
     /**
      * Obtenir la liste des prêts actifs (pas encore retourné)
      * 
-     * @return array
+     * @return array //peut être il faut  "|false" ???
      */
     public function getActiveLoans():array { // => du prof
         $query = "SELECT p.*, 
@@ -241,7 +241,7 @@ class Pret extends BaseModel {
             'note_fin' => '' // Empty initially
         ];
 
-        return $this->create($data);
+        return $this->create($data); 
     }
 
     //ou 
@@ -334,14 +334,24 @@ class Pret extends BaseModel {
         return $stmt->fetch(); // Renvoie une seule ligne (ou false si aucune n'existe)
     }
 
+    /**
+     * Obtenir des éléments d'un prêt en cherhant selon son item_id
+     * 
+     * @param int $itemId
+     * @return array|false Renvoie les données de prêt si un prêt actif existe, sinon false
+     */
     public function getLoanByItemId(int $id):array|false {
-        $sql = "SELECT p.item_id,
-                        e.emprunteur_nom, e.emprunteur_prenom,
+        $sql = "SELECT p.item_id, p.date_retour_prevue, p.note_debut,
+                        i.etat, i.image_url, i.nom,
+                        f.formation,
+                        e.emprunteur_nom, e.emprunteur_prenom,e.formation_id,
                         a.login as preteur_login
                  FROM {$this->table} p
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Item i ON p.item_id = i.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
+                 LEFT JOIN Formation f ON e.formation_id = f.id
                  JOIN Administrateur a ON p.preteur_id = a.id
-                 WHERE p.id = :id";
+                 WHERE p.item_id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();
@@ -386,7 +396,7 @@ class Pret extends BaseModel {
 
         $stmt->execute();
 
-        return $stmt->rowCount() > 0; // ✅ renvoie true si au moins une ligne modifiée
+        return $stmt->rowCount() > 0; // renvoie true si au moins une ligne modifiée
     }
 
 
