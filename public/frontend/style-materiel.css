@@ -23,7 +23,8 @@ header {
     max-width:360px;
 }
 
-#materielNom{
+#materielNom,
+#modeleNom{
     max-width:420px;
 }
 

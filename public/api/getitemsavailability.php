@@ -9,7 +9,7 @@
 
         // instancier le model Item, le model Pret
         $itemModel = new Models\Item();
-        $pretModel = new Models\Pret();
+        $pretModel = new Models\Pret(); 
 
        $disponibles = $itemModel->getAvailableItemNames();
        $indisponibles = $itemModel->afficheItemIndisponible();
@@ -26,7 +26,8 @@
                 "id" => $item['id'],
                 "nom" => $item['nom'],
                 "model" => $item['model'],
-                "statut" => "disponible"
+                "statut" => "disponible",
+                "categorie" => $item['categorie']
             ];
         }
 
@@ -42,7 +43,8 @@
                     "nom" => $item['nom'],
                     "model" => $item['model'],
                     "statut" => "indisponible",
-                    "date_retour_prévu" => $item['date_retour_prevue']
+                    "date_retour_prévu" => $item['date_retour_prevue'],
+                    "categorie" => $item['categorie']
                 ];
             }
         }
@@ -57,7 +59,8 @@
                 "nom" => $pret['item_nom'],
                 "model" => $pret['item_model'],
                 "statut" => "en retard",
-                "date_retour_prévu" => $pret['date_retour_prevue']
+                "date_retour_prévu" => $pret['date_retour_prevue'],
+                "categorie" => $pret['categorie']
             ];
         }
 

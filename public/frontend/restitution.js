@@ -1,5 +1,9 @@
 
-// récupération des éléments d'un prêt afin de remplir les champs sur restitution.html
+// ============================================================================================
+// == récupération des éléments d'un prêt afin de remplir les champs sur restitution.html =====
+// ============================================================================================
+
+// 
 document.addEventListener("DOMContentLoaded", async () => {
     // Récupérer le code QR depuis l'URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -127,8 +131,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Une erreur est survenue lors du chargement du prêt.");
     }
 
-
-    // clôturer un prêt actif
+    // =================================================================
+    // ========== clôturer un prêt actif ===== =========================
+    // =================================================================
+    
+    // 
     const formReturn = document.getElementById("returnForm");
     if (formReturn) {
       formReturn.addEventListener("submit", async function (e) {
@@ -184,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           // Mettre à jour l'état de l'item =>POST
           const updateEtatPayload = {
             id: itemId,
-            etat: etatFin
+            etat: etatFin 
           };
 
           const resUpdate = await fetch("/api/updateitem.php", {

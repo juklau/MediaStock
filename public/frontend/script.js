@@ -1,4 +1,9 @@
-// ********************************************************** js page principale **********************************************************************
+// ********************************************************** js pour la **********************************************************************
+
+//.............pour index.html.............//
+
+
+
 // Variable globale pour stocker les matériels chargés depuis l'API
 let items = [];
 
@@ -41,7 +46,7 @@ function renderItems() {
 
   // Créer le tableau filtré pour correspondre à l'ordre d'affichage
   const filteredItems = items.filter(item => {
-    const matchCategorie= !categoryFilter || item.categorie === categoryFilter;
+    const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
     return matchCategorie && matchStatut;
   });
@@ -72,6 +77,34 @@ function renderItems() {
 
   // Attacher les gestionnaires de clic après le rendu
   attachClickHandlers(filteredItems);
+
+  console.log("Catégories disponibles :", items.map(i => i.categorie));
+}
+
+
+//attacher les gestionnaires de clic sur les items
+function attachClickHandlers(filteredItems) {
+  const listItems = document.querySelectorAll('#inventoryList .list-group-item');
+  
+  listItems.forEach((listItem, index) => {
+    listItem.style.cursor = 'pointer';
+    
+    listItem.addEventListener('click', function(e) {
+
+      // Ne pas ouvrir si on clique sur le bouton de suppression
+      if (e.target.closest('.trash-btn')) {
+        return;
+      }
+      
+      // Trouver l'item correspondant dans le tableau
+      if (filteredItems[index]) {
+        const itemIndex = items.indexOf(filteredItems[index]);
+        ouvrirFicheProduit(filteredItems[index], itemIndex);
+      }
+    });
+  });
+
+
 }
 
 
@@ -104,6 +137,11 @@ function attachClickHandlers(filteredItems) {
     });
   });
 }
+
+
+
+
+
 
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
@@ -271,194 +309,6 @@ async function getHistoriquePrets(materielId) {
 //     throw error;
 //   }
 // }
-
-/**
- * =====================================
- * GESTION DYNAMIQUE DE L'OFFCANVAS 
- * =====================================
- * Ouvrir l'offcanvas avec la fiche produit - VERSION DYNAMIQUE
- * Récupère les données depuis la base de données via les APIs
- */
-async function ouvrirFicheProduit(item, itemIndex) {
-  try {
-    // ========== ÉTAPE 1: Récupération des données détaillées de l'item ==========
-    console.log('Chargement des détails pour l\'item ID:', item.id);
-    
-    // Affichage d'un loader pendant le chargement
-    afficherLoaderOffcanvas();
-    
-    // Récupérer les détails complets de l'item depuis l'API
-    const itemDetails = await recupererDetailsItem(item.id);
-    
-    if (!itemDetails) {
-      console.error('Impossible de récupérer les détails de l\'item');
-      afficherErreurOffcanvas('Impossible de charger les détails du matériel');
-      return;
-    }
-
-    // ========== ÉTAPE 2: Remplissage des informations de base ==========
-    remplirInformationsBase(itemDetails);
-
-    // ========== ÉTAPE 3: Génération du QR Code ==========
-    await genererQRCodeDynamique(itemDetails.id);
-
-    // ========== ÉTAPE 4: Chargement de l'historique des prêts ==========
-    await chargerHistoriquePrets(itemDetails.id);
-
-    // ========== ÉTAPE 5: Ouverture de l'offcanvas ==========
-    const offcanvas = new bootstrap.Offcanvas(document.getElementById('ficheProduitOffcanvas'));
-    offcanvas.show();
-    
-    console.log('Offcanvas ouvert avec succès pour:', itemDetails.nom);
-
-  } catch (error) {
-    console.error('Erreur lors de l\'ouverture de l\'offcanvas:', error);
-    afficherErreurOffcanvas('Une erreur est survenue lors du chargement');
-  }
-}
-
-/**
- * =====================================
- * FONCTIONS D'AFFICHAGE ET D'ÉTAT
- * =====================================
- */
-
-/**
- * Afficher un loader dans l'offcanvas pendant le chargement
- */
-function afficherLoaderOffcanvas() {
-  // Loader pour le nom
-  document.getElementById('ficheNom').innerHTML = `
-    <div class="placeholder-glow">
-      <span class="placeholder col-8"></span>
-    </div>
-  `;
-  
-  // Loader pour les badges
-  document.getElementById('ficheEtat').innerHTML = `
-    <div class="placeholder-glow">
-      <span class="placeholder col-4 me-2"></span>
-      <span class="placeholder col-3"></span>
-    </div>
-  `;
-  
-  // Loader pour le QR code
-  document.getElementById('ficheQRCode').innerHTML = `
-    <div class="text-center p-4">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Chargement...</span>
-      </div>
-    </div>
-  `;
-  
-  // Loader pour l'historique
-  document.getElementById('ficheHistorique').innerHTML = `
-    <div class="text-center p-3">
-      <div class="spinner-border spinner-border-sm text-primary" role="status">
-        <span class="visually-hidden">Chargement...</span>
-      </div>
-    </div>
-  `;
-}
-
-/**
- * Afficher une erreur dans l'offcanvas
- */
-function afficherErreurOffcanvas(message) {
-  document.getElementById('ficheNom').textContent = 'Erreur de chargement';
-  document.getElementById('ficheEtat').innerHTML = 
-    '<span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Erreur</span>';
-  document.getElementById('ficheQRCode').innerHTML = `
-    <div class="alert alert-danger small text-center" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>${message}
-    </div>
-  `;
-  document.getElementById('ficheHistorique').innerHTML = `
-    <div class="alert alert-danger small" role="alert">
-      <i class="fas fa-exclamation-triangle me-2"></i>Impossible de charger les données
-    </div>
-  `;
-}
-
-/**
- * =====================================
- * RÉCUPÉRATION DES DONNÉES API
- * =====================================
- */
-
-/**
- * Récupérer les détails complets d'un item - VERSION HYBRIDE
- * Disponibilité depuis getitemsavailability.php + États depuis getoneitem.php
- */
-async function recupererDetailsItem(itemId) {
-  try {
-    console.log('🔍 Récupération hybride pour item ID:', itemId);
-    
-    // ========== ÉTAPE 1: Récupérer la disponibilité depuis getitemsavailability.php ==========
-    let itemAvailability = null;
-    try {
-      const responseList = await fetch('../api/getitemsavailability.php');
-      if (responseList.ok) {
-        const resultList = await responseList.json();
-        const items = resultList.data || resultList;
-        itemAvailability = items.find(item => item.id == itemId);
-        
-        if (itemAvailability) {
-          console.log('✅ Disponibilité récupérée depuis getitemsavailability.php:', {
-            id: itemAvailability.id,
-            nom: itemAvailability.nom,
-            is_available: itemAvailability.is_available,
-            statut: itemAvailability.statut
-          });
-        }
-      }
-    } catch (error) {
-      console.warn('⚠️ Erreur getitemsavailability.php:', error);
-    }
-    
-    // ========== ÉTAPE 2: Récupérer les détails complets depuis getoneitem.php ==========
-    let itemDetails = null;
-    try {
-      const responseDetails = await fetch(`../api/getoneitem.php?id=${itemId}`);
-      if (responseDetails.ok) {
-        const resultDetails = await responseDetails.json();
-        if (resultDetails.success && resultDetails.data) {
-          itemDetails = resultDetails.data;
-          console.log('✅ Détails récupérés depuis getoneitem.php:', {
-            id: itemDetails.id,
-            nom: itemDetails.nom,
-            etat: itemDetails.etat
-          });
-        }
-      }
-    } catch (error) {
-      console.warn('⚠️ Erreur getoneitem.php:', error);
-    }
-    
-    // ========== ÉTAPE 3: Fusionner les données ==========
-    if (itemAvailability || itemDetails) {
-      // Prendre les détails de getoneitem.php comme base
-      const finalItem = itemDetails || itemAvailability;
-      
-      // Remplacer la disponibilité par celle de getitemsavailability.php si disponible
-      if (itemAvailability && finalItem) {
-        finalItem.is_available = itemAvailability.is_available;
-        finalItem.statut = itemAvailability.statut;
-        console.log('🔗 Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
-      }
-      
-      console.log('✅ RÉSULTAT FINAL:', finalItem);
-      return finalItem;
-    } else {
-      console.error('❌ Aucune donnée récupérée des deux APIs');
-      return null;
-    }
-    
-  } catch (error) {
-    console.error('💥 ERREUR GÉNÉRALE recupererDetailsItem:', error);
-    return null;
-  }
-}
 
 /**
  * Récupérer l'historique des prêts depuis l'API getitemprethistory.php

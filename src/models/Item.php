@@ -195,7 +195,7 @@ class Item extends BaseModel {
             ":categorie_id" => $idCategorie
         ]);
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
+    } 
 
     
     /**
@@ -204,8 +204,9 @@ class Item extends BaseModel {
      * @return array|false
      */
     public function getAvailableItemNames(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, c.categorie AS categorie
                 FROM {$this->table} i
+                INNER JOIN Categorie c ON i.categorie_id = c.id
                 -- si la sous-requête ne trouve aucune ligne correspondante.
                 -- il faut que item ne soit pas dans ce liste
                 WHERE NOT EXISTS (
@@ -229,9 +230,12 @@ class Item extends BaseModel {
      * @return array|false
      */
     public function afficheItemIndisponible(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, p.date_retour_prevue
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, 
+                    p.date_retour_prevue,
+                    c.categorie AS categorie
                 FROM {$this->table} i
                 JOIN Pret p ON i.id = p.item_id
+                JOIN Categorie c ON i.categorie_id = c.id
                 WHERE p.date_retour_effective IS NULL
                 ORDER BY i.nom ASC";
 
