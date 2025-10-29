@@ -70,6 +70,21 @@ header {
   margin-right: 6px;
 }
 
+/* ____________________________________________
+ je ne trouve null part cette partie dans aucun fichier!!!!!!!*/
+.status-disponible {
+  background-color: var(--success);
+}
+
+.status-indisponible {
+  background-color: var(--danger);
+}
+
+.status-retard {
+  background-color: #dc3545;
+}
+/* ____________________________________________ */
+
 /* ____________________________________________ */
 /* dans script.js */
 /* List items */
