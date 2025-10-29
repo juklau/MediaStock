@@ -9,7 +9,8 @@ CREATE TABLE `Item`(
     `qr_code` VARCHAR(255) NOT NULL,
     `image_url` VARCHAR(255) NOT NULL,
     `etat` ENUM('bon', 'moyen', 'mauvais') NOT NULL,
-    `categorie_id` BIGINT UNSIGNED NOT NULL
+    `categorie_id` BIGINT UNSIGNED NOT NULL,
+    `archived` BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 ALTER TABLE
@@ -49,7 +50,8 @@ CREATE TABLE `Emprunteur`(
     `emprunteur_prenom` VARCHAR(50) NOT NULL,
     `role` ENUM('etudiant(e)', 'intervenant') NOT NULL,
     -- peut être à modifier NOT NULL sur NULL!!!!
-    `formation_id` BIGINT UNSIGNED NULL
+    `formation_id` BIGINT UNSIGNED NULL,
+    `archived` BOOLEAN NOT NULL DEFAULT FALSE
 );
 ALTER TABLE
     `Emprunteur` ADD INDEX `emprunteur_formation_id_index`(`formation_id`);
@@ -74,7 +76,8 @@ ALTER TABLE
 ALTER TABLE
     `Emprunteur` ADD CONSTRAINT `emprunteur_formation_id_foreign` FOREIGN KEY(`formation_id`) REFERENCES `Formation`(`id`);
 -- pour éviter la suppression l'emprunteur qui cause problème
-ALTER TABLE `Emprunteur` ADD COLUMN `archived` TINYINT(1) DEFAULT 0;
+-- ALTER TABLE `Emprunteur` ADD COLUMN `archived` TINYINT(1) DEFAULT 0;
+-- ALTER TABLE `Item` ADD COLUMN `archived` TINYINT(1) DEFAULT 0;
 ALTER TABLE
     `Item` ADD CONSTRAINT `item_categorie_id_foreign` FOREIGN KEY(`categorie_id`) REFERENCES `Categorie`(`id`);
 ALTER TABLE

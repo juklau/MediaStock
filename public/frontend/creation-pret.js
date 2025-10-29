@@ -1,4 +1,7 @@
 
+// ===============================================================
+// == récupération des éléments d'un item (QRCode, nom, icon) ====
+// ===============================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
     // Récupérer le code QR depuis l'URL
@@ -45,7 +48,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-
+// =====================================================
+// ==========   création d'un prêt   ===================
+// =====================================================
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loanForm");
     const datePicker = document.getElementById("datePicker");
@@ -125,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const nom = document.getElementById("emprunteurNom").value.trim();
         const prenom = document.getElementById("emprunteurPrenom").value.trim();
         const classe = document.getElementById("classe").value;
-        const etat = document.querySelector("input[name='etat']:checked").value;
+        const etat = document.querySelector("input[name='etat']:checked").value; 
         const note = notes.value.trim();
         // const periode = datePicker.value.split(" à ");
         const dateValue = datePicker.value;
@@ -252,6 +257,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
+            // Mettre à jour l'état de l'item =>POST
+            const updateEtatPayload = {
+                id: itemId,
+                etat: etat 
+            };
+
+            const resUpdate = await fetch("/api/updateitem.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updateEtatPayload)
+            });
+
+            const rawUpdate = await resUpdate.text();
+            console.log("Réponse brute de updateitem.php :", rawUpdate);
+
+            const resultUpdate = JSON.parse(rawUpdate);
+
+            if (!resultUpdate.success) {
+                alert("Erreur lors de la mise à jour de l'état de l'item : " + resultUpdate.message);
+                return;
+            }
+
+            
             if (resultPret.success) {
                 // Afficher le modal de succès
                 const modal = new bootstrap.Modal(document.getElementById("successModal"));

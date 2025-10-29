@@ -9,7 +9,7 @@ const API = {
   
   /**
    * Récupérer tous les matériels
-   */
+   */ 
   async getMateriels() {
     try {
       const response = await fetch(`${this.BASE_URL}/materiels.json`);
