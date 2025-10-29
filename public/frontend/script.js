@@ -99,7 +99,7 @@ function attachClickHandlers(filteredItems) {
 }
 
 // Après rendu, attache les gestionnaires de suppression
-function attachDeleteHandlers(){
+async function attachDeleteHandlers(){
   const deleteBtns = document.querySelectorAll('.trash-btn');
   const deleteModalEl = document.getElementById('deleteModal');
   if(!deleteModalEl) return;
@@ -109,7 +109,12 @@ function attachDeleteHandlers(){
   const confirmBtn = document.getElementById('confirmDeleteBtn');
   let currentItemId = null;
 
-  deleteBtns.forEach((btn) => {
+  // Gestionnaires de clic sur les boutons de suppression
+  try {
+    const response = await fetch('../api/deleteitembyid.php');
+    const data = await response.json();
+    items = data.data || [];
+    deleteBtns.forEach((btn) => {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation(); // Empêcher l'ouverture de l'offcanvas
       const itemId = parseInt(btn.dataset.id);
@@ -123,7 +128,12 @@ function attachDeleteHandlers(){
         bsModal.show();
       }
     });
-  });
+    });
+  } catch (error) {
+    console.error('Erreur lors du chargement des matériels:', error);
+  }
+
+
   
   // Gestionnaire de confirmation
   if (confirmBtn) {
@@ -134,7 +144,9 @@ function attachDeleteHandlers(){
     newConfirmBtn.addEventListener('click', async () => {
       if (currentItemId !== null) {
         try {
-          await API.deleteMateriel(currentItemId);
+          const response = await fetch('../api/getitemsavailability.php');
+          const data = await response.json();
+          items = data.data || [];
           bsModal.hide();
           await chargerMateriels(); // Recharger les données
         } catch (error) {
@@ -218,7 +230,9 @@ document.getElementById("scanRestitutionBtn").addEventListener("click", () => st
  */
 async function getHistoriquePrets(materielId) {
   try {
-    return await API.getPretsByMaterielId(materielId);
+    const response = await fetch(`../api/getloanhistorypeuple.php?materielId=${materielId}`);
+    const data = await response.json();
+    return data.data || [];
   } catch (error) {
     console.error('Erreur lors du chargement de l\'historique:', error);
     return [];
