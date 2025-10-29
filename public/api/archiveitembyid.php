@@ -5,22 +5,22 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-     // Vérifier si le nom de admin est fourni
+    // Vérifier si l'id de l'item est fourni
     if (!isset($_GET['id'])) {
         $response = [
             "success" => false,
-            "message" => "Paramètre id de l'emprunteur manquant"
+            "message" => "Paramètre id de l'item manquant"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $emprunteurId = (int)$_GET['id'];
+    $itemId = (int)$_GET['id'];
 
     try{
 
         // instancier le model Item
-        $emprunteurModel = new Models\Item();
+        $itemModel = new Models\Item();
 
         $item = $itemModel->getById($itemId);
 
@@ -33,17 +33,6 @@
             exit;
         }
 
-        $activePrets = $itemModel->getActiveLoans($itemId);
-
-        // Vérifier si l'item n'a pas un prêt en cours
-        if (!empty($activePrets)) {
-            $response = [
-                "success" => false,
-                "message" => "L'item ne peut pas être archivé car il est en cours de prêt."
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            exit;
-        }
 
         // archiver l'item
         $archived = $itemModel->archiveItem($itemId);
