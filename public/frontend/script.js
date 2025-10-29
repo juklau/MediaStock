@@ -12,7 +12,7 @@ let items = [];
  */
 async function chargerMateriels() {
   try {
-    const response = await fetch('/../api/getitemsavailability.php');
+    const response = await fetch('../api/getitemsavailability.php');
     const data = await response.json();
     items = data.data || [];
 
@@ -45,7 +45,7 @@ function renderItems() {
   container.innerHTML = "";
 
   // Créer le tableau filtré pour correspondre à l'ordre d'affichage
-  const filteredItems = items.filter(item => {
+    const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
     return matchCategorie && matchStatut;
