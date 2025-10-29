@@ -29,12 +29,12 @@
             $response = [
                 "success" => true,
                 "data" => $emprunteurs, 
-                "message" => "Connexion réussi"
+                "message" => "Emprunteur trouvé avec le terme cherché avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec le terme cherché."
+                "message" => "Aucun emprunteur trouvé avec le terme cherché."
             ];
         }
 

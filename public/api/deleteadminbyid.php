@@ -45,7 +45,7 @@
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucune donnée trouvée avec l'ID fourni."
+                "message" => "La suppression a échoué : l'administrateur n'existe plus ou une erreur est survenue."
             ];
         }
 

@@ -34,10 +34,19 @@
             exit;
         }
 
-        // Supprimer une formation
-        $delete = $formationModel->deleteFormation(int $formationId);
-    
+        // Vérifier s'il y a des emprunteurs liés à cette formation
+        if ($formationModel->hasEmprunteurs($formationId)) {
+            $response = [
+                "success" => false,
+                "message" => "Impossible de supprimer la formation : des emprunteurs y sont encore liés."
+            ];
+            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
+        }
 
+        // Supprimer une formation
+        $delete = $formationModel->deleteFormation($formationId);
+    
         if($delete){
             $response = [
                 "success" => true,
@@ -47,7 +56,7 @@
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucune donnée trouvée avec l'ID fourni."
+                "message" => "La suppression a échoué : la formation n'existe plus ou une erreur est survenue."
             ];
         }
 

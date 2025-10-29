@@ -1,0 +1,156 @@
+
+/* style de creation-pret.html*/
+
+:root {
+  --coral: #ff9994;
+  --success: #28a745;
+  --warning: #fd7e14;
+  --danger: #ff7f50;
+  --black: #000;
+  --white: white;
+}
+
+header {
+	background: var(--coral);
+	height: 60px;
+}
+
+.logo-app {
+	z-index: 2;
+}
+
+#productIcon{
+    color: #333;
+}
+
+/* Modal de succès */
+.success-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon i {
+  font-size: 40px;
+  color: var(--white);
+}
+
+/* Menu déroulant avec scroll limité à 4 options visibles */
+select#classe {
+  /* Limite la hauteur pour afficher environ 4 options lors de l'ouverture */
+  max-height: 200px;
+}
+
+/* Style pour les options du menu */
+select#classe option {
+  padding: 10px 12px;
+  min-height: 40px;
+}
+
+/* _________________________________________ */
+/* Calendrier styles => je ne sais pas s'il faut cette partie??????*/
+/*  je ne trouve null part cette partie dans aucun fichier!!!!!!! ".flatpickr-calendar"*/
+.calendar-container .flatpickr-calendar {
+  width: 100%;
+  max-width: 100%;
+  box-shadow: none;
+  margin-top: 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+}
+
+.calendar-container .flatpickr-calendar.open {
+  display: inline-block !important;
+}
+
+.calendar-container .flatpickr-day.selected {
+  background: var(--coral);
+  border-color: var(--coral);
+}
+
+.calendar-container .flatpickr-day.inRange {
+  background: #ffe5e3;
+  border-color: #ffe5e3;
+}
+
+.calendar-container .flatpickr-day:hover {
+  background: #fff0ef;
+}
+/* _________________________________________ */
+
+/* wrapper to show the calendar above the input while keeping input in DOM */
+.calendar-visual-wrap {
+  display: flex;
+  flex-direction: column; /* calendar DOM first, input DOM second -> calendar shown above input */
+  gap: 0.5rem;
+}
+
+.calendar-visual-wrap .calendar-container {
+  width: 100%;
+}
+
+.date-input-below {
+  order: 2;
+}
+
+/* Style du bouton Ajouter je ne sais pas s'il faut => ici c'est "validé"*/
+.btn-primary,
+.btn-primary:active,
+.btn-primary:focus {
+  background-color: #ff9994 !important;
+  border-color: #ff9994 !important;
+  box-shadow: none !important;
+}
+
+.page-body {
+  max-width: 420px;
+  margin: 18px auto 48px;
+}
+
+.state-btn {
+  min-width: 90px;
+}
+
+.validate-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 10px;
+}
+
+.notes-box {
+  min-height: 120px;
+}
+
+/* _________________________________________ */
+/* je ne les trouve pas => dans style.css c'était marqué pour la page de création de prêt????????? */
+.product-image {
+  display: block;
+  margin: 12px auto;
+  width: 220px;
+  height: 150px;
+  object-fit: contain;
+}
+.logo-small {
+  height: 36px;
+}
+/* _________________________________________ */
+
+
+footer {
+  background: var(--coral);
+  /* background-color: var(--coral);???????????????? */
+  padding: 14px 0;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 400; 
+  opacity: 0.69;
+}

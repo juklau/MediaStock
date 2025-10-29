@@ -25,8 +25,8 @@ class Categorie extends BaseModel {
 
     public function getAllWithSubcategories2():array {
         $sql = "SELECT c.id AS cat_id, c.categorie , sc.id AS sous_cat_id, sc.sous_categorie
-                FROM categorie c 
-                JOIN sous_categorie sc ON c.id = sc.categorie_id 
+                FROM Categorie c 
+                JOIN Sous_categorie sc ON c.id = sc.categorie_id 
                 ORDER BY c.id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -91,8 +91,7 @@ class Categorie extends BaseModel {
                  UNION
                  SELECT i.* 
                  FROM Item i
-                 JOIN sous_categorie sc ON i.categorie_id = sc.id
-                 
+                 JOIN Sous_categorie sc ON i.categorie_id = sc.id
                  WHERE sc.categorie_id = :category_id"
                  ;
                  
@@ -148,7 +147,7 @@ class Categorie extends BaseModel {
 
         try {
             // Insérer la catégorie
-            $sqlCategory = "INSERT INTO categorie (categorie) VALUES (:categorie)";
+            $sqlCategory = "INSERT INTO Categorie (categorie) VALUES (:categorie)";
             $stmtCategory = $this->db->prepare($sqlCategory);
             $stmtCategory->execute([
                 ":categorie" => $categoryName
@@ -158,7 +157,7 @@ class Categorie extends BaseModel {
 
             // Insérer les sous-catégories si présentes
             if (!empty($subcategories)) {
-                $sqlSubCat = "INSERT INTO sous_categorie (sous_categorie, categorie_id)
+                $sqlSubCat = "INSERT INTO Sous_categorie (sous_categorie, categorie_id)
                             VALUES (:sous_categorie, :categorie_id)";
                 $stmtSub = $this->db->prepare($sqlSubCat);
 
@@ -194,13 +193,15 @@ class Categorie extends BaseModel {
         try {
             // Supprimer les sous-catégories
             $sousCategorie = new SousCategorie();
-            $sqlSub = "DELETE FROM {$sousCategorie->getTable()} WHERE categorie_id = :id";
+            $sqlSub = "DELETE FROM {$sousCategorie->getTable()} 
+                        WHERE categorie_id = :id";
             $stmtSub = $this->db->prepare($sqlSub);
             $stmtSub->bindParam(':id', $id, \PDO::PARAM_INT);
             $stmtSub->execute();
 
             // Supprimer la catégorie
-            $sqlCat = "DELETE FROM categorie WHERE id = :id";
+            $sqlCat = "DELETE FROM Categorie 
+                        WHERE id = :id";
             $stmtCat = $this->db->prepare($sqlCat);
             $stmtCat->bindParam(':id', $id, \PDO::PARAM_INT);
             $stmtCat->execute();

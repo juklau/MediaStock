@@ -1,7 +1,7 @@
 <?php
 namespace Models;
 
-class Item extends BaseModel {
+class Item extends BaseModel { 
     protected $table = 'Item';
 
     /**
@@ -12,7 +12,7 @@ class Item extends BaseModel {
     public function getAllWithCategory():array {
         $sql = "SELECT i.*, c.categorie 
                  FROM {$this->table} i
-                 JOIN categorie c ON i.categorie_id = c.id
+                 JOIN Categorie c ON i.categorie_id = c.id
                  ORDER BY c.categorie, i.nom";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -43,7 +43,7 @@ class Item extends BaseModel {
     public function getWithCategory(int $id):array|false {
         $sql = "SELECT i.*, c.categorie 
                  FROM {$this->table} i
-                 JOIN categorie c ON i.categorie_id = c.id
+                 JOIN Categorie c ON i.categorie_id = c.id
                  WHERE i.id = :id";
                 //  WHERE i.{$this->primaryKey} = :id";
         $stmt = $this->db->prepare($sql);
@@ -165,7 +165,7 @@ class Item extends BaseModel {
         $sql = "SELECT i.categorie_id, c.categorie, COUNT(*) AS disponible_count
                 FROM {$this->table} i
                 LEFT JOIN Pret p ON i.id = p.item_id AND p.date_retour_effective IS NULL
-                JOIN categorie c ON i.categorie_id = c.id
+                JOIN Categorie c ON i.categorie_id = c.id
                 WHERE p.id IS NULL
                 GROUP BY i.categorie_id
                 ORDER BY i.categorie_id";
@@ -175,17 +175,38 @@ class Item extends BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+
+    /**
+     * Récupérer les items disponibles par catégorie
+     * 
+     * @param int $idCategorie
+     * @return array Tableau associatif avec nom d'item disponible, model, image_url
+     */
+    public function getAvailableItemsByCategory(int $idCategorie): array {
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url
+                FROM {$this->table} i
+                LEFT JOIN Pret p ON i.id = p.item_id AND p.date_retour_effective IS NULL
+                WHERE p.id IS NULL
+                AND i.categorie_id = :categorie_id
+                ORDER BY i.nom";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ":categorie_id" => $idCategorie
+        ]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    } 
+
     
-
-
     /**
      * Afficher les noms et modèles des items disponibles (non prêtés actuellement)
      * 
      * @return array|false
      */
     public function getAvailableItemNames(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url,
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, c.categorie AS categorie
                 FROM {$this->table} i
+                INNER JOIN Categorie c ON i.categorie_id = c.id
                 -- si la sous-requête ne trouve aucune ligne correspondante.
                 -- il faut que item ne soit pas dans ce liste
                 WHERE NOT EXISTS (
@@ -209,9 +230,12 @@ class Item extends BaseModel {
      * @return array|false
      */
     public function afficheItemIndisponible(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, p.date_retour_prevue
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, 
+                    p.date_retour_prevue,
+                    c.categorie AS categorie
                 FROM {$this->table} i
                 JOIN Pret p ON i.id = p.item_id
+                JOIN Categorie c ON i.categorie_id = c.id
                 WHERE p.date_retour_effective IS NULL
                 ORDER BY i.nom ASC";
 
@@ -227,17 +251,19 @@ class Item extends BaseModel {
      * @param int $id
      * @return array|false
      */
+
     public function getItemByID(int $id): array|false{
-        $sql = "SELECT * 
+        $sql = "SELECT *  
                 FROM {$this->table} 
                 WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ":id" => $id
+            ":id" => $id 
         ]);
+
         return $stmt->fetch();
     }
-    
+
 
     /**
      * Vérifiez si un article est disponible pour le prêt
@@ -272,13 +298,13 @@ class Item extends BaseModel {
      * @param string $image_url
      * @param string $etat
      * @param int $categorie_id
-     * @return bool Renvoie vrai si l'élément est ajouté
+     * @return int|false Renvoie l'ID inséré ou false en cas d'échec 
      */
-    public function addItem(string $nom, ?string $model, string $qr_code, string $image_url, string $etat, int $categorie_id): bool{
+    public function addItem(string $nom, ?string $model, string $qr_code, string $image_url, string $etat, int $categorie_id): int|false{
         $sql = "INSERT INTO {$this->table} (nom, model, qr_code, image_url, etat, categorie_id)
                 VALUES (:nom, :model, :qr_code, :image_url, :etat, :categorie_id)";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
+        $success = $stmt->execute([
             ":nom" => $nom,
             ":model" => $model,
             ":qr_code" => $qr_code,
@@ -286,6 +312,11 @@ class Item extends BaseModel {
             ":etat" => $etat,
             ":categorie_id" => $categorie_id
         ]);
+         
+        if ($success) {
+            return $this->db->lastInsertId(); // retourne l'ID inséré
+        }
+        return false;
     }
 
     /**
@@ -301,6 +332,63 @@ class Item extends BaseModel {
         return $stmt->execute([
             ":id" => $id
         ]);
+    }
+
+    /** Archiver un item */.
+    public function getItemByID(int $id): array|false{
+        $sql = "SELECT * FROM {$this->table} WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([":id" => $id]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function isAvailable(int $itemId): bool {
+        // adapte le nom de table/colonnes si nécessaire (Pret, item_id, date_retour_effective)
+        $sql = "SELECT COUNT(*) FROM Pret WHERE item_id = :item_id AND date_retour_effective IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':item_id' => $itemId]);
+        $count = (int) $stmt->fetchColumn();
+        return ($count === 0);
+    }
+
+    /** Archiver un item */
+    public function archiveItem(int $id): bool {
+        $now = date('Y-m-d H:i:s');
+
+        // essaie archived + archived_at, fallback sur archived seul
+        $sql = "UPDATE {$this->table} SET archived = 1, archived_at = :now WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        try {
+            $stmt->execute([':now' => $now, ':id' => $id]);
+            return ($stmt->rowCount() > 0);
+        } catch (\PDOException $e) {
+            $sql2 = "UPDATE {$this->table} SET archived = 1 WHERE id = :id";
+            $stmt2 = $this->db->prepare($sql2);
+            $stmt2->execute([':id' => $id]);
+            return ($stmt2->rowCount() > 0);
+        }
+    }
+    
+
+      /**
+     * récupération l'id
+     * 
+     * @param string $name
+     * @return int|false
+     */
+    public function getByName(string $name):int|false{
+        $sql = "SELECT id
+                FROM {$this->table} 
+                WHERE nom = :name";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
+        $stmt->execute();
+
+        // fetch() renvoie un tableau associatif comme ['id' => 3]
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        // extraire id et le convertir en int ou sinon return false
+        return $result ? (int)$result['id'] : false;
     }
 
 

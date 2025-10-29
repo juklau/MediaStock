@@ -17,7 +17,7 @@ class Pret extends BaseModel {
                         a.login as preteur_login
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
@@ -38,7 +38,7 @@ class Pret extends BaseModel {
                         a.login as preteur_login
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.id = :id";
                 //  WHERE p.{$this->primaryKey} = :id";
@@ -52,7 +52,7 @@ class Pret extends BaseModel {
     /**
      * Obtenir la liste des prêts actifs (pas encore retourné)
      * 
-     * @return array
+     * @return array //peut être il faut  "|false" ???
      */
     public function getActiveLoans():array { // => du prof
         $query = "SELECT p.*, 
@@ -60,7 +60,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  WHERE p.date_retour_effective IS NULL";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -76,12 +76,12 @@ class Pret extends BaseModel {
                     e.emprunteur_nom, e.emprunteur_prenom
                 FROM {$this->table} p
                 JOIN Item i ON p.item_id = i.id
-                JOIN emprunteur e ON p.emprunteur_id = e.id
+                JOIN Emprunteur e ON p.emprunteur_id = e.id
                 WHERE date_retour_effective IS NULL
                 ORDER BY p.date_sortie DESC, p.id DESC";
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -93,11 +93,13 @@ class Pret extends BaseModel {
     public function getOverdueLoans():array|false {
         $today = date('Y-m-d'); //p.ex: '2025-12-22'
         $sql = "SELECT p.*, i.id,
-                        i.nom AS item_nom, i.model AS item_model, i.qr_code, i.image_url
-                        e.emprunteur_nom, e.emprunteur_prenom
+                        i.nom AS item_nom, i.model AS item_model, i.qr_code, i.image_url,
+                        e.emprunteur_nom, e.emprunteur_prenom,
+                        c.categorie AS categorie
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Categorie c ON i.categorie_id = c.id 
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  WHERE p.date_retour_effective IS NULL 
                  AND p.date_retour_prevue < :today";
         $stmt = $this->db->prepare($sql);
@@ -131,7 +133,7 @@ class Pret extends BaseModel {
                     e.emprunteur_prenom, e.role
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
-                 JOIN emprunteur e ON p.emprunteur_id = e.id 
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id 
                  WHERE p.emprunteur_id = :emprunteur_id";
         $stmt = $this->db->prepare($sql);
         
@@ -153,7 +155,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom,
                         a.login as preteur_login
                  FROM {$this->table} p
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.item_id = :item_id";
         $stmt = $this->db->prepare($sql);
@@ -165,7 +167,7 @@ class Pret extends BaseModel {
 
     /**
      * Mettre fin à un prêt en fixant la date de retour effective et la note finale
-     * ?????????????????????????????????? pour le type de $returnDate
+     * 
      * @param int $id
      * @param string $returnDate
      * @param string $finalNote
@@ -195,11 +197,11 @@ class Pret extends BaseModel {
      * @param string $note_fin
      * @return bool
      */
-    public function cloturerPret(int $pret_id, DateTime $date_retour_effective, string $note_fin): bool{
+    public function cloturerPret(int $pret_id, \DateTime $date_retour_effective, string $note_fin): bool{
         $sql = "UPDATE {$this->table}
                 SET date_retour_effective = :dre, note_fin = :note_fin
                 WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->db->prepare($sql);
         return $stmt->execute([
             ':dre'      => $date_retour_effective->format('Y-m-d'),
             ':note_fin' => $note_fin,
@@ -217,7 +219,7 @@ class Pret extends BaseModel {
      * @param int $emprunteurId
      * @param int $preteurId
      * @param string $dateSortie
-     * @param string $dateRetourPrevue
+     * @param string $dateRetourPrevue 
      * @param string $noteDebut
      * @return int|false
      */
@@ -228,7 +230,7 @@ class Pret extends BaseModel {
 
         if ($dateRetourPrevue === null) {
             // Par défaut, dans 2 semaines à compter d'aujourd'hui
-            $dateRetourPrevue = date('Y-m-d', strtotime('+2 weeks'));
+            $dateRetourPrevue = date('Y-m-d', strtotime('+2 weeks')); 
         }
 
         $data = [
@@ -241,7 +243,7 @@ class Pret extends BaseModel {
             'note_fin' => '' // Empty initially
         ];
 
-        return $this->create($data);
+        return $this->create($data); 
     }
 
     //ou 
@@ -258,15 +260,15 @@ class Pret extends BaseModel {
      * @param string $note_debut
      * @return int|false
      */
-    public function nouveauPret(int $item_id, int $emprunteur_id,int $preteur_id, ?DateTime $date_sortie = null,
-        ?DateTime $date_retour_prevue = null,string $note_debut = ''): int|false {
+    public function nouveauPret(int $item_id, int $emprunteur_id,int $preteur_id, \DateTime $date_sortie = null,
+        \DateTime $date_retour_prevue = null,string $note_debut = ''): int|false {
 
         if ($date_sortie === null) {
-            $date_sortie = new DateTime(); // aujourd’hui
+            $date_sortie = new \DateTime(); // aujourd’hui
         }
 
         if ($date_retour_prevue === null) {
-            $date_retour_prevue = (new DateTime())->modify('+2 weeks');
+            $date_retour_prevue = (new \DateTime())->modify('+2 weeks');
         }
 
         $sql = "INSERT INTO {$this->table} (
@@ -301,7 +303,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom,
                         a.login as preteur_login
                  FROM {$this->table} p
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.item_id = :item_id
                  ORDER BY p.date_sortie DESC";
@@ -324,7 +326,7 @@ class Pret extends BaseModel {
                         e.emprunteur_nom, e.emprunteur_prenom,
                         a.login as preteur_login
                  FROM {$this->table} p
-                 JOIN emprunteur e ON p.emprunteur_id = e.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
                  JOIN Administrateur a ON p.preteur_id = a.id
                  WHERE p.item_id = :item_id
                  AND p.date_retour_effective IS NULL";
@@ -333,6 +335,72 @@ class Pret extends BaseModel {
         $stmt->execute();
         return $stmt->fetch(); // Renvoie une seule ligne (ou false si aucune n'existe)
     }
+
+    /**
+     * Obtenir des éléments d'un prêt en cherhant selon son item_id
+     * 
+     * @param int $itemId
+     * @return array|false Renvoie les données de prêt si un prêt actif existe, sinon false
+     */
+    public function getLoanByItemId(int $id):array|false {
+        $sql = "SELECT p.item_id, p.date_retour_prevue, p.note_debut,
+                        i.etat, i.image_url, i.nom,
+                        f.formation,
+                        e.emprunteur_nom, e.emprunteur_prenom,e.formation_id,
+                        a.login as preteur_login
+                 FROM {$this->table} p
+                 JOIN Item i ON p.item_id = i.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
+                 LEFT JOIN Formation f ON e.formation_id = f.id
+                 JOIN Administrateur a ON p.preteur_id = a.id
+                 WHERE p.item_id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(); // Renvoie une seule ligne (ou false si aucune n'existe)
+    }
+
+    /**
+     * Mettre à jour les détails d'un prêt d'article
+     * 
+     * @param int $id
+     * @param DateTime $dateSortie
+     * @param DateTime $dateRetourPrevue
+     * @param DateTime $dateRetourEffective
+     * @param string $noteDebut
+     * @param string $noteFin
+     * @return bool
+     */
+    public function updateItemLoan(
+        int $id,
+        \DateTime $dateSortie,
+        \DateTime $dateRetourPrevue,
+        \DateTime $dateRetourEffective,
+        string $noteDebut,
+        string $noteFin
+    ): bool {
+        $sql = "UPDATE {$this->table}
+                SET date_sortie = :date_sortie,
+                    date_retour_prevue = :date_retour_prevue,
+                    date_retour_effective = :date_retour_effective,
+                    note_debut = :note_debut,
+                    note_fin = :note_fin
+                WHERE id = :id
+                AND date_retour_effective IS NULL";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':date_sortie', $dateSortie->format('Y-m-d'), \PDO::PARAM_STR);
+        $stmt->bindValue(':date_retour_prevue', $dateRetourPrevue->format('Y-m-d'), \PDO::PARAM_STR);
+        $stmt->bindValue(':date_retour_effective', $dateRetourEffective->format('Y-m-d'), \PDO::PARAM_STR);
+        $stmt->bindValue(':note_debut', $noteDebut, \PDO::PARAM_STR);
+        $stmt->bindValue(':note_fin', $noteFin, \PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0; // renvoie true si au moins une ligne modifiée
+    }
+
 
 
     /**

@@ -29,12 +29,12 @@
             $response = [
                 "success" => true,
                 "data" => $items, 
-                "message" => "Connexion réussi"
+                "message" => "Prêts actifs récupérés avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec l'Id fourni."
+                "message" => "Aucun prêt actif n'a été trouvé pour l'identifiant fourni."
             ];
         }
 

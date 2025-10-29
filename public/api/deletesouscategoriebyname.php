@@ -5,49 +5,49 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-     // Vérifier si le nom de admin est fourni
-    if (!isset($_GET['login'])) {
+    // Vérifier si le nom de sous-categorie est fourni
+    if (!isset($_GET['sous_categorie'])) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'login de l'admin' manquant"
+            "message" => "Paramètre 'nom de sous-categorie' manquant"
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $adminLogin = $_GET['login'];
+    $sousCategorieName = $_GET['sous_categorie'];
 
-    $emprunteurId = $_GET['id'];
+    try{
+        
+        // instancier le model Sous_categorie
+        $sousCategorieModel = new Models\SousCategorie();
 
-    try{ //////////////////////////à finir!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //récuperation Id du catégorie
+        $sousCategorieId = (int)$sousCategorieModel->getByName($sousCategorieName);
 
-        // instancier le model Emprunteur
-        $emprunteurModel = new Models\Emprunteur();
-
-        $emprunteur = $emprunteurModel->getById($emprunteurId);
-
-        if(!$emprunteur){
+        if(!$sousCategorieId){
             $response = [
                 "success" => false,
-                "message" => "Aucun emprunteur trouvé avec l'ID fourni."
+                "message" => "Aucun sous-categorie trouvé avec le nom fourni."
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
         }
 
-        // Supprimer l'emprunteur
-        $delete = $emprunteurModel->deleteEmprunteur($emprunteurId);
-       
+        // Supprimer une catégorie et toutes ses sous-catégories
+        $delete = $categorieModel->deleteWithSubcategories($categorieId);
+        // $delete = $categorieModel->deleteWithSubcategories(6);
+
         if($delete){
             $response = [
                 "success" => true,
                 // "data" => $delete, 
-                "message" => "L'emprunteur supprimé avec succès"
+                "message" => "Suppression de la catégorie et de ses sous-catégories réussie"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucune donnée trouvée avec l'ID fourni."
+                "message" => "La suppression a échoué : la sous-catégorie n'existe plus ou une erreur est survenue."
             ];
         }
 

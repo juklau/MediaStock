@@ -1,4 +1,5 @@
 <?php
+
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
@@ -29,12 +30,12 @@
             $response = [
                 "success" => true,
                 "data" => $item, 
-                "message" => "Connexion réussi"
+                "message" => "Item trouvé avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec l'Id fourni."
+                "message" => "Aucun item trouvée avec l'Id fourni."
             ];
         }
 
