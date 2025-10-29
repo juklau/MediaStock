@@ -1,0 +1,73 @@
+
+/* style de Choixcat.html*/
+
+:root {
+  --coral: #ff9994;
+  --success: #28a745;
+  --warning: #fd7e14;
+  --danger: #ff7f50;
+  --white: white;
+}
+
+header {
+	background: var(--coral);
+    /* background-color: #ff9994; */
+	height: 60px;
+}
+
+.logo-app {
+	z-index: 2;
+}
+
+#item-dispo{
+	color: var(--coral);  
+	font-size: 1.4rem; 
+	font-weight: 400;
+}
+
+/* je ne sais pas s'il faut dedans cette partie?????? */
+.equipment-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+} 
+
+.equipment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-color: #ff9994 !important;
+}
+
+.equipment-card:hover .fas {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+.equipment-card:hover .card-title {
+  color: #ff9994 !important;
+  transition: color 0.3s ease;
+}
+
+.fas{
+	font-size: 3rem; 
+	opacity: 0.69;
+}
+
+.items-Choixcat{
+    font-weight: 400;
+    opacity: 0.69;
+    font-size: 0.9rem;
+}
+
+footer {
+  background: var(--coral);
+  /* background-color: var(--coral); ??????????*/
+  padding: 14px 0;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 400; 
+  opacity: 0.69;
+}

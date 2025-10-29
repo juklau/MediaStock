@@ -1,0 +1,178 @@
+
+/* style de restitution.html*/
+
+:root {
+  --coral: #ff9994;
+  --success: #28a745;
+  --warning: #fd7e14;
+  --danger: #ff7f50;
+  --white: white;
+}
+
+header {
+	background: var(--coral);
+    /* background-color: var(--coral); */
+	height: 60px;
+}
+
+.logo-app {
+	z-index: 2;
+}
+
+#productIconReturn{
+    color: #333;
+}
+
+.page-body {
+  max-width: 420px;
+  margin: 18px auto 48px;
+}
+
+.state-btn {
+  min-width: 90px;
+}
+
+.validate-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 10px;
+}
+
+.notes-box {
+  min-height: 120px;
+}
+
+/* Les champs en lecture seule ont une apparence grisée */
+#returnForm input[readonly],
+#returnForm textarea[readonly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* _________________________________________ */
+/* Le calendrier de la page restitution est en lecture seule 
+ je ne trouve null part cette partie dans aucun fichier!!!!!!!  ".flatpickr-calendar"*/
+.calendar-container-return .flatpickr-calendar {
+  pointer-events: none;
+}
+/* _________________________________________ */
+
+/* Style pour le champ commentaire de retour (éditable) */
+#commentaireReturn {
+  background-color: var(--white);
+  cursor: text;
+}
+
+/* Affichage de l'état du prêt avec badge coloré */
+.etat-pret-display {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+}
+
+.badge-etat {
+  display: inline-block;
+  padding: 8px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  text-align: center;
+  min-width: 100px;
+}
+
+.badge-etat.bon {
+  background-color: var(--success);
+  color: var(--white);
+}
+
+.badge-etat.moyen {
+  background-color: var(--warning);
+  color: var(--white);
+}
+
+.badge-etat.mauvais {
+  background-color: var(--danger);
+  color: var(--white);
+}
+
+/* Boutons d'état modifiables (état à la restitution) */ /* Afficher visuellement l'état sélectionné même s'il est désactivé */
+.etat-readonly
+  input[type="radio"]:checked:disabled
+  + label.btn-outline-success {
+  background-color: var(--success);
+  color: var(--white);
+  border-color: var(--success);
+  opacity: 0.7;
+}
+
+.etat-readonly
+  input[type="radio"]:checked:disabled
+  + label.btn-outline-warning {
+  background-color: var(--warning);
+  color: var(--white);
+  border-color: var(--warning);
+  opacity: 0.7;
+}
+
+.etat-readonly input[type="radio"]:checked:disabled + label.btn-outline-danger {
+  background-color: var(--danger);
+  color: var(--white);
+  border-color: var(--danger);
+  opacity: 0.7;
+}
+
+/* Boutons d'état modifiables (état à la restitution) */
+#returnForm .state-btn {
+  cursor: pointer;
+}
+
+/* Modal de succès */
+.success-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon i {
+  font-size: 40px;
+  color: var(--white);
+}
+
+.date-input-below {
+  order: 2;
+}
+
+/* Style du bouton Ajouter ??????????????*/
+.btn-primary,
+.btn-primary:active,
+.btn-primary:focus {
+  background-color: var(--coral) !important;
+  border-color: var(--coral) !important;
+  box-shadow: none !important;
+}
+
+
+
+
+footer {
+  background: var(--coral);
+  /* background-color: var(--coral); ??????????*/
+  padding: 14px 0;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 400; 
+  opacity: 0.69;
+}
+
+
+
+

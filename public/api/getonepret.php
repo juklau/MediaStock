@@ -30,12 +30,12 @@
             $response = [
                 "success" => true,
                 "data" => $pret, 
-                "message" => "Connexion réussi"
+                "message" => "Prêt trouvé avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun prêt trouvée avec l'Id fourni."
+                "message" => "Aucun prêt trouvé avec l'Id fourni."
             ];
         }
 
