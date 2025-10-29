@@ -97,6 +97,7 @@ function genererQRCode(materielId) {
     qrcodeDisplay.appendChild(qrContainer);
     
     
+    
     // Générer le QR code avec l'ID
     qrcodeInstance = new QRCode(qrContainer, {
       text: materielId.toString(),
@@ -115,6 +116,7 @@ function genererQRCode(materielId) {
       }
     }, 100); // petit délai pour laisser QRCode.js générer le canvas
     
+
     console.log('QR Code généré pour l\'ID:', materielId);
 }
 
@@ -312,8 +314,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     const nomInput = document.getElementById('materielNom');
     const nom = nomInput.value.trim();
-    const icon = localStorage.getItem("selectedIcon");
     const categorie = localStorage.getItem("selectedCategory");
+    // const qr_code = genererQRCode(categorie).text;
+    const icon = localStorage.getItem("selectedIcon");
 
     if (!nom || !icon ) {
       alert("Veuillez saisir le nom du matériel.");
