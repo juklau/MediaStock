@@ -1,7 +1,7 @@
 <?php
 namespace Models;
 
-class Item extends BaseModel {
+class Item extends BaseModel { 
     protected $table = 'Item';
 
     /**
@@ -249,12 +249,12 @@ class Item extends BaseModel {
      */
 
     public function getItemByID(int $id): array|false{
-        $sql = "SELECT * 
+        $sql = "SELECT *  
                 FROM {$this->table} 
                 WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ":id" => $id
+            ":id" => $id 
         ]);
 
         return $stmt->fetch();
@@ -294,13 +294,13 @@ class Item extends BaseModel {
      * @param string $image_url
      * @param string $etat
      * @param int $categorie_id
-     * @return bool Renvoie vrai si l'élément est ajouté
+     * @return int|false Renvoie l'ID inséré ou false en cas d'échec 
      */
-    public function addItem(string $nom, ?string $model, string $qr_code, string $image_url, string $etat, int $categorie_id): bool{
+    public function addItem(string $nom, ?string $model, string $qr_code, string $image_url, string $etat, int $categorie_id): int|false{
         $sql = "INSERT INTO {$this->table} (nom, model, qr_code, image_url, etat, categorie_id)
                 VALUES (:nom, :model, :qr_code, :image_url, :etat, :categorie_id)";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
+        $success = $stmt->execute([
             ":nom" => $nom,
             ":model" => $model,
             ":qr_code" => $qr_code,
@@ -308,6 +308,11 @@ class Item extends BaseModel {
             ":etat" => $etat,
             ":categorie_id" => $categorie_id
         ]);
+         
+        if ($success) {
+            return $this->db->lastInsertId(); // retourne l'ID inséré
+        }
+        return false;
     }
 
     /**

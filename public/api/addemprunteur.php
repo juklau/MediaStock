@@ -4,7 +4,7 @@
     // à vérifier si ca marche!!!!
 
     header('Content-Type: application/json'); 
-    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Origin: *'); 
     header('Access-Control-Allow-Methods: POST');
 
     // lire le contenu JSON envoyé
@@ -13,9 +13,7 @@
     // Vérifier si les éléments obligatoires sont fournis
     if (!isset($input['emprunteur_nom']) || 
         !isset($input['emprunteur_prenom']) || 
-        !isset($input['role']) ||
-        !isset($input['formation_id'])
-        ) {
+        !isset($input['role'])) {
 
         $response = [
             "success" => false,

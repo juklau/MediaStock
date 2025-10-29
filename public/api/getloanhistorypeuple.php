@@ -29,12 +29,12 @@
             $response = [
                 "success" => true,
                 "data" => $items, 
-                "message" => "Connexion réussi"
+                "message" => "Prêt trouvé pour l'id de l'emprunteur avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec l'Id fourni."
+                "message" => "Aucun prêt trouvé pour l'id de l'emprunteur fourni."
             ];
         }
 

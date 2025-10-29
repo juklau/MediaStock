@@ -5,36 +5,25 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'emprenteur_id est fourni et valide
-    if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
-        $response = [
-            "success" => false,
-            "message" => "Paramètre 'emprunteur_id' manquant ou invalide"
-        ];
-        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-        exit;
-    }
-
-    $emprunteurId = (int)$_GET['id'];
-
+   
     try{
 
-        // instancier le model Emprunteur
-        $emprunteurModel = new Models\Emprunteur();
+        // instancier le model Pret
+        $pretModel = new Models\Pret();
+       
+        // Obtenir tous les prêts actifs (non retournés)
+        $pretsEnCours = $pretModel->getActiveLoans();
 
-        // obtenir les éléments d'une item
-        $items = $emprunteurModel->getLoanHistory($emprunteurId);
-
-        if($items){
+        if($pretsEnCours > 0){
             $response = [
                 "success" => true,
-                "data" => $items, 
+                "data" => $pretsEnCours, 
                 "message" => "Prêts actifs récupérés avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun prêt actif n'a été trouvé pour l'identifiant fourni."
+                "message" => "Aucun prêt actif trouvé"
             ];
         }
 

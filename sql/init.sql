@@ -86,7 +86,8 @@ ALTER TABLE
 
 
 INSERT INTO `Administrateur`(`login`, `mot_de_passe_hash`) VALUES
-('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhY');
+('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhY'),
+('test', '$2y$10$h3NbVfBN2BA60Ne5FKdWZO7/1oqcKc4K2vWEGEbPCR/R.Aqfa07aW');
 
 INSERT INTO `Formation`(`formation`) VALUES
 ('ECS1'),
@@ -178,12 +179,12 @@ Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id
 ('Adaptateur','ThunderBolt to VGA','52','fa-solid fa-plug','bon','3'),
 ('Chargeur AC','ASUS','53','fa-solid fa-plug','bon','3'),
 ('Chargeur AC','ASUS','54','fa-solid fa-plug','bon','3'),
-('Câble HDMI','','55','fa-solid fa-plug','bon','3'),
-('Câble HDMI','','56','fa-solid fa-plug','bon','3'),
-('Câble HDMI','','57','fa-solid fa-plug','bon','3'),
-('Câble HDMI','','58','fa-solid fa-plug','bon','3'),
-('Câble HDMI','','59','fa-solid fa-plug','bon','3'),
-('Câble HDMI','','60','fa-solid fa-plug','bon','3'),
-('Câble HDMI','','61','fa-solid fa-plug','bon','3'),
+('Cable HDMI','','55','fa-solid fa-plug','bon','3'),
+('Cable HDMI','','56','fa-solid fa-plug','bon','3'),
+('Cable HDMI','','57','fa-solid fa-plug','bon','3'),
+('Cable HDMI','','58','fa-solid fa-plug','bon','3'),
+('Cable HDMI','','59','fa-solid fa-plug','bon','3'),
+('Cable HDMI','','60','fa-solid fa-plug','bon','3'),
+('Cable HDMI','','61','fa-solid fa-plug','bon','3'),
 ('Enceinte Portable','Fenton','62','fa-solid fa-headphones','bon','2'),
 ('Micro','Fenton','63','fa-solid fa-microphone','bon','2');

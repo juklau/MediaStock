@@ -16,7 +16,7 @@
         exit;
     }
 
-    $name = $_GET['nom'];
+    $name = trim($_GET['nom']);
 
     try{
 
@@ -30,12 +30,12 @@
             $response = [
                 "success" => true,
                 "categorie_id" => $Id, 
-                "message" => "Connexion réussi"
+                "message" => "Catégorie trouvée avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucune donnée trouvée avec le nom fourni."
+                "message" => "Aucune catégorie trouvée avec le nom fourni."
             ];
         }
 

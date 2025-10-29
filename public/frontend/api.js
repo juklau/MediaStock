@@ -5,7 +5,7 @@
 
 const API = {
   // URL de base (pour le moment fichiers locaux, plus tard ce sera votre backend)
-  BASE_URL: './data',
+  
   
   /**
    * Récupérer tous les matériels
@@ -22,6 +22,7 @@ const API = {
       return JSON.parse(localStorage.getItem('materiels') || '[]');
     }
   },
+  
 
   /**
    * Récupérer un matériel par ID

@@ -84,10 +84,15 @@
                     VALUES (:login, :password)";
             $stmt = $this->db->prepare($sql2);
 
-            return $stmt->execute([
+            $success =  $stmt->execute([
                 ':login' => $login,
                 ':password' => $passwordHash
             ]);
+
+            if ($success) {
+                return (int)$this->db->lastInsertId(); // retourne l'ID
+            }
+            return false;
         }
 
         

@@ -30,12 +30,12 @@
             $response = [
                 "success" => true,
                 "data" => $item, 
-                "message" => "Connexion réussi"
+                "message" => "Connexion réussie"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec le QR code fourni."
+                "message" => "Aucune donnée trouvée avec le QR code fourni."
             ];
         }
 

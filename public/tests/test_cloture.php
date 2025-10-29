@@ -2,7 +2,7 @@
     $url = 'http://localhost/api/cloturepret.php';
 
     $data = [
-        'id' => 28,
+        'id' => 23,
         'note_fin' => 'Elle était bien rendu à ce jour, à minuit'
     ];
 

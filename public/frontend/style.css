@@ -37,7 +37,7 @@ select#classe option {
 .equipment-card {
   transition: all 0.3s ease;
   cursor: pointer;
-}
+} 
 
 .equipment-card:hover {
   transform: translateY(-5px);
@@ -63,6 +63,7 @@ select#classe option {
 
 /* ************************  page principale ************************* */
 /* Header */
+/* je ne trouve null part cette classe */
 .page-header {
   display: flex;
   align-items: center;
@@ -72,6 +73,7 @@ select#classe option {
   position: relative;
 }
 
+/* je ne le trouve dans aucun fichier */
 .bar {
   position: absolute;
   top: 0;
@@ -81,6 +83,8 @@ select#classe option {
   z-index: 1;
 }
 
+/* acceuil.html */
+/* je ne le trouve dans aucun fichier */
 .logo-container {
   position: relative;
   z-index: 2;
@@ -92,11 +96,14 @@ select#classe option {
   height: 100%;
 }
 
+/* acceuil.html */
+/* je ne le trouve dans aucun fichier */
 .logo-container .logo-img {
   height: 30px;
   width: auto;
 }
 
+/* index.html */
 /* Action buttons */
 .action-btn {
   background: #fff;
@@ -109,12 +116,13 @@ select#classe option {
   margin-bottom: 8px;
 }
 
+/* index.html */
 .action-btn:active {
   transform: translateY(2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Calendrier styles */
+/* Calendrier styles  => je ne trouve null part cette partie dans aucun fichier!!!!!!!*/
 .calendar-container .flatpickr-calendar {
   width: 100%;
   max-width: 100%;
@@ -164,6 +172,8 @@ select#classe option {
   margin-right: 6px;
 }
 
+/* ____________________________________________
+ je ne trouve null part cette partie dans aucun fichier!!!!!!!*/
 .status-disponible {
   background-color: var(--success);
 }
@@ -175,6 +185,7 @@ select#classe option {
 .status-retard {
   background-color: #dc3545;
 }
+/* ____________________________________________ */
 
 /* List items */
 .item-icon {
@@ -190,6 +201,8 @@ select#classe option {
   padding: 0.75rem;
 }
 
+/* ____________________________________________
+ je ne trouve null part cette partie dans aucun fichier!!!!!!!*/
 .divider {
   border: 0;
   height: 4px;
@@ -206,6 +219,7 @@ select#classe option {
     margin-bottom: 18px;
   }
 }
+/* ____________________________________________ */
 
 .section-title {
   font-size: 1rem;
@@ -290,7 +304,7 @@ select#classe option {
   border: none;
 }
 
-footer {
+/* footer {
   background: var(--coral);
   padding: 14px 0;
   margin-top: auto;
@@ -299,7 +313,7 @@ footer {
 footer p {
   margin: 0;
   color: rgba(0, 0, 0, 0.65);
-}
+} */
 
 /* ************************   fin page principale ************************* */
 

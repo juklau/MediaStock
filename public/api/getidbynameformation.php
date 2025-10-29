@@ -1,40 +1,42 @@
 <?php
+
     require_once __DIR__ . '/../autoload.php';
 
     header('Content-Type: application/json'); 
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    // Vérifier si l'emprenteur_id est fourni et valide
-    if (!isset($_GET['id']) || !is_numeric($_GET['id']) || (int)$_GET['id'] <= 0) {
+    // Vérifier si l'ID est fourni et valide
+    if (!isset($_GET['nom'])) {
         $response = [
             "success" => false,
-            "message" => "Paramètre 'emprunteur_id' manquant ou invalide"
+            "message" => "Paramètre 'nom' manquant."
         ];
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $emprunteurId = (int)$_GET['id'];
+   
+    $name = trim($_GET['nom']);
 
     try{
 
-        // instancier le model Emprunteur
-        $emprunteurModel = new Models\Emprunteur();
+        // instancier le model Formation
+        $formationModel = new Models\Formation();
 
         // obtenir les éléments d'une item
-        $items = $emprunteurModel->getLoanHistory($emprunteurId);
+        $formationId = $formationModel->getByName($name);
 
-        if($items){
+        if($formationId !== false){
             $response = [
                 "success" => true,
-                "data" => $items, 
-                "message" => "Prêts actifs récupérés avec succès"
+                "formation_id" => $formationId, 
+                "message" => "Formation trouvée avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun prêt actif n'a été trouvé pour l'identifiant fourni."
+                "message" => "Aucune formation trouvée avec le nom fourni."
             ];
         }
 

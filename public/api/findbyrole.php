@@ -29,12 +29,12 @@
             $response = [
                 "success" => true,
                 "data" => $emprunteurs, 
-                "message" => "Connexion réussi"
+                "message" => "Connexion réussie"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée."
+                "message" => "Aucune donnée trouvée."
             ];
         }
 
