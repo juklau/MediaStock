@@ -30,7 +30,7 @@
         // construction un tableau associatif pour éviter les doublons
         $result = [];
 
-        if($searchTerm === "disponible"){
+        if($searchTerm === "disponible"){ 
             // ajouter les disponibles
             foreach($disponibles as $item){
                 $key = $item['image_url'] . '|' . $item['id'] . '|' . $item['nom'] . '|' . $item['model'];

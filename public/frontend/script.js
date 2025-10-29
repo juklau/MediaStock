@@ -1,18 +1,26 @@
-// ********************************************************** js page principale **********************************************************************
+// ********************************************************** js pour la **********************************************************************
+
+//.............pour index.html.............//
+
+
+
 // Variable globale pour stocker les matériels chargés depuis l'API
 let items = [];
 
 /**
- * Charger les matériels depuis l'API
+ * Charger les matériels
  */
 async function chargerMateriels() {
   try {
-    items = await API.getMateriels();
-    console.log('Matériels chargés:', items.length);
+    const response = await fetch('/../api/getitemsavailability.php');
+    const data = await response.json();
+    items = data.data || [];
+
     renderItems();
     attachDeleteHandlers();
   } catch (error) {
     console.error('Erreur lors du chargement des matériels:', error);
+
     // Afficher un message d'erreur à l'utilisateur
     const container = document.getElementById("inventoryList");
     if (container) {
@@ -26,6 +34,7 @@ async function chargerMateriels() {
   }
 }
 
+
 /** 
  * Afficher les matériels depuis l'API
  */
@@ -35,27 +44,21 @@ function renderItems() {
   const container = document.getElementById("inventoryList");
   container.innerHTML = "";
 
-  fetch(' /../api/getitemsavailability.php')
-    .then(response => response.json())
-    .then(data => {
-      console.log('All Items:', data);
+  // Créer le tableau filtré pour correspondre à l'ordre d'affichage
+  const filteredItems = items.filter(item => {
+    const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
+    const matchStatut = !statusFilter || item.statut === statusFilter;
+    return matchCategorie && matchStatut;
+  });
 
-      const items = data.data; // les matériels renvoyés par API
+  filteredItems.forEach(item => {
+      const statusClass = `status-${item.statut.toLowerCase()}`;
 
-      items.forEach(item => {
-        // Appliquer les filtres
-        if ((categoryFilter && item.categorie !== categoryFilter) ||
-            (statusFilter && ((item.is_available ? 'disponible' : 'indisponible') !== statusFilter))) {
-          return;
-        }
+      const listItem = document.createElement("div");
+      listItem.className = "list-group-item";
+      listItem.dataset.itemId = item.id;
 
-        const statusClass = `status-${item.statut}`; 
-
-        const listItem = document.createElement("div");
-        listItem.className = "list-group-item";
-        listItem.dataset.itemId = item.id;
-
-        listItem.innerHTML = `
+      listItem.innerHTML = `
           <div class="left">
             <div class="item-icon"><i class="${item.image_url}"></i></div>
             <div class="item-meta">
@@ -70,33 +73,50 @@ function renderItems() {
         `;
 
         container.appendChild(listItem);
-      });
+  });
 
-      // Attacher les gestionnaires de clic après le rendu
-      attachClickHandlers();
-    })
-    .catch(error => {
-      console.error('Erreur lors du chargement des matériels :', error);
-      container.innerHTML = `<div class="error">Impossible de charger les matériels.</div>`;
-    });
+  // Attacher les gestionnaires de clic après le rendu
+  attachClickHandlers(filteredItems);
+
+  console.log("Catégories disponibles :", items.map(i => i.categorie));
 }
 
-// Nouvelle fonction pour attacher les gestionnaires de clic sur les items
-function attachClickHandlers() {
+
+//attacher les gestionnaires de clic sur les items
+function attachClickHandlers(filteredItems) {
   const listItems = document.querySelectorAll('#inventoryList .list-group-item');
-  const categoryFilter = document.getElementById("categoryFilter").value;
-  const statusFilter = document.getElementById("statusFilter").value;
-  
-  // Créer le tableau filtré pour correspondre à l'ordre d'affichage
-  const filteredItems = items.filter(item => {
-    return (!categoryFilter || item.categorie === categoryFilter) &&
-           (!statusFilter || item.status === statusFilter);
-  });
   
   listItems.forEach((listItem, index) => {
     listItem.style.cursor = 'pointer';
     
     listItem.addEventListener('click', function(e) {
+
+      // Ne pas ouvrir si on clique sur le bouton de suppression
+      if (e.target.closest('.trash-btn')) {
+        return;
+      }
+      
+      // Trouver l'item correspondant dans le tableau
+      if (filteredItems[index]) {
+        const itemIndex = items.indexOf(filteredItems[index]);
+        ouvrirFicheProduit(filteredItems[index], itemIndex);
+      }
+    });
+  });
+
+
+}
+
+
+//attacher les gestionnaires de clic sur les items
+function attachClickHandlers(filteredItems) {
+  const listItems = document.querySelectorAll('#inventoryList .list-group-item');
+  
+  listItems.forEach((listItem, index) => {
+    listItem.style.cursor = 'pointer';
+    
+    listItem.addEventListener('click', function(e) {
+
       // Ne pas ouvrir si on clique sur le bouton de suppression
       if (e.target.closest('.trash-btn')) {
         return;
@@ -110,6 +130,11 @@ function attachClickHandlers() {
     });
   });
 }
+
+
+
+
+
 
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
@@ -173,7 +198,7 @@ window.onload = function(){
 
 
 
-//Scanner QR code pour creer ou restituer un materiel //
+//Scanner QR code pour creer ou restituer un materiel !!!!//
 
 const qrReader = document.getElementById("qr-reader");
 
@@ -241,42 +266,42 @@ async function getHistoriquePrets(materielId) {
 /**
  * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
  */
-async function ajouterPret(materielId, pretData) {
-  try {
-    const pretPayload = {
-      materielId: materielId,
-      emprunteur: pretData.nom + ' ' + pretData.prenom,
-      datePret: pretData.datePret,
-      dateRetour: pretData.dateRetour,
-      etatPret: pretData.etat,
-      intervenant: pretData.intervenant,
-      classe: pretData.classe,
-      notes: pretData.notes
-    };
+// async function ajouterPret(materielId, pretData) {
+//   try {
+//     const pretPayload = {
+//       materielId: materielId,
+//       emprunteur: pretData.nom + ' ' + pretData.prenom,
+//       datePret: pretData.datePret,
+//       dateRetour: pretData.dateRetour,
+//       etatPret: pretData.etat,
+//       intervenant: pretData.intervenant,
+//       classe: pretData.classe,
+//       notes: pretData.notes
+//     };
     
-    await API.ajouterPret(pretPayload);
-    return true;
-  } catch (error) {
-    console.error('Erreur lors de l\'ajout du prêt:', error);
-    throw error;
-  }
-}
+//     await API.ajouterPret(pretPayload);
+//     return true;
+//   } catch (error) {
+//     console.error('Erreur lors de l\'ajout du prêt:', error);
+//     throw error;
+//   }
+// }
 
 /**
  * Mettre à jour un prêt lors de la restitution
- */
-async function mettreAJourRestitution(pretId, etatRetour) {
-  try {
-    await API.updatePret(pretId, {
-      etatRetour: etatRetour,
-      dateRestitution: new Date().toISOString().split('T')[0]
-    });
-    return true;
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour de la restitution:', error);
-    throw error;
-  }
-}
+//  */
+// async function mettreAJourRestitution(pretId, etatRetour) {
+//   try {
+//     await API.updatePret(pretId, {
+//       etatRetour: etatRetour,
+//       dateRestitution: new Date().toISOString().split('T')[0]
+//     });
+//     return true;
+//   } catch (error) {
+//     console.error('Erreur lors de la mise à jour de la restitution:', error);
+//     throw error;
+//   }
+// }
 
 /**
  * Ouvrir l'offcanvas avec la fiche produit

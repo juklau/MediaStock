@@ -172,8 +172,6 @@ select#classe option {
   margin-right: 6px;
 }
 
-/* ____________________________________________
- je ne trouve null part cette partie dans aucun fichier!!!!!!!*/
 .status-disponible {
   background-color: var(--success);
 }
@@ -185,7 +183,6 @@ select#classe option {
 .status-retard {
   background-color: #dc3545;
 }
-/* ____________________________________________ */
 
 /* List items */
 .item-icon {

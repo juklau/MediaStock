@@ -311,7 +311,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     const nomInput = document.getElementById('materielNom');
+    const modeleItem =  document.getElementById('modeleNom')
     const nom = nomInput.value.trim();
+    const modele = modeleItem?.value.trim() || null;
     const icon = localStorage.getItem("selectedIcon");
     const categorie = localStorage.getItem("selectedCategory");
 
@@ -323,14 +325,14 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     //récuperer il du catégorie
     const categorieId = await getCategorieIdFromName(categorie);
     if(!categorieId){
-      alert("Impossible de récuperer l'Id de la catégorie");
+      alert("Impossible de récupérer l'identifiant de la catégorie.");
       return;
     }
 
     // Construction des données à envoyer
     const payload = {
       nom: nom,
-      model: null,
+      model: modele,
       qr_code: "temporaire", // sera remplacé par l'ID retourné
       image_url: `fa-solid fa-${icon}`, // ou autre logique
       etat: "bon", // par défaut
@@ -355,6 +357,7 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
 
         // Mémoriser l’ID pour les actions suivantes
         currentMaterielId = itemId;
+
 
          //  Mise à jour uniquement QR code avec l'Id réel
         const updatePayload = {
