@@ -239,6 +239,40 @@ function startQrScan(targetPage) {
 document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
 document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
 
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('.btn-trash');
+  if (!btn) return;
+
+  const id = btn.dataset.id;
+  if (!id) return;
+
+  if (!confirm('Voulez-vous vraiment archiver cet item ?')) return;
+
+  btn.disabled = true;
+
+  fetch(`/api/archiveitembyid.php?id=${encodeURIComponent(id)}`, {
+    method: 'GET',
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(resp => resp.json())
+  .then(data => {
+    if (data.success) {
+      // supprimer la ligne ou marquer comme archivé
+      const row = btn.closest('.item-row') || btn.closest('tr');
+      if (row) row.remove();
+      else btn.remove();
+      alert(data.message);
+    } else {
+      alert('Erreur : ' + (data.message || 'Archiver impossible'));
+      btn.disabled = false;
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Erreur réseau');
+    btn.disabled = false;
+  });
+});
 
 // **************************************************** fin js page principale **********************************************************************
 
