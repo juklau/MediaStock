@@ -332,16 +332,27 @@ class Item extends BaseModel {
 
     /** Archiver un item */
     public function archiveItem(int $id): bool {
-         $sql = "UPDATE {$this->table} 
-                SET archived = 1 
-                WHERE id = :id";
+        $now = date('Y-m-d H:i:s');
 
+        // Essaye de mettre à jour archived + archived_at si la colonne existe
+        $sql = "UPDATE {$this->table} SET archived = 1, archived_at = :now WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            ":id" => $id
-        ]);
+        try {
+            $stmt->execute([
+                ':now' => $now,
+                ':id'  => $id
+            ]);
+            return ($stmt->rowCount() > 0);
+        } catch (\PDOException $e) {
+            // fallback si archived_at n'existe pas : juste archived
+            $sql2 = "UPDATE {$this->table} SET archived = 1 WHERE id = :id";
+            $stmt2 = $this->db->prepare($sql2);
+            if ($stmt2->execute([':id' => $id])) {
+                return ($stmt2->rowCount() > 0);
+            }
+            return false;
+        }
     }
-
 
       /**
      * récupération l'id

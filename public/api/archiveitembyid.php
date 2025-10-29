@@ -1,75 +1,61 @@
 <?php
     require_once __DIR__ . '/../autoload.php';
 
-    header('Content-Type: application/json'); 
+    header('Content-Type: application/json');
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-     // Vérifier si le nom de admin est fourni
     if (!isset($_GET['id'])) {
-        $response = [
+        echo json_encode([
             "success" => false,
-            "message" => "Paramètre id de l'emprunteur manquant"
-        ];
-        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            "message" => "Paramètre id manquant"
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         exit;
     }
 
-    $emprunteurId = (int)$_GET['id'];
-
-    try{
-
-        // instancier le model Item
-        $emprunteurModel = new Models\Item();
-
-        $item = $itemModel->getById($itemId);
-
-        if(!$item){
-            $response = [
-                "success" => false,
-                "message" => "Aucun item trouvé avec l'ID fourni."
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            exit;
-        }
-
-        $activePrets = $itemModel->getActiveLoans($itemId);
-
-        // Vérifier si l'item n'a pas un prêt en cours
-        if (!empty($activePrets)) {
-            $response = [
-                "success" => false,
-                "message" => "L'item ne peut pas être archivé car il est en cours de prêt."
-            ];
-            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            exit;
-        }
-
-        // archiver l'item
-        $archived = $itemModel->archiveItem($itemId);
-
-        if($archived){
-            $response = [
-                "success" => true,
-                "message" => "L'item a été archivé avec succès"
-            ];
-        }else{
-            $response = [
-                "success" => false,
-                "message" =>  "L'archivage a échoué : une erreur est survenue."
-            ];
-        }
-
-        // afficher en JSON le résultat
-        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    }catch(PDOException $e){
-        $response = [
+    $itemId = (int)$_GET['id'];
+    if ($itemId <= 0) {
+        echo json_encode([
             "success" => false,
-            "message" => "Erreur de connexion: " . $e->getMessage()
-        ];
-
-        // afficher en JSON le résultat
-        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            "message" => "ID invalide"
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit;
     }
 
+    try {
+        $itemModel = new Models\Item();
+
+        $item = $itemModel->getItemByID($itemId);
+        if (!$item) {
+            echo json_encode([
+                "success" => false,
+                "message" => "Aucun item trouvé avec l'ID fourni."
+            ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
+        }
+
+        // Vérifier qu'il n'y a pas de prêt actif
+        if (!$itemModel->isAvailable($itemId)) {
+            echo json_encode([
+                "success" => false,
+                "message" => "L'item ne peut pas être archivé car il est en cours de prêt."
+            ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit;
+        }
+
+        $archived = $itemModel->archiveItem($itemId);
+
+        if ($archived) {
+            $response = ["success" => true, "message" => "L'item a été archivé avec succès"];
+        } else {
+            $response = ["success" => false, "message" => "L'archivage a échoué : une erreur est survenue."];
+        }
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    } catch (\Exception $e) {
+        echo json_encode([
+            "success" => false,
+            "message" => "Erreur : " . $e->getMessage()
+        ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
 ?>
