@@ -37,14 +37,18 @@
       <h1 class="h4 fw-normal mt-5 mb-5">Ajouter votre matériel</h1>
 
       <!-- Image produit -->
-      <div class="mb-3">
-        <div id="icon-container" class="mb-3 d-flex justify-content-center align-items-center"></div>
+      <div class="mb-3 d-flex justify-content-center align-items-center">
+        <div id="icon-container" class="mb-3"></div>
       </div>
 
       <!-- Champ nom (centré, responsive) -->
       <form class="mb-5" id="materielForm">
         <div class="d-flex justify-content-center">
-          <input type="text" id="materielNom" class="form-control text-center" placeholder="Veuillez saisir le nom de du matériel" required>
+          <input type="text" id="materielNom" class="form-control text-center" placeholder="Veuillez saisir le nom du matériel" required>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+          <input type="text" id="modeleNom" class="form-control text-center" placeholder="Veuillez saisir le modèle du matériel">
         </div>
       </form> 
 
@@ -82,7 +86,7 @@
 
 
     <!-- Footer => basé sur la page d'acceuil, afin que ça soit pareil partout!- -->
-    <footer class=" py-4 mt-auto text-muted py-3 border-top">
+    <footer class="py-4 mt-auto text-muted py-3 border-top">
       <div class="container">
         <div class="text-center">
             <p class="mb-0 text-dark">Mentions légales</p>

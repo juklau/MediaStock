@@ -94,9 +94,11 @@ class Pret extends BaseModel {
         $today = date('Y-m-d'); //p.ex: '2025-12-22'
         $sql = "SELECT p.*, i.id,
                         i.nom AS item_nom, i.model AS item_model, i.qr_code, i.image_url,
-                        e.emprunteur_nom, e.emprunteur_prenom
+                        e.emprunteur_nom, e.emprunteur_prenom,
+                        c.categorie AS categorie
                  FROM {$this->table} p
                  JOIN Item i ON p.item_id = i.id
+                 JOIN Categorie c ON i.categorie_id = c.id 
                  JOIN Emprunteur e ON p.emprunteur_id = e.id
                  WHERE p.date_retour_effective IS NULL 
                  AND p.date_retour_prevue < :today";

@@ -63,11 +63,24 @@ header {
 
 /* Status indicators */
 .status-dot {
-  width: 10px;
+  width: 10px; 
   height: 10px;
   border-radius: 50%;
   display: inline-block;
   margin-right: 6px;
+}
+
+/* pour afficher les dot en couleur selon leur disponibilité */
+.status-disponible {
+  background-color: var(--success);
+}
+
+.status-indisponible {
+  background-color: var(--danger);
+}
+
+.status-retard {
+  background-color: #dc3545;
 }
 
 /* ____________________________________________ */
