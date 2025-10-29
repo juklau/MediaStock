@@ -197,14 +197,15 @@ class Item extends BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     } 
 
-    
+     
     /**
      * Afficher les noms et modèles des items disponibles (non prêtés actuellement)
      * 
      * @return array|false
      */
     public function getAvailableItemNames(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, c.categorie AS categorie
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, 
+                    c.categorie AS categorie
                 FROM {$this->table} i
                 INNER JOIN Categorie c ON i.categorie_id = c.id
                 -- si la sous-requête ne trouve aucune ligne correspondante.
@@ -230,7 +231,7 @@ class Item extends BaseModel {
      * @return array|false
      */
     public function afficheItemIndisponible(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, 
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived,
                     p.date_retour_prevue,
                     c.categorie AS categorie
                 FROM {$this->table} i
@@ -322,7 +323,7 @@ class Item extends BaseModel {
     /**
      * Supprimer un item
      * 
-     * @param int $itemId
+     * @param int => $itemId
      * @return bool
      */
     public function deleteItem(int $id): bool {
@@ -351,7 +352,13 @@ class Item extends BaseModel {
         return ($count === 0);
     }
 
-    /** Archiver un item */
+   
+    /**
+     * Archiver un item
+     * 
+     * @param int $id => itemId
+     * @return bool
+     */
     public function archiveItem(int $id): bool {
         $now = date('Y-m-d H:i:s');
 
@@ -369,6 +376,12 @@ class Item extends BaseModel {
         }
     }
     
+
+   
+
+
+ 
+
 
       /**
      * récupération l'id
