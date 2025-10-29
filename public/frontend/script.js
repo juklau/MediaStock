@@ -49,7 +49,7 @@ function renderItems() {
           return;
         }
 
-        const statusClass = `status-${item.statut}`;
+        const statusClass = `status-${item.statut}`; 
 
         const listItem = document.createElement("div");
         listItem.className = "list-group-item";

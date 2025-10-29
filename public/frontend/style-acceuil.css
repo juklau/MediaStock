@@ -1,0 +1,102 @@
+/* style d'acceuil.html*/
+
+:root {
+  --coral: #ff9994;
+  --success: #28a745;
+  --warning: #fd7e14;
+  --danger: #ff7f50;
+  --black: #000;
+}
+
+header {
+	background: var(--coral);
+	height: 60px;
+}
+
+.logo-app {
+	z-index: 2;
+}
+
+/* Login Section */
+.questions-login {
+	color: var(--coral); 
+	font-size: 1.2rem; 
+	font-weight: 400;
+}
+
+#loginForm div label{
+	color: var(--coral); 
+	font-weight: 400;
+}
+
+#loginForm div button{
+	background-color: var(--coral); 
+	color: var(--black) !important;
+	font-weight: 400;
+}
+
+
+/* Equipment Section */
+
+#item-dispo{
+	color: var(--coral);  
+	font-size: 1.4rem; 
+	font-weight: 400;
+}
+
+.fas{
+	font-size: 3rem; 
+	opacity: 0.69;
+}
+
+.items{
+	font-weight: 400; 
+	opacity: 0.69;
+}
+
+.nb-items{
+	font-weight: 400; 
+	font-size: 2rem; 
+	opacity: 0.69;
+}
+
+.equipment-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+} 
+
+.equipment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border-color: #ff9994 !important;
+}
+
+.equipment-card:hover .fas {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+.equipment-card:hover .card-title {
+  color: #ff9994 !important;
+  transition: color 0.3s ease;
+}
+
+.equipment-card:hover .display-4 {
+  color: #ff9994 !important;
+  transition: color 0.3s ease;
+}
+
+
+footer {
+  background: var(--coral);
+  /* background-color: #ff9994;???????????????? */
+  padding: 14px 0;
+  margin-top: auto;
+}
+
+footer p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-weight: 400; 
+  opacity: 0.69;
+}

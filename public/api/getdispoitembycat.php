@@ -29,12 +29,12 @@
             $response = [
                 "success" => true,
                 "data" => $items, 
-                "message" => "Connexion réussi"
+                "message" => "Item disponible trouvé pour la catégorie spécifiée avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec l'Id fourni."
+                "message" => "Aucun item disponible trouvé pour la catégorie spécifiée."
             ];
         }
 

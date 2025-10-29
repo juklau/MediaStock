@@ -55,7 +55,7 @@
                         "nom" => $item['nom'],
                         "model" => $item['model'],
                         "statut" => "indisponible",
-                        "date_retour_prévu" => $item['date_retour_prevue']
+                        "date_retour_prévue" => $item['date_retour_prevue']
                     ];
                 }
             }
@@ -70,7 +70,7 @@
                     "nom" => $pret['item_nom'],
                     "model" => $pret['item_model'],
                     "statut" => "en retard",
-                    "date_retour_prévu" => $pret['date_retour_prevue']
+                    "date_retour_prévue" => $pret['date_retour_prevue']
                 ];
             }
         }
@@ -78,7 +78,7 @@
         $response = [
             "success" => true,
             "data" => array_values($result), 
-            "message" => "Connexion réussi"
+            "message" => "Connexion réussie"
         ];
         
 

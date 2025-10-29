@@ -29,12 +29,12 @@
             $response = [
                 "success" => true,
                 "data" => $items, 
-                "message" => "Connexion réussi"
+                "message" => "Item trouvé avec le terme cherché avec succès"
             ];
         }else{
             $response = [
                 "success" => false,
-                "message" => "Aucun donnée trouvée avec le terme cherché."
+                "message" => "Aucun item trouvé avec le terme cherché."
             ];
         }
 
