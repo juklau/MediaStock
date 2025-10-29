@@ -334,6 +334,19 @@ class Item extends BaseModel {
         ]);
     }
 
+    /** Archiver un item */
+    public function archiveItem(int $id): bool {
+         $sql = "UPDATE {$this->table} 
+                SET archived = 1 
+                WHERE id = :id";
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([
+            ":id" => $id
+        ]);
+    }
+
+
       /**
      * récupération l'id
      * 

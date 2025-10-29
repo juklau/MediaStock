@@ -89,7 +89,8 @@ ALTER TABLE
 
 
 INSERT INTO `Administrateur`(`login`, `mot_de_passe_hash`) VALUES
-('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhY');
+('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhY'),
+('test', '$2y$10$h3NbVfBN2BA60Ne5FKdWZO7/1oqcKc4K2vWEGEbPCR/R.Aqfa07aW');
 
 INSERT INTO `Formation`(`formation`) VALUES
 ('ECS1'),
