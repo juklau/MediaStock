@@ -334,29 +334,41 @@ class Item extends BaseModel {
         ]);
     }
 
+    /** Archiver un item */.
+    public function getItemByID(int $id): array|false{
+        $sql = "SELECT * FROM {$this->table} WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([":id" => $id]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function isAvailable(int $itemId): bool {
+        // adapte le nom de table/colonnes si nécessaire (Pret, item_id, date_retour_effective)
+        $sql = "SELECT COUNT(*) FROM Pret WHERE item_id = :item_id AND date_retour_effective IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':item_id' => $itemId]);
+        $count = (int) $stmt->fetchColumn();
+        return ($count === 0);
+    }
+
     /** Archiver un item */
     public function archiveItem(int $id): bool {
         $now = date('Y-m-d H:i:s');
 
-        // Essaye de mettre à jour archived + archived_at si la colonne existe
+        // essaie archived + archived_at, fallback sur archived seul
         $sql = "UPDATE {$this->table} SET archived = 1, archived_at = :now WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         try {
-            $stmt->execute([
-                ':now' => $now,
-                ':id'  => $id
-            ]);
+            $stmt->execute([':now' => $now, ':id' => $id]);
             return ($stmt->rowCount() > 0);
         } catch (\PDOException $e) {
-            // fallback si archived_at n'existe pas : juste archived
             $sql2 = "UPDATE {$this->table} SET archived = 1 WHERE id = :id";
             $stmt2 = $this->db->prepare($sql2);
-            if ($stmt2->execute([':id' => $id])) {
-                return ($stmt2->rowCount() > 0);
-            }
-            return false;
+            $stmt2->execute([':id' => $id]);
+            return ($stmt2->rowCount() > 0);
         }
     }
+    
 
       /**
      * récupération l'id
