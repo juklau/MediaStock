@@ -1,18 +1,26 @@
-// ********************************************************** js page principale **********************************************************************
+// ********************************************************** js pour la **********************************************************************
+
+//.............pour index.html.............//
+
+
+
 // Variable globale pour stocker les matériels chargés depuis l'API
 let items = [];
 
 /**
- * Charger les matériels depuis l'API
+ * Charger les matériels
  */
 async function chargerMateriels() {
   try {
-    items = await API.getMateriels();
-    console.log('Matériels chargés:', items.length);
+    const response = await fetch('/../api/getitemsavailability.php');
+    const data = await response.json();
+    items = data.data || [];
+
     renderItems();
     attachDeleteHandlers();
   } catch (error) {
     console.error('Erreur lors du chargement des matériels:', error);
+
     // Afficher un message d'erreur à l'utilisateur
     const container = document.getElementById("inventoryList");
     if (container) {
@@ -26,6 +34,7 @@ async function chargerMateriels() {
   }
 }
 
+
 /** 
  * Afficher les matériels depuis l'API
  */
@@ -35,31 +44,25 @@ function renderItems() {
   const container = document.getElementById("inventoryList");
   container.innerHTML = "";
 
-  fetch(' /../api/getitemsavailability.php')
-    .then(response => response.json())
-    .then(data => {
-      console.log('All Items:', data);
+  // Créer le tableau filtré pour correspondre à l'ordre d'affichage
+  const filteredItems = items.filter(item => {
+    const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
+    const matchStatut = !statusFilter || item.statut === statusFilter;
+    return matchCategorie && matchStatut;
+  });
 
-      const items = data.data; // les matériels renvoyés par API
+  filteredItems.forEach(item => {
+      const statusClass = `status-${item.statut.toLowerCase()}`;
 
-      items.forEach(item => {
-        // Appliquer les filtres
-        if ((categoryFilter && item.categorie !== categoryFilter) ||
-            (statusFilter && ((item.is_available ? 'disponible' : 'indisponible') !== statusFilter))) {
-          return;
-        }
+      const listItem = document.createElement("div");
+      listItem.className = "list-group-item";
+      listItem.dataset.itemId = item.id;
 
-        const statusClass = `status-${item.statut}`; 
-
-        const listItem = document.createElement("div");
-        listItem.className = "list-group-item";
-        listItem.dataset.itemId = item.id;
-
-        listItem.innerHTML = `
+      listItem.innerHTML = `
           <div class="left">
             <div class="item-icon"><i class="${item.image_url}"></i></div>
             <div class="item-meta">
-              <div><strong>${item.nom}</strong> ${item.model}</div>
+              <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
               <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
             </div>
           </div>
@@ -70,46 +73,75 @@ function renderItems() {
         `;
 
         container.appendChild(listItem);
-      });
+  });
 
-      // Attacher les gestionnaires de clic après le rendu
-      attachClickHandlers();
-    })
-    .catch(error => {
-      console.error('Erreur lors du chargement des matériels :', error);
-      container.innerHTML = `<div class="error">Impossible de charger les matériels.</div>`;
-    });
+  // Attacher les gestionnaires de clic après le rendu
+  attachClickHandlers(filteredItems);
+
+  console.log("Catégories disponibles :", items.map(i => i.categorie));
 }
 
-// Nouvelle fonction pour attacher les gestionnaires de clic sur les items
-function attachClickHandlers() {
-  const listItems = document.querySelectorAll('#inventoryList .list-group-item');
-  const categoryFilter = document.getElementById("categoryFilter").value;
-  const statusFilter = document.getElementById("statusFilter").value;
+
+//attacher les gestionnaires de clic sur les items
+// function attachClickHandlers(filteredItems) {
+//   const listItems = document.querySelectorAll('#inventoryList .list-group-item');
   
-  // Créer le tableau filtré pour correspondre à l'ordre d'affichage
-  const filteredItems = items.filter(item => {
-    return (!categoryFilter || item.categorie === categoryFilter) &&
-           (!statusFilter || item.status === statusFilter);
-  });
+//   listItems.forEach((listItem, index) => {
+//     listItem.style.cursor = 'pointer';
+    
+//     listItem.addEventListener('click', function(e) {
+
+//       // Ne pas ouvrir si on clique sur le bouton de suppression
+//       if (e.target.closest('.trash-btn')) {
+//         return;
+//       }
+      
+//       // Trouver l'item correspondant dans le tableau
+//       if (filteredItems[index]) {
+//         const itemIndex = items.indexOf(filteredItems[index]);
+//         ouvrirFicheProduit(filteredItems[index], itemIndex);
+//       }
+//     });
+//   });
+
+// }
+
+
+//attacher les gestionnaires de clic sur les items
+function attachClickHandlers(filteredItems) {
+  const listItems = document.querySelectorAll('#inventoryList .list-group-item');
   
   listItems.forEach((listItem, index) => {
     listItem.style.cursor = 'pointer';
     
     listItem.addEventListener('click', function(e) {
+
       // Ne pas ouvrir si on clique sur le bouton de suppression
       if (e.target.closest('.trash-btn')) {
-        return;
+        response = 
+        attachDeleteHandlers(itemId);
       }
       
-      // Trouver l'item correspondant dans le tableau
-      if (filteredItems[index]) {
-        const itemIndex = items.indexOf(filteredItems[index]);
-        ouvrirFicheProduit(filteredItems[index], itemIndex);
+      // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
+      const itemId = parseInt(listItem.dataset.itemId);
+      
+      if (itemId) {
+        console.log('Clic sur item ID:', itemId);
+        
+        // Créer un objet item temporaire avec juste l'ID pour la fonction ouvrirFicheProduit
+        const itemTemp = { id: itemId };
+        ouvrirFicheProduit(itemTemp, 0); // Index non utilisé dans la nouvelle version
+      } else {
+        console.error('ID de l\'item non trouvé dans data-item-id');
       }
     });
   });
 }
+
+
+
+
+
 
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
@@ -127,6 +159,8 @@ function attachDeleteHandlers(){
       e.stopPropagation(); // Empêcher l'ouverture de l'offcanvas
       const itemId = parseInt(btn.dataset.id);
       currentItemId = itemId;
+
+
       
       // Trouver l'item dans le tableau
       const item = items.find(i => i.id === itemId);
@@ -173,7 +207,7 @@ window.onload = function(){
 
 
 
-//Scanner QR code pour creer ou restituer un materiel //
+//Scanner QR code pour creer ou restituer un materiel !!!!//
 
 const qrReader = document.getElementById("qr-reader");
 
@@ -241,171 +275,582 @@ async function getHistoriquePrets(materielId) {
 /**
  * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
  */
-async function ajouterPret(materielId, pretData) {
-  try {
-    const pretPayload = {
-      materielId: materielId,
-      emprunteur: pretData.nom + ' ' + pretData.prenom,
-      datePret: pretData.datePret,
-      dateRetour: pretData.dateRetour,
-      etatPret: pretData.etat,
-      intervenant: pretData.intervenant,
-      classe: pretData.classe,
-      notes: pretData.notes
-    };
+// async function ajouterPret(materielId, pretData) {
+//   try {
+//     const pretPayload = {
+//       materielId: materielId,
+//       emprunteur: pretData.nom + ' ' + pretData.prenom,
+//       datePret: pretData.datePret,
+//       dateRetour: pretData.dateRetour,
+//       etatPret: pretData.etat,
+//       intervenant: pretData.intervenant,
+//       classe: pretData.classe,
+//       notes: pretData.notes
+//     };
     
-    await API.ajouterPret(pretPayload);
-    return true;
-  } catch (error) {
-    console.error('Erreur lors de l\'ajout du prêt:', error);
-    throw error;
-  }
-}
+//     await API.ajouterPret(pretPayload);
+//     return true;
+//   } catch (error) {
+//     console.error('Erreur lors de l\'ajout du prêt:', error);
+//     throw error;
+//   }
+// }
 
 /**
  * Mettre à jour un prêt lors de la restitution
+//  */
+// async function mettreAJourRestitution(pretId, etatRetour) {
+//   try {
+//     await API.updatePret(pretId, {
+//       etatRetour: etatRetour,
+//       dateRestitution: new Date().toISOString().split('T')[0]
+//     });
+//     return true;
+//   } catch (error) {
+//     console.error('Erreur lors de la mise à jour de la restitution:', error);
+//     throw error;
+//   }
+// }
+
+/**
+ * =====================================
+ * GESTION DYNAMIQUE DE L'OFFCANVAS 
+ * =====================================
+ * Ouvrir l'offcanvas avec la fiche produit - VERSION DYNAMIQUE
+ * Récupère les données depuis la base de données via les APIs
  */
-async function mettreAJourRestitution(pretId, etatRetour) {
+async function ouvrirFicheProduit(item, itemIndex) {
   try {
-    await API.updatePret(pretId, {
-      etatRetour: etatRetour,
-      dateRestitution: new Date().toISOString().split('T')[0]
-    });
-    return true;
+    // ========== ÉTAPE 1: Récupération des données détaillées de l'item ==========
+    console.log('Chargement des détails pour l\'item ID:', item.id);
+    
+    // Affichage d'un loader pendant le chargement
+    afficherLoaderOffcanvas();
+    
+    // Récupérer les détails complets de l'item depuis l'API
+    const itemDetails = await recupererDetailsItem(item.id);
+    
+    if (!itemDetails) {
+      console.error('Impossible de récupérer les détails de l\'item');
+      afficherErreurOffcanvas('Impossible de charger les détails du matériel');
+      return;
+    }
+
+    // ========== ÉTAPE 2: Remplissage des informations de base ==========
+    remplirInformationsBase(itemDetails);
+
+    // ========== ÉTAPE 3: Génération du QR Code ==========
+    await genererQRCodeDynamique(itemDetails.id);
+
+    // ========== ÉTAPE 4: Chargement de l'historique des prêts ==========
+    await chargerHistoriquePrets(itemDetails.id);
+
+    // ========== ÉTAPE 5: Ouverture de l'offcanvas ==========
+    const offcanvas = new bootstrap.Offcanvas(document.getElementById('ficheProduitOffcanvas'));
+    offcanvas.show();
+    
+    console.log('Offcanvas ouvert avec succès pour:', itemDetails.nom);
+
   } catch (error) {
-    console.error('Erreur lors de la mise à jour de la restitution:', error);
-    throw error;
+    console.error('Erreur lors de l\'ouverture de l\'offcanvas:', error);
+    afficherErreurOffcanvas('Une erreur est survenue lors du chargement');
   }
 }
 
 /**
- * Ouvrir l'offcanvas avec la fiche produit
+ * =====================================
+ * FONCTIONS D'AFFICHAGE ET D'ÉTAT
+ * =====================================
  */
-function ouvrirFicheProduit(item, itemIndex) {
-  // Remplir les informations du produit
-  document.getElementById('ficheNom').textContent = item.nom;
-  
-  // Icône
-  const ficheIcon = document.getElementById('ficheIcon');
-  ficheIcon.innerHTML = `<i class="fas ${item.icone} fa-3x"></i>`;
-  
-  // Afficher le status (disponible/indisponible/retard) ET l'état (Bon/Moyen/Mauvais)
-  const ficheEtat = document.getElementById('ficheEtat');
-  
-  // Badge pour le status
-  let statusBadge = '';
-  switch(item.status) {
-    case 'disponible':
-      statusBadge = '<span class="badge bg-success me-2">Disponible</span>';
-      break;
-    case 'indisponible':
-      statusBadge = '<span class="badge bg-warning me-2">Indisponible</span>';
-      break;
-    case 'retard':
-      statusBadge = '<span class="badge bg-danger me-2">Retard</span>';
-      break;
-  }
-  
-  // Badge pour l'état (Bon/Moyen/Mauvais)
-  const etatClass = item.etat ? item.etat.toLowerCase() : 'bon';
-  const etatBadge = `<span class="badge badge-etat ${etatClass}">${item.etat || 'Bon'}</span>`;
-  
-  // Afficher les deux badges
-  ficheEtat.innerHTML = statusBadge + etatBadge;
-  
-  // Générer le QR code avec l'ID du matériel
-  const materielId = item.id;
-  genererQRCodeFiche(materielId);
-  
-  // Afficher l'historique des prêts
-  afficherHistoriquePrets(materielId);
-  
-  // Ouvrir l'offcanvas
-  const offcanvas = new bootstrap.Offcanvas(document.getElementById('ficheProduitOffcanvas'));
-  offcanvas.show();
-}
 
 /**
- * Générer le QR code dans la fiche produit
+ * Afficher un loader dans l'offcanvas pendant le chargement
  */
-function genererQRCodeFiche(materielId) {
-  const ficheQRCode = document.getElementById('ficheQRCode');
-  ficheQRCode.innerHTML = ''; // Nettoyer
+function afficherLoaderOffcanvas() {
+  // Loader pour le nom
+  document.getElementById('ficheNom').innerHTML = `
+    <div class="placeholder-glow">
+      <span class="placeholder col-8"></span>
+    </div>
+  `;
   
-  // Créer le QR code
-  new QRCode(ficheQRCode, {
-    text: materielId.toString(),
-    width: 150,
-    height: 150,
-    colorDark: "#000000",
-    colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H
-  });
-}
-
-/**
- * Afficher l'historique des prêts dans l'offcanvas
- */
-async function afficherHistoriquePrets(materielId) {
-  const ficheHistorique = document.getElementById('ficheHistorique');
+  // Loader pour les badges
+  document.getElementById('ficheEtat').innerHTML = `
+    <div class="placeholder-glow">
+      <span class="placeholder col-4 me-2"></span>
+      <span class="placeholder col-3"></span>
+    </div>
+  `;
   
-  // Afficher un loader pendant le chargement
-  ficheHistorique.innerHTML = `
-    <div class="text-center py-3">
-      <div class="spinner-border text-coral" role="status">
+  // Loader pour le QR code
+  document.getElementById('ficheQRCode').innerHTML = `
+    <div class="text-center p-4">
+      <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Chargement...</span>
       </div>
     </div>
   `;
   
+  // Loader pour l'historique
+  document.getElementById('ficheHistorique').innerHTML = `
+    <div class="text-center p-3">
+      <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Afficher une erreur dans l'offcanvas
+ */
+function afficherErreurOffcanvas(message) {
+  document.getElementById('ficheNom').textContent = 'Erreur de chargement';
+  document.getElementById('ficheEtat').innerHTML = 
+    '<span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Erreur</span>';
+  document.getElementById('ficheQRCode').innerHTML = `
+    <div class="alert alert-danger small text-center" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>${message}
+    </div>
+  `;
+  document.getElementById('ficheHistorique').innerHTML = `
+    <div class="alert alert-danger small" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>Impossible de charger les données
+    </div>
+  `;
+}
+
+/**
+ * =====================================
+ * RÉCUPÉRATION DES DONNÉES API
+ * =====================================
+ */
+
+/**
+ * Récupérer les détails complets d'un item - VERSION HYBRIDE
+ * Disponibilité depuis getitemsavailability.php + États depuis getoneitem.php
+ */
+async function recupererDetailsItem(itemId) {
   try {
-    const historique = await getHistoriquePrets(materielId);
+    console.log('🔍 Récupération hybride pour item ID:', itemId);
     
-    if (historique.length === 0) {
-      ficheHistorique.innerHTML = `
-        <div class="text-center text-muted py-3">
-          <i class="fas fa-inbox fa-2x mb-2"></i>
-          <p>Aucun prêt enregistré pour ce matériel</p>
-        </div>
-      `;
-      return;
+    // ========== ÉTAPE 1: Récupérer la disponibilité depuis getitemsavailability.php ==========
+    let itemAvailability = null;
+    try {
+      const responseList = await fetch('../api/getitemsavailability.php');
+      if (responseList.ok) {
+        const resultList = await responseList.json();
+        const items = resultList.data || resultList;
+        itemAvailability = items.find(item => item.id == itemId);
+        
+        if (itemAvailability) {
+          console.log('✅ Disponibilité récupérée depuis getitemsavailability.php:', {
+            id: itemAvailability.id,
+            nom: itemAvailability.nom,
+            is_available: itemAvailability.is_available,
+            statut: itemAvailability.statut
+          });
+        }
+      }
+    } catch (error) {
+      console.warn('⚠ Erreur getitemsavailability.php:', error);
     }
     
-    // Afficher les prêts (du plus récent au plus ancien)
-    let html = '<div class="list-group">';
+    // ========== ÉTAPE 2: Récupérer les détails complets depuis getoneitem.php ==========
+    let itemDetails = null;
+    try {
+      const responseDetails = await fetch(`../api/getoneitem.php?id=${itemId}`);
+      if (responseDetails.ok) {
+        const resultDetails = await responseDetails.json();
+        if (resultDetails.success && resultDetails.data) {
+          itemDetails = resultDetails.data;
+          console.log('✅ Détails récupérés depuis getoneitem.php:', {
+            id: itemDetails.id,
+            nom: itemDetails.nom,
+            etat: itemDetails.etat
+          });
+        }
+      }
+    } catch (error) {
+      console.warn('⚠ Erreur getoneitem.php:', error);
+    }
     
-    historique.reverse().forEach((pret, index) => {
-      const estRestitue = pret.dateRestitution !== null;
-      const badgeClass = estRestitue ? 'bg-secondary' : 'bg-primary';
-      const badgeText = estRestitue ? 'Restitué' : 'En cours';
+    // ========== ÉTAPE 3: Fusionner les données ==========
+    if (itemAvailability || itemDetails) {
+      // Prendre les détails de getoneitem.php comme base
+      const finalItem = itemDetails || itemAvailability;
+      
+      // Remplacer la disponibilité par celle de getitemsavailability.php si disponible
+      if (itemAvailability && finalItem) {
+        finalItem.is_available = itemAvailability.is_available;
+        finalItem.statut = itemAvailability.statut;
+        console.log('🔗 Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
+      }
+      
+      console.log('✅ RÉSULTAT FINAL:', finalItem);
+      return finalItem;
+    } else {
+      console.error('❌ Aucune donnée récupérée des deux APIs');
+      return null;
+    }
     
+  } catch (error) {
+    console.error('💥 ERREUR GÉNÉRALE recupererDetailsItem:', error);
+    return null;
+  }
+}
+
+/**
+ * Récupérer l'historique des prêts depuis l'API getitemprethistory.php
+ */
+async function recupererHistoriquePrets(itemId) {
+  try {
+    const response = await fetch(`../api/getitemprethistory.php?id=${itemId}`);
+    const result = await response.json();
+    
+    if (result.success && result.data) {
+      console.log('Historique prêts récupéré:', result.data);
+      return result.data;
+    } else {
+      console.log('Aucun historique trouvé pour cet item:', result.message);
+      return [];
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'historique:', error);
+    return [];
+  }
+}
+
+/**
+ * =====================================
+ * REMPLISSAGE DES INFORMATIONS
+ * =====================================
+ */
+
+/**
+ * Remplir les informations de base du matériel dans l'offcanvas
+ */
+function remplirInformationsBase(itemDetails) {
+  // ========== DÉBOGAGE : Voir toutes les propriétés reçues ==========
+  console.log('=== DÉBOGAGE ITEM DETAILS ===');
+  console.log('Données complètes reçues:', itemDetails);
+  console.log('Disponibilité (is_available):', itemDetails.is_available);
+  console.log('État physique (etat):', itemDetails.etat);
+  console.log('Statut:', itemDetails.statut);
+  console.log('==============================');
+
+  // ========== Nom du matériel ==========
+  const ficheNom = document.getElementById('ficheNom');
+  const nomComplet = itemDetails.model ? 
+    `${itemDetails.nom} ${itemDetails.model}` : 
+    itemDetails.nom;
+  ficheNom.textContent = nomComplet;
+
+  // ========== Icône du matériel ==========
+  const ficheIcon = document.getElementById('ficheIcon');
+  const iconClass = itemDetails.image_url || 'fa-solid fa-box';
+  ficheIcon.innerHTML = `<i class="${iconClass} fa-3x"></i>`;
+
+  // ========== Badges d'état et de disponibilité ==========
+  const ficheEtat = document.getElementById('ficheEtat');
+  
+  // Badge de disponibilité (calculé selon la logique métier)
+  const badgeDisponibilite = genererBadgeDisponibilite(itemDetails);
+  
+  // Badge d'état physique (bon/moyen/mauvais)
+  const badgeEtatPhysique = genererBadgeEtatPhysique(itemDetails.etat);
+  
+  // Afficher les deux badges
+  ficheEtat.innerHTML = badgeDisponibilite + badgeEtatPhysique;
+  
+  console.log('Informations de base remplies pour:', itemDetails.nom);
+  console.log('Badge disponibilité généré:', badgeDisponibilite);
+  console.log('Badge état généré:', badgeEtatPhysique);
+}
+
+/**
+ * Générer le badge de disponibilité selon la logique métier - VERSION OPTIMISÉE
+ */
+function genererBadgeDisponibilite(itemDetails) {
+  console.log('=== DÉBOGAGE DISPONIBILITÉ OPTIMISÉ ===');
+  console.log('Tous les champs de l\'item:', Object.keys(itemDetails));
+  console.log('is_available:', itemDetails.is_available, 'Type:', typeof itemDetails.is_available);
+  console.log('disponible:', itemDetails.disponible, 'Type:', typeof itemDetails.disponible);
+  console.log('statut:', itemDetails.statut, 'Type:', typeof itemDetails.statut);
+  console.log('========================================');
+  
+  let isAvailable = false;
+  let raisonDisponibilite = 'Aucun champ trouvé';
+  
+  // ========== PRIORITÉ 1 : is_available (utilisé dans renderItems ligne 38-39) ==========
+  if (itemDetails.is_available !== undefined) {
+    // Conversion en booléen robuste
+    if (typeof itemDetails.is_available === 'boolean') {
+      isAvailable = itemDetails.is_available;
+    } else if (typeof itemDetails.is_available === 'number') {
+      isAvailable = itemDetails.is_available === 1;
+    } else if (typeof itemDetails.is_available === 'string') {
+      isAvailable = itemDetails.is_available === '1' || itemDetails.is_available.toLowerCase() === 'true';
+    }
+    raisonDisponibilite = `is_available = ${itemDetails.is_available} (${typeof itemDetails.is_available})`;
+  }
+  
+  // ========== PRIORITÉ 2 : disponible (au cas où l'API utilise ce champ) ==========
+  else if (itemDetails.disponible !== undefined) {
+    if (typeof itemDetails.disponible === 'boolean') {
+      isAvailable = itemDetails.disponible;
+    } else if (typeof itemDetails.disponible === 'number') {
+      isAvailable = itemDetails.disponible === 1;
+    } else if (typeof itemDetails.disponible === 'string') {
+      isAvailable = itemDetails.disponible === '1' || itemDetails.disponible.toLowerCase() === 'true';
+    }
+    raisonDisponibilite = `disponible = ${itemDetails.disponible} (${typeof itemDetails.disponible})`;
+  }
+  
+  // ========== PRIORITÉ 3 : statut en fallback (utilisé dans renderItems ligne 52) ==========
+  else if (itemDetails.statut !== undefined) {
+    isAvailable = itemDetails.statut === 'disponible';
+    raisonDisponibilite = `statut = ${itemDetails.statut}`;
+  }
+  
+  console.log('Disponibilité finale:', isAvailable, '- Raison:', raisonDisponibilite);
+  
+  // ========== Génération du badge avec détection de retard ==========
+  if (isAvailable) {
+    return '<span class="badge bg-success me-2"><i class="fas fa-check-circle me-1"></i>Disponible</span>';
+  } else {
+    // Si statut indique un retard spécifique, l'afficher
+    if (itemDetails.statut === 'retard' || itemDetails.statut === 'en_retard' || itemDetails.statut === 'retard_pret') {
+      return '<span class="badge bg-danger me-2"><i class="fas fa-exclamation-triangle me-1"></i>En retard</span>';
+    } else {
+      return '<span class="badge bg-warning text-dark me-2"><i class="fas fa-clock me-1"></i>Indisponible</span>';
+    }
+  }
+}
+
+/**
+ * Générer le badge d'état physique du matériel
+ */
+function genererBadgeEtatPhysique(etat) {
+  console.log('Génération badge état physique pour:', etat);
+  
+  // Gérer les cas où l'état pourrait être null, undefined ou vide
+  const etatNormalise = (etat && etat.toString().toLowerCase()) || 'bon';
+  
+  let badgeClass = '';
+  let iconClass = '';
+  let texte = '';
+  
+  switch (etatNormalise) {
+    case 'bon':
+    case 'bonne':
+    case 'good':
+      badgeClass = 'bg-success';
+      iconClass = 'fas fa-thumbs-up';
+      texte = 'Bon état';
+      break;
+    case 'moyen':
+    case 'moyenne':
+    case 'medium':
+    case 'average':
+      badgeClass = 'bg-warning text-dark';
+      iconClass = 'fas fa-exclamation-triangle';
+      texte = 'État moyen';
+      break;
+    case 'mauvais':
+    case 'mauvaise':
+    case 'bad':
+    case 'poor':
+      badgeClass = 'bg-danger';
+      iconClass = 'fas fa-thumbs-down';
+      texte = 'Mauvais état';
+      break;
+    default:
+      badgeClass = 'bg-secondary';
+      iconClass = 'fas fa-question';
+      texte = `État: ${etat || 'Non défini'}`;
+  }
+  
+  console.log('Badge état généré:', texte);
+  return `<span class="badge ${badgeClass}"><i class="${iconClass} me-1"></i>${texte}</span>`;
+}
+
+/**
+ * =====================================
+ * GESTION DU QR CODE DYNAMIQUE
+ * =====================================
+ */
+
+/**
+ * Générer le QR code dynamiquement dans la fiche produit
+ */
+async function genererQRCodeDynamique(materielId) {
+  try {
+    const ficheQRCode = document.getElementById('ficheQRCode');
+    
+    // Nettoyer le conteneur
+    ficheQRCode.innerHTML = '';
+    
+    // Créer un conteneur pour le QR code
+    const qrContainer = document.createElement('div');
+    qrContainer.style.display = 'flex';
+    qrContainer.style.justifyContent = 'center';
+    qrContainer.style.alignItems = 'center';
+    ficheQRCode.appendChild(qrContainer);
+    
+    // Générer le QR code avec l'ID du matériel (même logique que materiel_test.js)
+    new QRCode(qrContainer, {
+      text: materielId.toString(),
+      width: 150,
+      height: 150,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    
+    console.log('QR Code généré pour l\'ID:', materielId);
+    
+  } catch (error) {
+    console.error('Erreur lors de la génération du QR Code:', error);
+    document.getElementById('ficheQRCode').innerHTML = 
+      '<div class="alert alert-danger small">Erreur génération QR Code</div>';
+  }
+}
+
+/**
+ * =====================================
+ * GESTION DE L'HISTORIQUE DES PRÊTS
+ * =====================================
+ */
+
+/**
+ * Charger et afficher l'historique des prêts
+ */
+async function chargerHistoriquePrets(itemId) {
+  const ficheHistorique = document.getElementById('ficheHistorique');
+  
+  try {
+    // Récupérer l'historique depuis l'API
+    const historique = await recupererHistoriquePrets(itemId);
+    
+    // Afficher l'historique
+    afficherHistoriquePretsDynamique(historique);
+    
+  } catch (error) {
+    console.error('Erreur lors du chargement de l\'historique:', error);
+    ficheHistorique.innerHTML = `
+      <div class="alert alert-danger small" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        Erreur lors du chargement de l'historique
+      </div>
+    `;
+  }
+}
+
+/**
+ * Afficher l'historique des prêts dynamiquement dans l'offcanvas
+ * Cette fonction utilise les vraies données de la base de données
+ */
+function afficherHistoriquePretsDynamique(historique) {
+  const ficheHistorique = document.getElementById('ficheHistorique');
+  
+  // ========== Cas 1: Aucun historique disponible ==========
+  if (!historique || historique.length === 0) {
+    ficheHistorique.innerHTML = `
+      <div class="text-center text-muted py-4">
+        <i class="fas fa-history fa-2x mb-3 opacity-50"></i>
+        <h6>Aucun prêt enregistré</h6>
+        <p class="small mb-0">Ce matériel n'a jamais été emprunté</p>
+      </div>
+    `;
+    return;
+  }
+
+  // ========== Cas 2: Historique disponible ==========
+  console.log('Affichage de l\'historique:', historique);
+  
+  // Trier par date de prêt (plus récent en premier)
+  const historiqueTrié = [...historique].sort((a, b) => 
+    new Date(b.date_pret || b.datePret) - new Date(a.date_pret || a.datePret)
+  );
+  
+  let html = '<div class="list-group list-group-flush">';
+  
+  historiqueTrié.forEach((pret, index) => {
+    // ========== Analyse des données de prêt ==========
+    const emprunteur = pret.nom_emprunteur || pret.emprunteur || 'Emprunteur inconnu';
+    const datePret = pret.date_pret || pret.datePret || 'Non définie';
+    const dateRetourPrevue = pret.date_retour_prevue || pret.dateRetourPrevue || pret.dateRetour || 'Non définie';
+    const dateRetourEffectif = pret.date_restitution || pret.dateRestitution || null;
+    const etatPret = pret.etat_pret || pret.etatPret || 'Bon';
+    const etatRetour = pret.etat_retour || pret.etatRetour || null;
+    
+    // ========== Détermination du statut ==========
+    const estRestitue = dateRetourEffectif !== null;
+    const estEnRetard = !estRestitue && new Date(dateRetourPrevue) < new Date();
+    
+    // Badges de statut
+    let badgeStatut = '';
+    if (estRestitue) {
+      badgeStatut = '<span class="badge bg-secondary"><i class="fas fa-check me-1"></i>Restitué</span>';
+    } else if (estEnRetard) {
+      badgeStatut = '<span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>En retard</span>';
+    } else {
+      badgeStatut = '<span class="badge bg-primary"><i class="fas fa-clock me-1"></i>En cours</span>';
+    }
+
+    // ========== Génération du HTML pour ce prêt ==========
     html += `
-      <div class="list-group-item">
+      <div class="list-group-item ${index === 0 ? 'border-top-0' : ''}">
+        
+        <!-- En-tête avec emprunteur et statut -->
         <div class="d-flex justify-content-between align-items-start mb-2">
-          <div>
-            <strong>${pret.emprunteur}</strong>
-            <span class="badge ${badgeClass} ms-2">${badgeText}</span>
+          <div class="fw-bold text-dark">
+            <i class="fas fa-user me-1"></i>${emprunteur}
+          </div>
+          ${badgeStatut}
+        </div>
+        
+        <!-- Dates de prêt -->
+        <div class="small text-muted mb-2">
+          <div class="row g-0">
+            <div class="col-sm-6">
+              <i class="fas fa-calendar-plus me-1 text-success"></i>
+              <strong>Prêt:</strong> ${formatDateFrancaise(datePret)}
+            </div>
+            <div class="col-sm-6">
+              <i class="fas fa-calendar-minus me-1 text-warning"></i>
+              <strong>Retour prévu:</strong> ${formatDateFrancaise(dateRetourPrevue)}
+            </div>
           </div>
         </div>
         
-        <div class="small mb-2">
-          <i class="fas fa-calendar-alt me-1"></i>
-          <strong>Prêt:</strong> ${pret.datePret} 
-          <i class="fas fa-arrow-right mx-2"></i>
-          <strong>Retour prévu:</strong> ${pret.dateRetour}
+        <!-- États du matériel -->
+        <div class="d-flex align-items-center gap-2 small">
+          <span class="text-muted">État:</span>
+          ${genererBadgeEtatPret(etatPret)}
+          ${estRestitue ? `
+            <i class="fas fa-arrow-right text-muted mx-1"></i>
+            ${genererBadgeEtatPret(etatRetour)}
+          ` : `
+            <i class="fas fa-arrow-right text-muted mx-1"></i>
+            <span class="text-muted fst-italic">En cours...</span>
+          `}
         </div>
         
-        <div class="small">
-          <span class="badge badge-etat ${pret.etatPret.toLowerCase()}">${pret.etatPret}</span>
-          <span class="mx-2">→</span>
-          ${estRestitue 
-            ? `<span class="badge badge-etat ${pret.etatRetour.toLowerCase()}">${pret.etatRetour}</span>` 
-            : '<span class="text-muted">En attente de restitution</span>'}
-        </div>
-        
+        <!-- Date de restitution si applicable -->
         ${estRestitue ? `
-          <div class="small text-muted mt-1">
-            <i class="fas fa-check-circle me-1"></i>Restitué le ${pret.dateRestitution}
+          <div class="small text-success mt-2">
+            <i class="fas fa-check-circle me-1"></i>
+            <strong>Restitué le:</strong> ${formatDateFrancaise(dateRetourEffectif)}
+          </div>
+        ` : ''}
+        
+        <!-- Alerte retard si applicable -->
+        ${estEnRetard ? `
+          <div class="small text-danger mt-2">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            <strong>Retard de ${calculerJoursRetard(dateRetourPrevue)} jour(s)</strong>
           </div>
         ` : ''}
       </div>
@@ -414,14 +859,62 @@ async function afficherHistoriquePrets(materielId) {
   
   html += '</div>';
   ficheHistorique.innerHTML = html;
+}
+
+/**
+ * =====================================
+ * FONCTIONS UTILITAIRES POUR L'HISTORIQUE
+ * =====================================
+ */
+
+/**
+ * Formater une date en français (DD/MM/YYYY)
+ */
+function formatDateFrancaise(dateStr) {
+  if (!dateStr) return 'Non définie';
   
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('fr-FR');
   } catch (error) {
-    console.error('Erreur lors de l\'affichage de l\'historique:', error);
-    ficheHistorique.innerHTML = `
-      <div class="alert alert-danger" role="alert">
-        Erreur lors du chargement de l'historique
-      </div>
-    `;
+    return dateStr; // Retourner la chaîne originale si le formatage échoue
+  }
+}
+
+/**
+ * Générer un badge pour l'état d'un prêt/restitution
+ */
+function genererBadgeEtatPret(etat) {
+  if (!etat) return '<span class="badge bg-secondary">Non défini</span>';
+  
+  const etatNormalise = etat.toLowerCase();
+  
+  switch (etatNormalise) {
+    case 'bon':
+      return '<span class="badge bg-success">Bon</span>';
+    case 'moyen':
+      return '<span class="badge bg-warning text-dark">Moyen</span>';
+    case 'mauvais':
+      return '<span class="badge bg-danger">Mauvais</span>';
+    default:
+      return `<span class="badge bg-info">${etat}</span>`;
+  }
+}
+
+/**
+ * Calculer le nombre de jours de retard
+ */
+function calculerJoursRetard(dateRetourPrevue) {
+  if (!dateRetourPrevue) return 0;
+  
+  try {
+    const aujourdhui = new Date();
+    const dateRetour = new Date(dateRetourPrevue);
+    const diffTime = aujourdhui - dateRetour;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return Math.max(0, diffDays);
+  } catch (error) {
+    return 0;
   }
 }
 
