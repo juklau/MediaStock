@@ -5,14 +5,14 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    try{
+    try{ 
 
         // instancier le model Item, le model Pret
         $itemModel = new Models\Item();
         $pretModel = new Models\Pret(); 
 
        $disponibles = $itemModel->getAvailableItemNames();
-       $indisponibles = $itemModel->afficheItemIndisponible();
+       $indisponibles = $itemModel->afficheItemIndisponible(); 
        $enretards = $pretModel->getOverdueLoans();
 
         // construction un tableau associatif pour éviter les doublons
@@ -27,7 +27,8 @@
                 "nom" => $item['nom'],
                 "model" => $item['model'],
                 "statut" => "disponible",
-                "categorie" => $item['categorie']
+                "categorie" => $item['categorie'],
+                "archived" => $item['archived']
             ];
         }
 
@@ -44,7 +45,8 @@
                     "model" => $item['model'],
                     "statut" => "indisponible",
                     "date_retour_prévu" => $item['date_retour_prevue'],
-                    "categorie" => $item['categorie']
+                    "categorie" => $item['categorie'],
+                    "archived" => $item['archived']
                 ];
             }
         }
@@ -58,9 +60,10 @@
                 "id" => $pret['id'],
                 "nom" => $pret['item_nom'],
                 "model" => $pret['item_model'],
-                "statut" => "en retard",
+                "statut" => "retard",
                 "date_retour_prévu" => $pret['date_retour_prevue'],
-                "categorie" => $pret['categorie']
+                "categorie" => $pret['categorie'],
+                "archived" => $pret['archived']
             ];
         }
 

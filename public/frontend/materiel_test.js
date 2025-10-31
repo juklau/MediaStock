@@ -40,19 +40,24 @@ function choisirMateriel(icon) {                  //..  Choixcat.html
       window.location.href = "materiel.html";
 }
 
-const selectedIcon = localStorage.getItem("selectedIcon");
-const iconContainer = document.getElementById("icon-container");
 
-if (selectedIcon && iconContainer) {
-  iconContainer.innerHTML = `
-    <i class="fas fa-${selectedIcon}" 
-       style="font-size: 5rem; color: #00; opacity: 0.8;"></i>
-  `;
-} else {
-  iconContainer.innerHTML = `
-    <p class="text-center text-muted">Aucun matériel sélectionné.</p>
-  `;
-}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const selectedIcon = localStorage.getItem("selectedIcon");
+  const iconContainer = document.getElementById("icon-container");
+
+  if (selectedIcon && iconContainer) {
+    iconContainer.innerHTML = `
+      <i class="fas fa-${selectedIcon}" 
+         style="font-size: 5rem; color: #00; opacity: 0.8;"></i>
+    `;
+  } else if (iconContainer) {
+    iconContainer.innerHTML = `
+      <p class="text-center text-muted">Aucun matériel sélectionné.</p>
+    `;
+  }
+});
+
 
 
 // ============================================================
@@ -319,7 +324,7 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     const icon = localStorage.getItem("selectedIcon");
     const categorie = localStorage.getItem("selectedCategory");
     // const qr_code = genererQRCode(categorie).text;
-    const icon = localStorage.getItem("selectedIcon");
+   
 
     if (!nom || !icon ) {
       alert("Veuillez saisir le nom du matériel.");
