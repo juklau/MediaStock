@@ -238,6 +238,8 @@ function startQrScan(targetPage) {
 document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
 document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
 
+
+// archivage d'un item
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('.btn-trash');
   if (!btn) return;
@@ -273,6 +275,7 @@ document.addEventListener('click', function (e) {
   });
 });
 
+
 // **************************************************** fin js page principale **********************************************************************
 
 
@@ -294,16 +297,16 @@ document.addEventListener('click', function (e) {
 // ********************************************************** js fiche produit (offcanvas) **********************************************************
 
 /**
- * Récupérer l'historique des prêts via l'API
+ * Récupérer l'historique des prêts via l'API ?????????????????????????????????????????
  */
-async function getHistoriquePrets(materielId) {
-  try {
-    return await API.getPretsByMaterielId(materielId);
-  } catch (error) {
-    console.error('Erreur lors du chargement de l\'historique:', error);
-    return [];
-  }
-}
+// async function getHistoriquePrets(materielId) {
+//   try {
+//     return await API.getPretsByMaterielId(materielId);
+//   } catch (error) {
+//     console.error('Erreur lors du chargement de l\'historique:', error);
+//     return [];
+//   }
+// }
 
 /**
  * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
