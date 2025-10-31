@@ -150,7 +150,33 @@ class Emprunteur extends BaseModel {
         return $stmt->fetchAll();
     }
 
+
+    /**
+     * Vérifie si un emprunteur existe déjà dans la base
+     * (même nom et prénom, insensible à la casse et aux espaces)
+     * 
+     * @param string $nom
+     * @param string $prenom
+     * @return array|false Renvoie un tableau avec les infos de l’emprunteur s’il existe, sinon false
+     */
+    public function findExistingEmprunteur(string $nom, string $prenom): array|false {
+
+        $sql = "SELECT *
+                FROM {$this->table}
+                WHERE LOWER(TRIM(emprunteur_nom)) = LOWER(TRIM(:nom))
+                AND LOWER(TRIM(emprunteur_prenom)) = LOWER(TRIM(:prenom))
+                LIMIT 1";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            ':nom' => $nom,
+            ':prenom' => $prenom
+        ]);
+
+        return $stmt->fetch() ?: false;
+    }
     
+
      /**
      * ajouter un emprunteur (formation_id facultatif pour intervenant) => OK
      * 

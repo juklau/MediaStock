@@ -131,9 +131,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Une erreur est survenue lors du chargement du prêt.");
     }
 
-    // =================================================================
-    // ========== clôturer un prêt actif ===== =========================
-    // =================================================================
+    // ================================================================
+    // ========== clôturer un prêt actif ==============================
+    // ================================================================
     
     // 
     const formReturn = document.getElementById("returnForm");
@@ -188,29 +188,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           const commentaire = document.getElementById("commentaireReturn")?.value.trim() || "";
 
 
-          // Mettre à jour l'état de l'item =>POST
-          const updateEtatPayload = {
-            id: itemId,
-            etat: etatFin 
-          };
-
-          const resUpdate = await fetch("/api/updateitem.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updateEtatPayload)
-          });
-
-          const rawUpdate = await resUpdate.text();
-          console.log("Réponse brute de updateitem.php :", rawUpdate);
-
-          const resultUpdate = JSON.parse(rawUpdate);
-
-          if (!resultUpdate.success) {
-            alert("Erreur lors de la mise à jour de l'état de l'item : " + resultUpdate.message);
-            return;
-          }
-
-
           // Clôturer le prêt avec un commentaire => POST
           const cloturePayload = {
             id: itemId,
@@ -244,8 +221,31 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
           }
 
+
+           // Mettre à jour l'état de l'item, si la clôture est réussie =>POST
+          const updateEtatPayload = {
+            id: itemId,
+            etat: etatFin 
+          };
+
+          const resUpdate = await fetch("/api/updateitem.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updateEtatPayload)
+          });
+
+          const rawUpdate = await resUpdate.text();
+          console.log("Réponse brute de updateitem.php :", rawUpdate);
+
+          const resultUpdate = JSON.parse(rawUpdate);
+
+          if (!resultUpdate.success) {
+            alert("Erreur lors de la mise à jour de l'état de l'item : " + resultUpdate.message);
+            return;
+          }
+
           
-          // Afficher le modal de succès si tout a réussi
+          // Afficher le modal de succès si tout se passe bien
           const modal = new bootstrap.Modal(document.getElementById("successModalReturn"));
           modal.show();
 
