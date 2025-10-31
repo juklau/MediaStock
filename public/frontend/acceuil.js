@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Déclencher l'animation
     setTimeout(animateCards, 100);
     window.addEventListener('scroll', animateCards);
-});
+}); 
 
 // Gestion des interactions avec les équipements
 document.addEventListener('DOMContentLoaded', function() {

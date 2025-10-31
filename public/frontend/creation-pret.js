@@ -178,12 +178,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // console.log("réponse de addemprunteur.php", resultFormation);
+                // console.log("réponse de getidbynameformation.php", resultFormation);
 
                 formationId = parseInt(resultFormation.formation_id);
             }
 
-
+ 
             // Création de l’emprunteur
             const emprunteurPayload = {
                 emprunteur_nom: nom,

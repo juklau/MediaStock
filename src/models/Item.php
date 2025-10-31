@@ -197,14 +197,15 @@ class Item extends BaseModel {
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     } 
 
-    
+     
     /**
      * Afficher les noms et modèles des items disponibles (non prêtés actuellement)
      * 
      * @return array|false
      */
     public function getAvailableItemNames(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, c.categorie AS categorie
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, 
+                    c.categorie AS categorie
                 FROM {$this->table} i
                 INNER JOIN Categorie c ON i.categorie_id = c.id
                 -- si la sous-requête ne trouve aucune ligne correspondante.
@@ -230,7 +231,7 @@ class Item extends BaseModel {
      * @return array|false
      */
     public function afficheItemIndisponible(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, 
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived,
                     p.date_retour_prevue,
                     c.categorie AS categorie
                 FROM {$this->table} i
@@ -319,10 +320,11 @@ class Item extends BaseModel {
         return false;
     }
 
+
     /**
      * Supprimer un item
      * 
-     * @param int $itemId
+     * @param int => $itemId
      * @return bool
      */
     public function deleteItem(int $id): bool {
@@ -334,41 +336,24 @@ class Item extends BaseModel {
         ]);
     }
 
-    /** Archiver un item */.
-    public function getItemByID(int $id): array|false{
-        $sql = "SELECT * FROM {$this->table} WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([":id" => $id]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
 
-    public function isAvailable(int $itemId): bool {
-        // adapte le nom de table/colonnes si nécessaire (Pret, item_id, date_retour_effective)
-        $sql = "SELECT COUNT(*) FROM Pret WHERE item_id = :item_id AND date_retour_effective IS NULL";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':item_id' => $itemId]);
-        $count = (int) $stmt->fetchColumn();
-        return ($count === 0);
-    }
-
-    /** Archiver un item */
+    /**
+     * Archiver un item
+     * 
+     * @param int $id => itemId
+     * @return bool
+     */
     public function archiveItem(int $id): bool {
-        $now = date('Y-m-d H:i:s');
+         $sql = "UPDATE {$this->table} 
+                SET archived = 1 
+                WHERE id = :id";
 
-        // essaie archived + archived_at, fallback sur archived seul
-        $sql = "UPDATE {$this->table} SET archived = 1, archived_at = :now WHERE id = :id";
         $stmt = $this->db->prepare($sql);
-        try {
-            $stmt->execute([':now' => $now, ':id' => $id]);
-            return ($stmt->rowCount() > 0);
-        } catch (\PDOException $e) {
-            $sql2 = "UPDATE {$this->table} SET archived = 1 WHERE id = :id";
-            $stmt2 = $this->db->prepare($sql2);
-            $stmt2->execute([':id' => $id]);
-            return ($stmt2->rowCount() > 0);
-        }
+        return $stmt->execute([
+            ":id" => $id
+        ]);
     }
-    
+
 
       /**
      * récupération l'id
