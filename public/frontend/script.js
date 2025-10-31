@@ -118,7 +118,7 @@ function attachClickHandlers(filteredItems) {
 
       // Ne pas ouvrir si on clique sur le bouton de suppression
       if (e.target.closest('.trash-btn')) {
-        return;
+        attachDeleteHandlers(itemId);
       }
       
       // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
@@ -158,6 +158,8 @@ function attachDeleteHandlers(){
       e.stopPropagation(); // Empêcher l'ouverture de l'offcanvas
       const itemId = parseInt(btn.dataset.id);
       currentItemId = itemId;
+
+
       
       // Trouver l'item dans le tableau
       const item = items.find(i => i.id === itemId);
@@ -256,8 +258,10 @@ document.addEventListener('click', function (e) {
     if (data.success) {
       // supprimer la ligne ou marquer comme archivé
       const row = btn.closest('.item-row') || btn.closest('tr');
-      if (row) row.remove();
-      else btn.remove();
+      if (row) 
+        row.remove();
+      else 
+        btn.remove();
       alert(data.message);
     } else {
       alert('Erreur : ' + (data.message || 'Archiver impossible'));
@@ -809,11 +813,11 @@ function afficherHistoriquePretsDynamique(historique) {
   
   historiqueTrié.forEach((pret, index) => {
     // ========== Analyse des données de prêt ==========
-    const emprunteur = pret.nom_emprunteur || pret.emprunteur || 'Emprunteur inconnu';
-    const datePret = pret.date_pret || pret.datePret || 'Non définie';
+    const emprunteur = pret.emprunteur_nom || pret.emprunteur_prenom || 'Emprunteur inconnu';
+    const datePret = pret.date_sortie || pret.datePret || 'Non définie';
     const dateRetourPrevue = pret.date_retour_prevue || pret.dateRetourPrevue || pret.dateRetour || 'Non définie';
-    const dateRetourEffectif = pret.date_restitution || pret.dateRestitution || null;
-    const etatPret = pret.etat_pret || pret.etatPret || 'Bon';
+    const dateRetourEffectif = pret.date_retour_effective || pret.dateRestitution || null;
+    const etatPret = pret.etat || pret.etat_pret || 'Bon';
     const etatRetour = pret.etat_retour || pret.etatRetour || null;
     
     // ========== Détermination du statut ==========

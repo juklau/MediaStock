@@ -60,7 +60,7 @@
                 "id" => $pret['id'],
                 "nom" => $pret['item_nom'],
                 "model" => $pret['item_model'],
-                "statut" => "en retard",
+                "statut" => "retard",
                 "date_retour_prévu" => $pret['date_retour_prevue'],
                 "categorie" => $pret['categorie'],
                 "archived" => $pret['archived']

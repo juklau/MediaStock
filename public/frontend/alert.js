@@ -120,7 +120,7 @@ if (username === '' || password === '') {
 document.addEventListener('DOMContentLoaded', async () => {
 
     //lancer une requête HTTP GET => reponse en json
-    fetch('/../api/getnbdispoparcat.php')
+    fetch('../api/getnbdispoparcat.php')
 
     // convertir la réponse en objet JS => p.ex.: [{ categorie: "Informatique", disponible_count: 12 },..]
     .then(response => response.json())
