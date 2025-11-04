@@ -210,10 +210,11 @@ window.onload = function(){
 
 const qrReader = document.getElementById("qr-reader");
 
+
 function startQrScan(targetPage) {
   qrReader.style.display = "block";
 
-  const html5QrCode = new Html5Qrcode("qr-reader");
+  html5QrCode = new Html5Qrcode("qr-reader");
 
   html5QrCode.start(
     { facingMode: "environment" },
@@ -238,6 +239,9 @@ function startQrScan(targetPage) {
 document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
 document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
 
+
+
+// archivage d'un item
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('.btn-trash');
   if (!btn) return;

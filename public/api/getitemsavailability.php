@@ -9,7 +9,7 @@
 
         // instancier le model Item, le model Pret
         $itemModel = new Models\Item();
-        $pretModel = new Models\Pret(); 
+        $pretModel = new Models\Pret();  
 
        $disponibles = $itemModel->getAvailableItemNames();
        $indisponibles = $itemModel->afficheItemIndisponible(); 
@@ -51,7 +51,7 @@
             }
         }
 
-        // ajouter les items qui sont en retard
+        // ajouter les items qui sont en "retard"
         foreach($enretards as $pret){
             $key = $pret['image_url'] . '|' . $pret['id'] . '|' . $pret['item_nom'] . '|' . $pret['item_model'];
 
