@@ -2,6 +2,8 @@
 
 //.............pour index.html.............//
 
+
+
 // Variable globale pour stocker les matériels chargés depuis l'API
 let items = [];
 
@@ -44,16 +46,10 @@ function renderItems() {
 
   // Créer le tableau filtré pour correspondre à l'ordre d'affichage
   const filteredItems = items.filter(item => {
-      const notArchived = item.archived === 0 || item.archived === false;
-      const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
-      const matchStatut = !statusFilter || item.statut === statusFilter;
-      return notArchived && matchCategorie && matchStatut;
+    const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
+    const matchStatut = !statusFilter || item.statut === statusFilter;
+    return matchCategorie && matchStatut;
   });
-
-   if (filteredItems.length === 0) {
-      container.innerHTML = `<div class="text-muted text-center">Aucun matériel trouvé.</div>`;
-      return;
-  }
 
   filteredItems.forEach(item => {
       const statusClass = `status-${item.statut.toLowerCase()}`;
@@ -76,7 +72,7 @@ function renderItems() {
           </div>
         `;
 
-      container.appendChild(listItem);
+        container.appendChild(listItem);
   });
 
   // Attacher les gestionnaires de clic après le rendu
@@ -84,6 +80,31 @@ function renderItems() {
 
   console.log("Catégories disponibles :", items.map(i => i.categorie));
 }
+
+
+//attacher les gestionnaires de clic sur les items
+// function attachClickHandlers(filteredItems) {
+//   const listItems = document.querySelectorAll('#inventoryList .list-group-item');
+  
+//   listItems.forEach((listItem, index) => {
+//     listItem.style.cursor = 'pointer';
+    
+//     listItem.addEventListener('click', function(e) {
+
+//       // Ne pas ouvrir si on clique sur le bouton de suppression
+//       if (e.target.closest('.trash-btn')) {
+//         return;
+//       }
+      
+//       // Trouver l'item correspondant dans le tableau
+//       if (filteredItems[index]) {
+//         const itemIndex = items.indexOf(filteredItems[index]);
+//         ouvrirFicheProduit(filteredItems[index], itemIndex);
+//       }
+//     });
+//   });
+
+// }
 
 
 //attacher les gestionnaires de clic sur les items
@@ -97,7 +118,7 @@ function attachClickHandlers(filteredItems) {
 
       // Ne pas ouvrir si on clique sur le bouton de suppression
       if (e.target.closest('.trash-btn')) {
-        return;
+        attachDeleteHandlers(itemId);
       }
       
       // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
@@ -117,13 +138,15 @@ function attachClickHandlers(filteredItems) {
 }
 
 
+
+
+
+
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
   const deleteBtns = document.querySelectorAll('.trash-btn');
   const deleteModalEl = document.getElementById('deleteModal');
-
   if(!deleteModalEl) return;
-
   const bsModal = new bootstrap.Modal(deleteModalEl);
   const deleteIcon = document.getElementById('deleteIcon');
   const deleteName = document.getElementById('deleteName');
@@ -135,11 +158,13 @@ function attachDeleteHandlers(){
       e.stopPropagation(); // Empêcher l'ouverture de l'offcanvas
       const itemId = parseInt(btn.dataset.id);
       currentItemId = itemId;
+
+
       
       // Trouver l'item dans le tableau
       const item = items.find(i => i.id === itemId);
       if (item) {
-        deleteIcon.innerHTML = `<i class="${item.image_url} fa-3x"></i>`;
+        deleteIcon.innerHTML = `<i class="fas ${item.icone} fa-2x"></i>`;
         deleteName.textContent = item.nom;
         bsModal.show();
       }
@@ -148,7 +173,6 @@ function attachDeleteHandlers(){
   
   // Gestionnaire de confirmation
   if (confirmBtn) {
-
     // Retirer les anciens listeners pour éviter les doublons
     const newConfirmBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
@@ -156,36 +180,12 @@ function attachDeleteHandlers(){
     newConfirmBtn.addEventListener('click', async () => {
       if (currentItemId !== null) {
         try {
-
-          const response = await fetch(`/api/archiveitembyid.php?id=${currentItemId}`);
-          const result = await response.json();
-
-          const container = document.getElementById("inventoryList");
-
-          if(result.success){
-            bsModal.hide();
-
-            if (container) {
-              container.innerHTML = `
-                <div class="alert alert-success text-center mt-3" role="alert">
-                  Matériel archivé avec succès.
-                </div>
-              `;
-            }
-
-            // Attendre 3s avant de recharger la liste
-            setTimeout(() => {
-              chargerMateriels();
-            }, 3000);
-
-            console.log("Archivage du matériel est réussi.");
-          }else{
-            console.error("Erreur d'archivage : ", result.message);
-            alert("Échec de l'archivage : " + result.message);
-          }
+          await API.deleteMateriel(currentItemId);
+          bsModal.hide();
+          await chargerMateriels(); // Recharger les données
         } catch (error) {
-          console.error("Erreur lors de la l'archivage: ", error);
-          alert("Une erreur est survenue lors de l'archivage du matériel.");
+          console.error('Erreur lors de la suppression:', error);
+          alert('Erreur lors de la suppression du matériel');
         }
       }
     });
@@ -262,8 +262,10 @@ document.addEventListener('click', function (e) {
     if (data.success) {
       // supprimer la ligne ou marquer comme archivé
       const row = btn.closest('.item-row') || btn.closest('tr');
-      if (row) row.remove();
-      else btn.remove();
+      if (row) 
+        row.remove();
+      else 
+        btn.remove();
       alert(data.message);
     } else {
       alert('Erreur : ' + (data.message || 'Archiver impossible'));
@@ -276,7 +278,6 @@ document.addEventListener('click', function (e) {
     btn.disabled = false;
   });
 });
-
 
 // **************************************************** fin js page principale **********************************************************************
 
@@ -299,16 +300,16 @@ document.addEventListener('click', function (e) {
 // ********************************************************** js fiche produit (offcanvas) **********************************************************
 
 /**
- * Récupérer l'historique des prêts via l'API ?????????????????????????????????????????
+ * Récupérer l'historique des prêts via l'API
  */
-// async function getHistoriquePrets(materielId) {
-//   try {
-//     return await API.getPretsByMaterielId(materielId);
-//   } catch (error) {
-//     console.error('Erreur lors du chargement de l\'historique:', error);
-//     return [];
-//   }
-// }
+async function getHistoriquePrets(materielId) {
+  try {
+    return await API.getPretsByMaterielId(materielId);
+  } catch (error) {
+    console.error('Erreur lors du chargement de l\'historique:', error);
+    return [];
+  }
+}
 
 /**
  * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
@@ -350,18 +351,15 @@ document.addEventListener('click', function (e) {
 //   }
 // }
 
-
 /**
- =====================================
- GESTION DYNAMIQUE DE L'OFFCANVAS 
- =====================================
-
- /* Ouvrir l'offcanvas avec la fiche produit - VERSION DYNAMIQUE
- * Récupère les données depuis la base de données via les APIs */
-
+ * =====================================
+ * GESTION DYNAMIQUE DE L'OFFCANVAS 
+ * =====================================
+ * Ouvrir l'offcanvas avec la fiche produit - VERSION DYNAMIQUE
+ * Récupère les données depuis la base de données via les APIs
+ */
 async function ouvrirFicheProduit(item, itemIndex) {
   try {
-
     // ========== ÉTAPE 1: Récupération des données détaillées de l'item ==========
     console.log('Chargement des détails pour l\'item ID:', item.id);
     
@@ -446,7 +444,6 @@ function afficherLoaderOffcanvas() {
  * Afficher une erreur dans l'offcanvas
  */
 function afficherErreurOffcanvas(message) {
-
   document.getElementById('ficheNom').textContent = 'Erreur de chargement';
   document.getElementById('ficheEtat').innerHTML = 
     '<span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Erreur</span>';
@@ -474,21 +471,19 @@ function afficherErreurOffcanvas(message) {
  */
 async function recupererDetailsItem(itemId) {
   try {
-    console.log('Récupération hybride pour item ID:', itemId);
+    console.log('🔍 Récupération hybride pour item ID:', itemId);
     
     // ========== ÉTAPE 1: Récupérer la disponibilité depuis getitemsavailability.php ==========
     let itemAvailability = null;
     try {
-
       const responseList = await fetch('../api/getitemsavailability.php');
-
       if (responseList.ok) {
         const resultList = await responseList.json();
         const items = resultList.data || resultList;
         itemAvailability = items.find(item => item.id == itemId);
         
         if (itemAvailability) {
-          console.log('Disponibilité récupérée depuis getitemsavailability.php:', {
+          console.log('✅ Disponibilité récupérée depuis getitemsavailability.php:', {
             id: itemAvailability.id,
             nom: itemAvailability.nom,
             is_available: itemAvailability.is_available,
@@ -503,14 +498,12 @@ async function recupererDetailsItem(itemId) {
     // ========== ÉTAPE 2: Récupérer les détails complets depuis getoneitem.php ==========
     let itemDetails = null;
     try {
-
       const responseDetails = await fetch(`../api/getoneitem.php?id=${itemId}`);
-
       if (responseDetails.ok) {
         const resultDetails = await responseDetails.json();
         if (resultDetails.success && resultDetails.data) {
           itemDetails = resultDetails.data;
-          console.log('Détails récupérés depuis getoneitem.php:', {
+          console.log('✅ Détails récupérés depuis getoneitem.php:', {
             id: itemDetails.id,
             nom: itemDetails.nom,
             etat: itemDetails.etat
@@ -523,7 +516,6 @@ async function recupererDetailsItem(itemId) {
     
     // ========== ÉTAPE 3: Fusionner les données ==========
     if (itemAvailability || itemDetails) {
-
       // Prendre les détails de getoneitem.php comme base
       const finalItem = itemDetails || itemAvailability;
       
@@ -531,18 +523,18 @@ async function recupererDetailsItem(itemId) {
       if (itemAvailability && finalItem) {
         finalItem.is_available = itemAvailability.is_available;
         finalItem.statut = itemAvailability.statut;
-        console.log('Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
+        console.log('🔗 Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
       }
       
-      console.log('RÉSULTAT FINAL:', finalItem);
+      console.log('✅ RÉSULTAT FINAL:', finalItem);
       return finalItem;
     } else {
-      console.error('Aucune donnée récupérée des deux APIs');
+      console.error('❌ Aucune donnée récupérée des deux APIs');
       return null;
     }
     
   } catch (error) {
-    console.error('ERREUR GÉNÉRALE recupererDetailsItem:', error);
+    console.error('💥 ERREUR GÉNÉRALE recupererDetailsItem:', error);
     return null;
   }
 }
@@ -568,7 +560,6 @@ async function recupererHistoriquePrets(itemId) {
   }
 }
 
-
 /**
  * =====================================
  * REMPLISSAGE DES INFORMATIONS
@@ -579,7 +570,6 @@ async function recupererHistoriquePrets(itemId) {
  * Remplir les informations de base du matériel dans l'offcanvas
  */
 function remplirInformationsBase(itemDetails) {
-
   // ========== DÉBOGAGE : Voir toutes les propriétés reçues ==========
   console.log('=== DÉBOGAGE ITEM DETAILS ===');
   console.log('Données complètes reçues:', itemDetails);
@@ -617,7 +607,6 @@ function remplirInformationsBase(itemDetails) {
   console.log('Badge état généré:', badgeEtatPhysique);
 }
 
-
 /**
  * Générer le badge de disponibilité selon la logique métier - VERSION OPTIMISÉE
  */
@@ -634,7 +623,6 @@ function genererBadgeDisponibilite(itemDetails) {
   
   // ========== PRIORITÉ 1 : is_available (utilisé dans renderItems ligne 38-39) ==========
   if (itemDetails.is_available !== undefined) {
-
     // Conversion en booléen robuste
     if (typeof itemDetails.is_available === 'boolean') {
       isAvailable = itemDetails.is_available;
@@ -670,7 +658,6 @@ function genererBadgeDisponibilite(itemDetails) {
   if (isAvailable) {
     return '<span class="badge bg-success me-2"><i class="fas fa-check-circle me-1"></i>Disponible</span>';
   } else {
-
     // Si statut indique un retard spécifique, l'afficher
     if (itemDetails.statut === 'retard' || itemDetails.statut === 'en_retard' || itemDetails.statut === 'retard_pret') {
       return '<span class="badge bg-danger me-2"><i class="fas fa-exclamation-triangle me-1"></i>En retard</span>';
@@ -679,7 +666,6 @@ function genererBadgeDisponibilite(itemDetails) {
     }
   }
 }
-
 
 /**
  * Générer le badge d'état physique du matériel
@@ -728,12 +714,12 @@ function genererBadgeEtatPhysique(etat) {
   return `<span class="badge ${badgeClass}"><i class="${iconClass} me-1"></i>${texte}</span>`;
 }
 
-
 /**
  * =====================================
  * GESTION DU QR CODE DYNAMIQUE
  * =====================================
  */
+
 /**
  * Générer le QR code dynamiquement dans la fiche produit
  */
@@ -770,12 +756,12 @@ async function genererQRCodeDynamique(materielId) {
   }
 }
 
-
 /**
  * =====================================
  * GESTION DE L'HISTORIQUE DES PRÊTS
  * =====================================
  */
+
 /**
  * Charger et afficher l'historique des prêts
  */
@@ -799,7 +785,6 @@ async function chargerHistoriquePrets(itemId) {
     `;
   }
 }
-
 
 /**
  * Afficher l'historique des prêts dynamiquement dans l'offcanvas
@@ -831,13 +816,12 @@ function afficherHistoriquePretsDynamique(historique) {
   let html = '<div class="list-group list-group-flush">';
   
   historiqueTrié.forEach((pret, index) => {
-
     // ========== Analyse des données de prêt ==========
-    const emprunteur = pret.nom_emprunteur || pret.emprunteur || 'Emprunteur inconnu';
-    const datePret = pret.date_pret || pret.datePret || 'Non définie';
+    const emprunteur = pret.emprunteur_nom || pret.emprunteur_prenom || 'Emprunteur inconnu';
+    const datePret = pret.date_sortie || pret.datePret || 'Non définie';
     const dateRetourPrevue = pret.date_retour_prevue || pret.dateRetourPrevue || pret.dateRetour || 'Non définie';
-    const dateRetourEffectif = pret.date_restitution || pret.dateRestitution || null;
-    const etatPret = pret.etat_pret || pret.etatPret || 'Bon';
+    const dateRetourEffectif = pret.date_retour_effective || pret.dateRestitution || null;
+    const etatPret = pret.etat || pret.etat_pret || 'Bon';
     const etatRetour = pret.etat_retour || pret.etatRetour || null;
     
     // ========== Détermination du statut ==========
@@ -916,7 +900,6 @@ function afficherHistoriquePretsDynamique(historique) {
   ficheHistorique.innerHTML = html;
 }
 
-
 /**
  * =====================================
  * FONCTIONS UTILITAIRES POUR L'HISTORIQUE
@@ -936,7 +919,6 @@ function formatDateFrancaise(dateStr) {
     return dateStr; // Retourner la chaîne originale si le formatage échoue
   }
 }
-
 
 /**
  * Générer un badge pour l'état d'un prêt/restitution
@@ -958,7 +940,6 @@ function genererBadgeEtatPret(etat) {
   }
 }
 
-
 /**
  * Calculer le nombre de jours de retard
  */
@@ -975,7 +956,6 @@ function calculerJoursRetard(dateRetourPrevue) {
     return 0;
   }
 }
-
 
 // Initialiser les données dans localStorage si elles n'existent pas (fallback)
 if (!localStorage.getItem('materiels')) {
