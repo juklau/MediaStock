@@ -206,7 +206,7 @@ window.onload = function(){
 
 
 
-//Scanner QR code pour creer ou restituer un materiel !!!!//
+//Scanner QR code pour creer ou restituer un materiel !!!! ==> le script est sur la page index.html//
 
 const qrReader = document.getElementById("qr-reader");
 
@@ -220,7 +220,7 @@ function startQrScan(targetPage) {
     { facingMode: "environment" },
     { fps: 10, qrbox: 250 },
     (decodedText, decodedResult) => {
-      console.log("QR Code détecté :", decodedText);
+      console.log("QR Code détecté :", decodedText); 
       html5QrCode.stop();
       qrReader.style.display = "none";
 
