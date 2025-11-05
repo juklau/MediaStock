@@ -48,7 +48,8 @@ function renderItems() {
   const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
-    return matchCategorie && matchStatut;
+    const nonArchived = item.archived === 0;
+    return matchCategorie && matchStatut && nonArchived;
   });
 
   filteredItems.forEach(item => {
@@ -68,7 +69,7 @@ function renderItems() {
           </div>
           <div class="item-right">
             ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
-            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
           </div>
         `;
 
@@ -118,7 +119,7 @@ function attachClickHandlers(filteredItems) {
 
       // Ne pas ouvrir si on clique sur le bouton de suppression
       if (e.target.closest('.trash-btn')) {
-        attachDeleteHandlers(itemId);
+        attachDeleteHandlers(filteredItems);
       }
       
       // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
