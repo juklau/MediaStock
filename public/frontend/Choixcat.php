@@ -2,10 +2,6 @@
   include_once(__DIR__ . '/../login_verify.php');
 
 ?>
-<<<<<<< HEAD
-=======
-
->>>>>>> 983d4ed (petit modif)
 <!DOCTYPE html>
 <html lang="fr">
   <head>
