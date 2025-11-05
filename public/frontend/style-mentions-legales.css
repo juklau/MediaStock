@@ -1,0 +1,38 @@
+/* Styles pour la page des mentions légales */
+.mentions-content {
+  line-height: 1.8;
+}
+
+.mentions-content h2 {
+  color: #ff9994;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.mentions-content h3 {
+  color: #333;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+}
+
+.mentions-content p {
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.back-btn {
+  background-color: #ff9994;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #e6847f;
+  color: white;
+  transform: translateY(-2px);
+}
