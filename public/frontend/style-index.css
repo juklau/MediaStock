@@ -475,3 +475,15 @@ footer p {
 .status-retard {
   background-color: #dc3545;
 }
+
+#qr-reader {
+  width: 90vw;               /* prend 90% de la largeur de la fenêtre */
+  max-width: 400px;          /* limite sur les grands écrans */
+  margin: 20px auto;         /* espace au-dessus et en dessous + centrage horizontal */
+  padding: 15px;             /* petit espace intérieur partout */
+  border-radius: 15px;       /* coins arrondis, optionnel */
+  background-color: #fff;    /* pour que ça ressorte */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: none;             /* caché par défaut */
+  box-sizing: border-box;    /* pour que padding ne casse pas la largeur */
+}
