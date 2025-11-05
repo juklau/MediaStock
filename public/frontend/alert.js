@@ -19,6 +19,7 @@ if (data.success) {
         text: data.message,
         confirmButtonColor: '#4CAF50'
     }).then(() => {
+        // ??????????????
         window.location.href = './index.html';
     });
 } else if (username === '' || password === '') {
