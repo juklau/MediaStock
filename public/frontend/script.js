@@ -48,7 +48,8 @@ function renderItems() {
   const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
-    return matchCategorie && matchStatut;
+    const nonArchived = item.archived === 0;
+    return matchCategorie && matchStatut && nonArchived;
   });
 
   filteredItems.forEach(item => {
@@ -68,7 +69,7 @@ function renderItems() {
           </div>
           <div class="item-right">
             ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
-            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
           </div>
         `;
 
@@ -118,7 +119,7 @@ function attachClickHandlers(filteredItems) {
 
       // Ne pas ouvrir si on clique sur le bouton de suppression
       if (e.target.closest('.trash-btn')) {
-        return;
+        attachDeleteHandlers(filteredItems);
       }
       
       // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
@@ -139,14 +140,13 @@ function attachClickHandlers(filteredItems) {
 
 
 
-
-
-
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
   const deleteBtns = document.querySelectorAll('.trash-btn');
   const deleteModalEl = document.getElementById('deleteModal');
+
   if(!deleteModalEl) return;
+
   const bsModal = new bootstrap.Modal(deleteModalEl);
   const deleteIcon = document.getElementById('deleteIcon');
   const deleteName = document.getElementById('deleteName');
@@ -162,7 +162,7 @@ function attachDeleteHandlers(){
       // Trouver l'item dans le tableau
       const item = items.find(i => i.id === itemId);
       if (item) {
-        deleteIcon.innerHTML = `<i class="fas ${item.icone} fa-2x"></i>`;
+        deleteIcon.innerHTML = `<i class="${item.image_url} fa-3x"></i>`;
         deleteName.textContent = item.nom;
         bsModal.show();
       }
@@ -171,6 +171,7 @@ function attachDeleteHandlers(){
   
   // Gestionnaire de confirmation
   if (confirmBtn) {
+
     // Retirer les anciens listeners pour éviter les doublons
     const newConfirmBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
@@ -178,12 +179,36 @@ function attachDeleteHandlers(){
     newConfirmBtn.addEventListener('click', async () => {
       if (currentItemId !== null) {
         try {
-          await API.deleteMateriel(currentItemId);
-          bsModal.hide();
-          await chargerMateriels(); // Recharger les données
+
+          const response = await fetch(`/api/archiveitembyid.php?id=${currentItemId}`);
+          const result = await response.json();
+
+          const container = document.getElementById("inventoryList");
+
+          if(result.success){
+            bsModal.hide();
+
+            if (container) {
+              container.innerHTML = `
+                <div class="alert alert-success text-center mt-3" role="alert">
+                  Matériel archivé avec succès.
+                </div>
+              `;
+            }
+
+            // Attendre 3s avant de recharger la liste
+            setTimeout(() => {
+              chargerMateriels();
+            }, 3000);
+
+            console.log("Archivage du matériel est réussi.");
+          }else{
+            console.error("Erreur d'archivage : ", result.message);
+            alert("Échec de l'archivage : " + result.message);
+          }
         } catch (error) {
-          console.error('Erreur lors de la suppression:', error);
-          alert('Erreur lors de la suppression du matériel');
+          console.error("Erreur lors de la l'archivage: ", error);
+          alert("Une erreur est survenue lors de l'archivage du matériel.");
         }
       }
     });
@@ -200,6 +225,45 @@ window.onload = function(){
   chargerMateriels();
 };
 
+
+
+
+
+//Scanner QR code pour creer ou restituer un materiel !!!!//
+
+const qrReader = document.getElementById("qr-reader");
+
+function startQrScan(targetPage) {
+  qrReader.style.display = "block";
+
+  const html5QrCode = new Html5Qrcode("qr-reader");
+
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    (decodedText, decodedResult) => {
+      console.log("QR Code détecté :", decodedText);
+      html5QrCode.stop();
+      qrReader.style.display = "none";
+
+      // Rediriger vers la page correspondante en passant le code QR
+      window.location.href = `${targetPage}?code=${encodeURIComponent(decodedText)}`;
+    },
+    (errorMessage) => {
+      // Scan en cours
+    }
+  ).catch(err => {
+    console.error("Impossible d'accéder à la caméra :", err);
+  });
+}
+
+// Boutons
+document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
+document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
+
+
+
+// archivage d'un item
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('.btn-trash');
   if (!btn) return;
@@ -220,8 +284,10 @@ document.addEventListener('click', function (e) {
     if (data.success) {
       // supprimer la ligne ou marquer comme archivé
       const row = btn.closest('.item-row') || btn.closest('tr');
-      if (row) row.remove();
-      else btn.remove();
+      if (row) 
+        row.remove();
+      else 
+        btn.remove();
       alert(data.message);
     } else {
       alert('Erreur : ' + (data.message || 'Archiver impossible'));
@@ -768,17 +834,20 @@ function afficherHistoriquePretsDynamique(historique) {
   const historiqueTrié = [...historique].sort((a, b) => 
     new Date(b.date_pret || b.datePret) - new Date(a.date_pret || a.datePret)
   );
+
+  console.log('Historique trié:', historiqueTrié);
+  console.log('Historique non trié:', historique);
   
   let html = '<div class="list-group list-group-flush">';
   
   historiqueTrié.forEach((pret, index) => {
     // ========== Analyse des données de prêt ==========
-    const emprunteur = pret.nom_emprunteur || pret.emprunteur || 'Emprunteur inconnu';
-    const datePret = pret.date_pret || pret.datePret || 'Non définie';
+    const emprunteur = pret.emprunteur_nom || pret.emprunteur_prenom || 'Emprunteur inconnu';
+    const datePret = pret.date_sortie || pret.datePret || 'Non définie';
     const dateRetourPrevue = pret.date_retour_prevue || pret.dateRetourPrevue || pret.dateRetour || 'Non définie';
-    const dateRetourEffectif = pret.date_restitution || pret.dateRestitution || null;
-    const etatPret = pret.etat_pret || pret.etatPret || 'Bon';
-    const etatRetour = pret.etat_retour || pret.etatRetour || null;
+    const dateRetourEffectif = pret.date_retour_effective || pret.dateRetourEffectif || null;
+    const notePret = pret.note_debut || pret.notePret || null;
+    const noteRetour = pret.note_fin || pret.noteRetour || null;
     
     // ========== Détermination du statut ==========
     const estRestitue = dateRetourEffectif !== null;
@@ -796,59 +865,67 @@ function afficherHistoriquePretsDynamique(historique) {
 
     // ========== Génération du HTML pour ce prêt ==========
     html += `
-      <div class="list-group-item ${index === 0 ? 'border-top-0' : ''}">
-        
+      <div class="list-group-item ${index === 0 ? 'border-top-0' : ''}" style="display: block; padding: 14px 16px;">
+
         <!-- En-tête avec emprunteur et statut -->
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div class="fw-bold text-dark">
+        <div class="header" style="display: block; margin-bottom: 10px;">
+          <div class="fw-bold text-dark" style="margin-bottom: 4px;">
             <i class="fas fa-user me-1"></i>${emprunteur}
           </div>
-          ${badgeStatut}
-        </div>
-        
-        <!-- Dates de prêt -->
-        <div class="small text-muted mb-2">
-          <div class="row g-0">
-            <div class="col-sm-6">
-              <i class="fas fa-calendar-plus me-1 text-success"></i>
-              <strong>Prêt:</strong> ${formatDateFrancaise(datePret)}
-            </div>
-            <div class="col-sm-6">
-              <i class="fas fa-calendar-minus me-1 text-warning"></i>
-              <strong>Retour prévu:</strong> ${formatDateFrancaise(dateRetourPrevue)}
-            </div>
+          <div class="status" style="display: inline-block; margin-top: 2px;">
+            ${badgeStatut}
           </div>
         </div>
-        
-        <!-- États du matériel -->
-        <div class="d-flex align-items-center gap-2 small">
-          <span class="text-muted">État:</span>
-          ${genererBadgeEtatPret(etatPret)}
+
+        <!-- Dates de prêt -->
+        <div class="small text-muted mb-2" style="display: block; margin-bottom: 10px;">
+          <div style="margin-bottom: 4px;">
+            <i class="fas fa-calendar-plus me-1 text-success"></i>
+            <strong>Prêt :</strong> ${formatDateFrancaise(datePret)}
+          </div>
+          <div>
+            <i class="fas fa-calendar-minus me-1 text-warning"></i>
+            <strong>Retour prévu :</strong> ${formatDateFrancaise(dateRetourPrevue)}
+          </div>
+        </div>
+
+        <!-- Notes du matériel -->
+        <div class="notes small" style="display: block; margin-bottom: 8px;">
+          <div style="margin-bottom: 4px;">
+            <span class="text-muted">Note de prêt :</span> 
+            <strong>${notePret || '—'}</strong>
+          </div>
+
           ${estRestitue ? `
-            <i class="fas fa-arrow-right text-muted mx-1"></i>
-            ${genererBadgeEtatPret(etatRetour)}
+            <div>
+              <span class="text-muted">Note de retour :</span> 
+              <strong>${noteRetour || '—'}</strong>
+            </div>
           ` : `
-            <i class="fas fa-arrow-right text-muted mx-1"></i>
-            <span class="text-muted fst-italic">En cours...</span>
+            <div style="margin-top: 2px;">
+              <i class="fas fa-arrow-right text-muted mx-1"></i>
+              <span class="text-muted fst-italic">En cours...</span>
+            </div>
           `}
         </div>
-        
+
         <!-- Date de restitution si applicable -->
         ${estRestitue ? `
-          <div class="small text-success mt-2">
+          <div class="small text-success mt-2" style="display: block; margin-top: 8px;">
             <i class="fas fa-check-circle me-1"></i>
-            <strong>Restitué le:</strong> ${formatDateFrancaise(dateRetourEffectif)}
+            <strong>Restitué le :</strong> ${formatDateFrancaise(dateRetourEffectif)}
           </div>
         ` : ''}
-        
+
         <!-- Alerte retard si applicable -->
         ${estEnRetard ? `
-          <div class="small text-danger mt-2">
+          <div class="small text-danger mt-2" style="display: block; margin-top: 8px;">
             <i class="fas fa-exclamation-triangle me-1"></i>
             <strong>Retard de ${calculerJoursRetard(dateRetourPrevue)} jour(s)</strong>
           </div>
         ` : ''}
       </div>
+
     `;
   });
   

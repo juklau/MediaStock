@@ -100,6 +100,37 @@ header {
   padding: 0.75rem;
 }
 
+/* Historique dans script.js */
+.list-group-item-historique {
+  display: block;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+
+.list-group-item:hover {
+  background: #fafafa;
+}
+
+.list-group-item .header {
+  margin-bottom: 10px;
+}
+
+.list-group-item .status {
+  display: inline-block;
+  margin-top: 2px;
+}
+
+.list-group-item .notes {
+  margin-bottom: 8px;
+}
+
+.list-group-item .notes div {
+  margin-bottom: 4px;
+}
+
 /* Mobile-optimized list items */
 .list-group-item:nth-child(even) {
   background: rgba(0, 0, 0, 0.02);
@@ -211,7 +242,7 @@ header {
 
 /* ************************   Offcanvas Fiche Produit - Design Moderne ************************* */
 .offcanvas-fiche {
-  width: 420px !important;
+  width: 520px !important;
 }
 
 .offcanvas-header-custom {

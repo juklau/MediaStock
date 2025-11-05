@@ -12,22 +12,21 @@ const data = await res.json();
 const username = document.getElementById('username').value.trim();
 const password = document.getElementById('password').value.trim();
 
-if (username === '' || password === '') {
-    e.preventDefault();
-    Swal.fire({
-        icon: 'error',
-        title: data.title,
-        text: data.message,
-        confirmButtonColor: '#FF9994'
-    });
-}else if (data.success) {
+if (data.success) {
     Swal.fire({
         icon: 'success',
         title: data.title,
         text: data.message,
         confirmButtonColor: '#4CAF50'
     }).then(() => {
-        window.location.href = '../frontend/index.html';
+        window.location.href = './index.html';
+    });
+} else if (username === '' || password === '') {
+    Swal.fire({
+        icon: 'error',
+        title: 'Erreur de connexion',
+        text: 'Le nom d\'utilisateur et le mot de passe ne peuvent pas être vides.',
+        confirmButtonColor: '#FF9994'
     });
 } else {
     Swal.fire({
@@ -120,7 +119,7 @@ if (username === '' || password === '') {
 document.addEventListener('DOMContentLoaded', async () => {
 
     //lancer une requête HTTP GET => reponse en json
-    fetch('/../api/getnbdispoparcat.php')
+    fetch('../api/getnbdispoparcat.php')
 
     // convertir la réponse en objet JS => p.ex.: [{ categorie: "Informatique", disponible_count: 12 },..]
     .then(response => response.json())
