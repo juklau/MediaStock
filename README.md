@@ -80,7 +80,6 @@ Application **MVC simplifié** en **PHP procédural**, conteneurisée avec Docke
         │   ├── index.php                    # Point d’entrée (routeur)
         │   ├── login.php                    # Authentification d'administrateur
         │   └── frontend/                    # Pages HTML/ CSS/ JS (interface utilisateur)
-        │       ├── index.php                # Page principale utilisateur ??
         │       ├── *.html                   # Pages statiques
         │       ├── *.css                    # Feuilles de style
         │       └── *.js                     # Scripts JavaScript (QR code, prêt, retour…)
