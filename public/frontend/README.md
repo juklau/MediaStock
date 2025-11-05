@@ -1,8 +1,8 @@
 # 🎬 MediaStock – Application de gestion de matériel
 
 > **Projet BTS SIO – Option SLAM (Session 2025)**  
-> Réalisation de **JUHASZ Klaudia**  
-> **Période de réalisation:** 03/10/2025 – 07/11/2025  
+> - Réalisation de **JUHASZ Klaudia**  
+> - **Période de réalisation:** 03/10/2025 – 07/11/2025  
 
 ---
 
@@ -224,7 +224,7 @@ Un ***Item*** appartient à une ***Categorie***
     cp .env.example .env
 ```
 
-***Modifier les variables : ***
+***Modifier les variables :***
 
 ``` ini
     DB_NAME=mediastock
@@ -277,7 +277,7 @@ Un ***Item*** appartient à une ***Categorie***
 ## Captures et 
 
 - [Maquettes Figma :](https://www.figma.com/design/8YYwxKWra3P9QWC6UJBv2L/Untitled?node-id=1-3&t=VbQzFZxMR3Aizp1A-0)
-Schémas de base de données :
+- Schémas de base de données :
 - MCD et MLD (page 19 du cahier des charges)
 - Diagrammes de Gantt et Kanban (pages 21–22 du cahier des charges)
 
