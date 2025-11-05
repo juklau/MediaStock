@@ -2,6 +2,10 @@
   include_once(__DIR__ . '/../login_verify.php');
 
 ?>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 983d4ed (petit modif)
 <!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -18,7 +22,7 @@
     />
 
     <!-- <link rel="stylesheet" href="style.css"> -->
-    <link rel="stylesheet" href="style-choixcat.css" />
+    <link rel="stylesheet" href="style-choixcat.css"/>
   </head>
 
   <!-- peut être à enlever : min-vh-100?? -->
