@@ -1,6 +1,6 @@
 // ********************************************************** js pour la **********************************************************************
 
-//.............pour index.html.............//
+//.............pour index.php.............//
 
 
 
@@ -258,8 +258,8 @@ function startQrScan(targetPage) {
 }
 
 // Boutons
-document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
-document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
+document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.php"));
+document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.php"));
 
 
 
@@ -334,7 +334,7 @@ async function getHistoriquePrets(materielId) {
 }
 
 /**
- * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
+ * Ajouter un prêt via l'API (appelé depuis creation-pret.php)
  */
 // async function ajouterPret(materielId, pretData) {
 //   try {

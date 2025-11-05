@@ -1,17 +1,17 @@
 <?php
-namespace Config;
+  namespace Config;
 
-class Database {
+  class Database{
 
     private static $instance = null;
     private $connection;
 
-    private $host;
+    private $host; // 'mysql' est le nom du service dans docker-compose.yml
     private $db;
     private $user;
     private $pass;
 
-    private function __construct() {
+    private function __construct(){
 
         // $this->host = getenv('DB_HOST') ?: 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
         $this->host = 'mysql-mediastock.alwaysdata.net'; // Identifiants AlwaysData
@@ -19,36 +19,38 @@ class Database {
         $this->user = '439141';
         $this->pass = '5247_Juklau+123!';
 
-        try {
-            // Connexion PDO à la base AlwaysData
-            $this->connection = new \PDO(
-                "mysql:host={$this->host};dbname={$this->db};charset=utf8mb4",
+      try {
+        //connexion PDO à la base applicative
+        $this->connection = new \PDO("mysql:host={$this->host};dbname={$this->db};charset=utf8mb4",
                 $this->user,
                 $this->pass
             );
 
-            // Options PDO
-            $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-            $this->connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-            $this->connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        // pour gérer les erreurs, on choisit de lancer des exceptions
+        $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        } catch(\PDOException $e) {
-            // ❌ N'affiche pas le mot de passe en cas d'erreur
-            die("Erreur de connexion à la base de données : " . $e->getMessage());
-        }
+        // les résultats sont renvoyés en tableaux associatifs (clés = noms de colonnes) => pas besoin d'indices numériques
+        $this->connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        $this->connection->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+      } catch(\PDOException $e){
+         // Ne pas exposer les creds en prod
+          die("Connection failed: " . $e->getMessage());
+      }
     }
 
-    // Singleton : une seule instance de la connexion
+    //pour garantir qu'il y a 1 seul objet de cette classe dans toute l'application
+    // static => possible appeler sans créer d'objet
     public static function getInstance() {
         if (self::$instance === null) {
-            self::$instance = new self();
+            self::$instance = new self(); //=> new NomDeLaClasse()
         }
         return self::$instance;
     }
-
-    // Pour récupérer la connexion PDO
-    public function getConnection() {
+    
+    public function getConnection() {  //son utilisation: $pdo = Database::getInstance()->getConnection();
         return $this->connection;
     }
-}
+
+  }
+
 ?>

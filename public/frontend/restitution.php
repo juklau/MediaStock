@@ -1,9 +1,13 @@
+<?php
+  include_once(__DIR__ . '/../login_verify.php');
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Création de prêt - MediaStock</title>
+    <title>Restitution de prêt - MediaStock</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -17,10 +21,12 @@
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
 
-    <!-- <link rel="stylesheet" href="style.css"/> -->
-    <link rel="stylesheet" href="style-creation-pret.css" />
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="style-restitution.css" />
   </head>
+
   <body class="d-flex flex-column min-vh-100">
+    <!-- En-tête -->
     <header class="position-relative">
       <div class="container h-100">
         <div class="row h-100 align-items-center justify-content-center">
@@ -42,122 +48,112 @@
       </div>
     </header>
 
+    <!-- Corps principal -->
     <main class="page-body">
-      <div class="text-center text-muted mb-2 mt-4" id="itemName">
+      <div class="text-center text-muted mb-2 mt-4" id="itemNameReturn">
         Nom de l'élément
       </div>
 
-      <div id="productVisual" class="text-center mb-3">
-        <!-- si image fournie, sera injectée; sinon icône FontAwesome -->
-        <div id="productImageWrap">
-          <i id="productIcon" class="fas fa-mouse fa-5x"></i>
+      <div id="productVisualReturn" class="text-center mb-3">
+        <div id="productImageWrapReturn">
+          <i id="productIconReturn" class="fas fa-mouse fa-5x"></i>
         </div>
       </div>
 
-      <form id="loanForm" class="needs-validation mt-5" novalidate>
+      <form id="returnForm" class="needs-validation mt-5" novalidate>
         <!-- <div class="mb-2">
           <label class="form-label">Nom de l'intervenant :</label>
-          <input type="text" id="intervenant" class="form-control" placeholder="nom"/>
+          <input type="text" id="intervenantReturn" class="form-control" placeholder="nom" readonly/>
         </div> -->
 
         <div class="mb-2">
-          <label class="form-label"
-            >Nom de l'emprunteur : <span class="text-danger">*</span></label
-          >
+          <label class="form-label">Nom de l'emprunteur :</label>
           <input
             type="text"
-            id="emprunteurNom"
+            id="emprunteurNomReturn"
             class="form-control"
             placeholder="nom"
-            required
+            readonly
           />
-          <div class="invalid-feedback">Le nom de l'emprunteur est requis</div>
         </div>
 
         <div class="mb-2">
-          <label class="form-label"
-            >Prénom de l'emprunteur : <span class="text-danger">*</span></label
-          >
+          <label class="form-label">Prénom de l'emprunteur :</label>
           <input
             type="text"
-            id="emprunteurPrenom"
+            id="emprunteurPrenomReturn"
             class="form-control"
             placeholder="prénom"
-            required
+            readonly
           />
-          <div class="invalid-feedback">
-            Le prénom de l'emprunteur est requis
-          </div>
         </div>
 
         <div class="mb-2">
-          <!-- les noms de la formation doivent être pareils que dans la BDD!!!! -->
-          <label class="form-label"
-            >Classe : <span class="text-danger">*</span></label
-          >
-          <select id="classe" class="form-select" required>
-            <option value="" selected disabled>Sélectionner une classe</option>
-            <option value="INTERVENANT">INTERVENANT</option>
-            <option value="ECS1">ECS1</option>
-            <option value="ECS2">ECS2</option>
-            <option value="ECS3 A Brand Digit">ECS3 A Brand Digit</option>
-            <option value="ECS3 B Com Event">ECS3 B Com Event</option>
-            <option value="ECS4 A Brand Digit">ECS4 A Brand Digit</option>
-            <option value="ECS4 B Com Event">ECS4 B Com Event</option>
-            <option value="ECS4 DA">ECS4 DA</option>
-            <option value="ECS5 Com Digit">ECS5 Com Digit</option>
-            <option value="ECS5 Com Event">ECS5 Com Event</option>
-            <option value="NSS 1">NSS 1</option>
-            <option value="NSS 2">NSS 2</option>
-            <option value="PSL 1">PSL 1</option>
-            <option value="PSL 2">PSL 2</option>
-            <option value="PSL 3">PSL 3</option>
-            <option value="Iris 1">Iris 1</option>
-            <option value="Iris 2">Iris 2</option>
-          </select>
-          <div class="invalid-feedback">La classe est requise</div>
+          <label class="form-label">Classe :</label>
+          <input
+            type="text"
+            id="classeReturn"
+            class="form-control"
+            placeholder="classe"
+            readonly
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label d-block">État au moment du prêt :</label>
+          <div id="etatPretDisplay" class="etat-pret-display">
+            <span id="etatPretBadge" class="badge-etat">Bon</span>
+          </div>
         </div>
 
         <div class="mb-3">
           <label class="form-label d-block"
-            >État : <span class="text-danger">*</span></label
+            >État à la restitution : <span class="text-danger">*</span></label
           >
-          <div class="btn-group" role="group" aria-label="État">
+          <div
+            class="btn-group"
+            role="group"
+            aria-label="État à la restitution"
+          >
             <input
               type="radio"
               class="btn-check"
-              name="etat"
-              id="etatBon"
+              name="etatReturn"
+              id="etatBonReturn"
               value="Bon"
               autocomplete="off"
-              checked
               required
+              checked
             />
-            <label class="btn btn-outline-success state-btn" for="etatBon"
+            <label class="btn btn-outline-success state-btn" for="etatBonReturn"
               >Bon</label
             >
 
             <input
               type="radio"
               class="btn-check"
-              name="etat"
-              id="etatMoyen"
+              name="etatReturn"
+              id="etatMoyenReturn"
               value="Moyen"
               autocomplete="off"
             />
-            <label class="btn btn-outline-warning state-btn" for="etatMoyen"
+            <label
+              class="btn btn-outline-warning state-btn"
+              for="etatMoyenReturn"
               >Moyen</label
             >
 
             <input
               type="radio"
               class="btn-check"
-              name="etat"
-              id="etatMauvais"
+              name="etatReturn"
+              id="etatMauvaisReturn"
               value="Mauvais"
               autocomplete="off"
             />
-            <label class="btn btn-outline-danger state-btn" for="etatMauvais"
+            <label
+              class="btn btn-outline-danger state-btn"
+              for="etatMauvaisReturn"
               >Mauvais</label
             >
           </div>
@@ -166,35 +162,49 @@
         <div class="mb-3">
           <label class="form-label">Notes :</label>
           <textarea
-            id="notes"
+            id="notesReturn"
             class="form-control notes-box"
             maxlength="500"
             placeholder="notes"
+            readonly
           ></textarea>
-          <div class="form-text text-end" id="notesCount">0 / 500</div>
+          <div class="form-text text-end" id="notesCountReturn">0 / 500</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Commentaire :</label>
+          <textarea
+            id="commentaireReturn"
+            class="form-control notes-box"
+            maxlength="500"
+            placeholder="Ajouter un commentaire de retour..."
+          ></textarea>
+          <div class="form-text text-end" id="commentaireCountReturn">
+            0 / 500
+          </div>
         </div>
 
         <div class="mb-4">
-          <label class="form-label"
-            >Période de prêt : <span class="text-danger">*</span></label
-          >
+          <label class="form-label">Date de retour prévue :</label>
           <div class="calendar-visual-wrap">
-            <div class="calendar-container"></div>
+            <div class="calendar-container-return"></div>
             <input
-              id="datePicker"
+              id="datePickerReturn"
               class="form-control date-input-below"
               type="text"
-              placeholder="Sélectionner la période"
-              required
+              placeholder="Date de retour"
+              readonly
             />
-          </div>
-          <div class="invalid-feedback">
-            Les dates de prêt et retour sont requises
           </div>
         </div>
 
+        <!-- bouton corrigé -->
         <div class="d-grid mt-3">
-          <button id="submitBtn" class="btn btn-primary validate-btn">
+          <button
+            type="submit"
+            id="submitBtnReturn"
+            class="btn btn-primary validate-btn"
+          >
             Valider
           </button>
         </div>
@@ -218,36 +228,41 @@
       </div>
     </footer>
 
-    <!-- Modal de félicitation -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+    <!-- Modal de confirmation -->
+    <div
+      class="modal fade"
+      id="successModalReturn"
+      tabindex="-1"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-center p-4">
           <div class="modal-body">
-            <div class="success-icon mb-3"><i class="fas fa-check"></i></div>
-            <h4 class="mb-3">Félicitation votre prêt a été effectuer</h4>
+            <div class="success-icon mb-3">
+              <i class="fas fa-check fa-3x text"></i>
+            </div>
+            <h4 class="mb-3">Félicitations La restitution a été effectuée</h4>
             <button
               type="button"
               class="btn btn-success"
               data-bs-dismiss="modal"
             >
-              validé
+              Validé
             </button>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Librairies -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-      // Configuration de la langue française pour Flatpickr
       flatpickr.localize(flatpickr.l10ns.fr);
     </script>
 
     <!-- Script spécifique à cette page -->
-    <!-- <script src="script.js"></script> -->
-    <script src="creation-pret.js"></script>
+    <script src="restitution.js"></script>
   </body>
 </html>
