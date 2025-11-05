@@ -35,7 +35,7 @@
                     "success" => true,
                     "title" => "Connexion réussie",
                     "data" => $admin, 
-                    "message" => "Vous serez redirigé vers la page d\'accueil."
+                    "message" => "Vous serez redirigé vers la page d'accueil."
                 ];
                 
 

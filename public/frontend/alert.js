@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const cat = data.find(item => item.categorie === nom);
             
-            if (cat) {
+            if(cat) {
 
                 //création un div
                 const element = document.createElement('div');

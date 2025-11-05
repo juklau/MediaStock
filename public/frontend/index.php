@@ -1,7 +1,5 @@
-
 <?php
-  include_once(__DIR__ . '/../login_verify.php');
-
+include_once(__DIR__ . '/../login_verify.php');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -10,22 +8,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MediaStock - Patrimoine informatique</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    <script
-      src="https://unpkg.com/html5-qrcode"
-      type="text/javascript"
-    ></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-    <!-- <link rel="stylesheet" href="style.css"/> -->
     <link rel="stylesheet" href="style-index.css" />
   </head>
   <body class="d-flex flex-column min-vh-100">
@@ -33,18 +21,10 @@
     <header class="position-relative">
       <div class="container h-100">
         <div class="row h-100 align-items-center justify-content-center">
-          <div
-            class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center"
-          >
+          <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
             <!-- Logo MediaStock qui colle aux bords -->
-            <div
-              class="logo-app position-relative justify-content-center align-items-center d-flex h-100"
-            >
-              <img
-                src="logo.png"
-                alt="MediaStock"
-                class="img-fluid h-100 w-auto object-fit-contain"
-              />
+            <div class="logo-app position-relative justify-content-center align-items-center d-flex h-100">
+              <img src="logo.png" alt="MediaStock" class="img-fluid h-100 w-auto object-fit-contain"/>
             </div>
           </div>
         </div>
@@ -63,7 +43,7 @@
       </div>
     </div>
 
-    <!-- Container pour le lecteur QR -->
+    <!-- Container pour le lecteur QR ????????????????????????????????-->
     <div id="qr-reader" style="width: 300px; display: none"></div>
 
     <hr class="w-100 m-0 border-0" id="hr" />
@@ -75,11 +55,8 @@
       <!-- Filtres + Ajout - responsive layout -->
       <div class="row g-2 mb-3 toolbar">
         <div class="col-12 col-md-auto">
-          <button
-            class="btn btn-primary w-100"
-            window
-            onclick="location.href='Choixcat.php'"
-          >
+          <!-- window onclick??????????????????????????????????? -->
+          <button class="btn btn-primary w-100" onclick="location.href='Choixcat.php'">
             <i class="fas fa-plus me-2"></i>Ajouter un élément
           </button>
         </div>
@@ -87,7 +64,7 @@
         <div class="col-12 col-md">
           <div class="d-flex gap-2 justify-content-md-end">
             <select id="categoryFilter" class="form-select w-50">
-              <option value="">catégorie</option>
+              <option value="">Catégorie</option>
               <option value="informatique">Informatique</option>
               <option value="audio">Audio</option>
               <option value="connectique">Connectique</option>
@@ -115,12 +92,7 @@
       <div class="container">
         <div class="text-center">
           <p class="mb-0 text-dark">
-            <a
-              href="mentions-legales.html"
-              class="text-dark text-decoration-none"
-            >
-              Mentions légales
-            </a>
+            <a href="mentions-legales.html" class="text-dark text-decoration-none">Mentions légales</a>
           </p>
           <p class="mb-0 text-dark">© 2025 MediaStock inc</p>
         </div>
@@ -128,23 +100,14 @@
     </footer>
 
     <!-- Offcanvas - Fiche produit -->
-    <div
-      class="offcanvas offcanvas-end offcanvas-fiche"
-      tabindex="-1"
-      id="ficheProduitOffcanvas"
-      aria-labelledby="ficheProduitLabel"
-    >
+    <div class="offcanvas offcanvas-end offcanvas-fiche" tabindex="-1" id="ficheProduitOffcanvas" aria-labelledby="ficheProduitLabel">
       <div class="offcanvas-header-custom">
-        <button
-          type="button"
-          class="btn-close-custom"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-        >
+        <button type="button" class="btn-close-custom" data-bs-dismiss="offcanvas" aria-label="Close">
           <i class="fas fa-times"></i>
         </button>
       </div>
       <div class="offcanvas-body p-0">
+
         <!-- En-tête avec icône et nom -->
         <div class="fiche-header">
           <div class="fiche-icon-wrapper">
@@ -160,6 +123,7 @@
 
         <!-- Corps de la fiche -->
         <div class="fiche-content">
+
           <!-- QR Code Card -->
           <div class="fiche-card">
             <div class="fiche-card-header">
@@ -200,20 +164,13 @@
             <p class="mb-2">
               Etes vous bien sûr de vouloir supprimer cette élément ?
             </p>
-            <div
-              id="deleteIcon"
-              class="d-flex align-items-center justify-content-center"
-            >
+            <div id="deleteIcon" class="d-flex align-items-center justify-content-center">
               <!-- icon injected -->
             </div>
             <p id="deleteName" class="mt-3 fw-semibold">nom de l'élément</p>
           </div>
           <div class="modal-footer justify-content-center">
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              data-bs-dismiss="modal"
-            >
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
               annuler
             </button>
             <button id="confirmDeleteBtn" type="button" class="btn">
@@ -226,9 +183,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="api.js"></script> -->
+   
     <script src="script.js"></script>
 
+    <!-- à mettre dans un js!!!!!!!! -->
     <script>
       function startQrScan() {
         const qrReader = document.getElementById("qr-reader");
