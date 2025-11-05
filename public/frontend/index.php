@@ -1,8 +1,10 @@
 <?php
-require_once __DIR__ . '/../auth_check.php';
+  include_once(__DIR__ . '/../login_verify.php');
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -75,7 +77,7 @@ require_once __DIR__ . '/../auth_check.php';
           <button
             class="btn btn-primary w-100"
             window
-            onclick="location.href='Choixcat.html'"
+            onclick="location.href='Choixcat.php'"
           >
             <i class="fas fa-plus me-2"></i>Ajouter un élément
           </button>
@@ -107,7 +109,7 @@ require_once __DIR__ . '/../auth_check.php';
       </div>
     </div>
 
-    <!-- Footer  => basé sur la page d'acceuil, afin que ça soit pareil partout!-->
+    <!-- Footer  => basé sur la page d'accueil, afin que ça soit pareil partout!-->
     <footer class="py-4">
       <div class="container">
         <div class="text-center">

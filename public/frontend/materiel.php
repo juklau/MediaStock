@@ -1,3 +1,7 @@
+<?php
+  include_once(__DIR__ . '/../login_verify.php');
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
   <head>
@@ -45,7 +49,7 @@
       <!-- Bouton retour -->
       <div class="row mb-4">
         <div class="col-12">
-          <a href="Choixcat.html" class="btn btn-outline-secondary"
+          <a href="Choixcat.php" class="btn btn-outline-secondary"
             ><i class="fas fa-arrow-left me-2"></i
           ></a>
         </div>
@@ -133,7 +137,7 @@
         <div class="text-center">
           <p class="mb-0 text-dark">
             <a
-              href="mentions-legales.html"
+              href="mentions-legales.php"
               class="text-dark text-decoration-none"
             >
               Mentions légales
