@@ -139,14 +139,13 @@ function attachClickHandlers(filteredItems) {
 
 
 
-
-
-
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
   const deleteBtns = document.querySelectorAll('.trash-btn');
   const deleteModalEl = document.getElementById('deleteModal');
+
   if(!deleteModalEl) return;
+
   const bsModal = new bootstrap.Modal(deleteModalEl);
   const deleteIcon = document.getElementById('deleteIcon');
   const deleteName = document.getElementById('deleteName');
@@ -158,13 +157,11 @@ function attachDeleteHandlers(){
       e.stopPropagation(); // Empêcher l'ouverture de l'offcanvas
       const itemId = parseInt(btn.dataset.id);
       currentItemId = itemId;
-
-
       
       // Trouver l'item dans le tableau
       const item = items.find(i => i.id === itemId);
       if (item) {
-        deleteIcon.innerHTML = `<i class="fas ${item.icone} fa-2x"></i>`;
+        deleteIcon.innerHTML = `<i class="${item.image_url} fa-3x"></i>`;
         deleteName.textContent = item.nom;
         bsModal.show();
       }
@@ -173,6 +170,7 @@ function attachDeleteHandlers(){
   
   // Gestionnaire de confirmation
   if (confirmBtn) {
+
     // Retirer les anciens listeners pour éviter les doublons
     const newConfirmBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
@@ -180,12 +178,36 @@ function attachDeleteHandlers(){
     newConfirmBtn.addEventListener('click', async () => {
       if (currentItemId !== null) {
         try {
-          await API.deleteMateriel(currentItemId);
-          bsModal.hide();
-          await chargerMateriels(); // Recharger les données
+
+          const response = await fetch(`/api/archiveitembyid.php?id=${currentItemId}`);
+          const result = await response.json();
+
+          const container = document.getElementById("inventoryList");
+
+          if(result.success){
+            bsModal.hide();
+
+            if (container) {
+              container.innerHTML = `
+                <div class="alert alert-success text-center mt-3" role="alert">
+                  Matériel archivé avec succès.
+                </div>
+              `;
+            }
+
+            // Attendre 3s avant de recharger la liste
+            setTimeout(() => {
+              chargerMateriels();
+            }, 3000);
+
+            console.log("Archivage du matériel est réussi.");
+          }else{
+            console.error("Erreur d'archivage : ", result.message);
+            alert("Échec de l'archivage : " + result.message);
+          }
         } catch (error) {
-          console.error('Erreur lors de la suppression:', error);
-          alert('Erreur lors de la suppression du matériel');
+          console.error("Erreur lors de la l'archivage: ", error);
+          alert("Une erreur est survenue lors de l'archivage du matériel.");
         }
       }
     });
