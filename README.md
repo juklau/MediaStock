@@ -277,8 +277,8 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 
 - [Maquettes Figma ](https://www.figma.com/design/8YYwxKWra3P9QWC6UJBv2L/Untitled?node-id=1-3&t=VbQzFZxMR3Aizp1A-0)
 - Schémas de base de données :
- - MCD et MLD (page 19 du cahier des charges)
- - Diagrammes de Gantt et Kanban (pages 21–22 du cahier des charges)
+ - ***MCD et MLD*** (page 19 du cahier des charges)
+ - ***Diagrammes de Gantt et Kanban*** (pages 21–22 du cahier des charges)
 
 
 © 2025 MediaStock – Projet étudiant BTS SIO SLAM
