@@ -12,15 +12,7 @@ const data = await res.json();
 const username = document.getElementById('username').value.trim();
 const password = document.getElementById('password').value.trim();
 
-if (username === '' || password === '') {
-    e.preventDefault();
-    Swal.fire({
-        icon: 'error',
-        title: data.title,
-        text: data.message,
-        confirmButtonColor: '#FF9994'
-    });
-}else if (data.success) {
+if (data.success) {
     Swal.fire({
         icon: 'success',
         title: data.title,

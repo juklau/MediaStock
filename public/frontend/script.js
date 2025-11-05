@@ -1,6 +1,6 @@
 // ********************************************************** js pour la **********************************************************************
 
-//.............pour index.html.............//
+//.............pour index.php.............//
 
 
 
@@ -48,7 +48,7 @@ function renderItems() {
   const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
-    const nonArchived = item.archived === 0 || item.archived === '0'; // S'assurer que l'item n'est pas archivé
+    const nonArchived = item.archived === 0;
     return matchCategorie && matchStatut && nonArchived;
   });
 
@@ -229,21 +229,20 @@ window.onload = function(){
 
 
 
-//Scanner QR code pour creer ou restituer un materiel !!!! ==> le script est sur la page index.html//
+//Scanner QR code pour creer ou restituer un materiel !!!!//
 
 const qrReader = document.getElementById("qr-reader");
-
 
 function startQrScan(targetPage) {
   qrReader.style.display = "block";
 
-  html5QrCode = new Html5Qrcode("qr-reader");
+  const html5QrCode = new Html5Qrcode("qr-reader");
 
   html5QrCode.start(
     { facingMode: "environment" },
     { fps: 10, qrbox: 250 },
     (decodedText, decodedResult) => {
-      console.log("QR Code détecté :", decodedText); 
+      console.log("QR Code détecté :", decodedText);
       html5QrCode.stop();
       qrReader.style.display = "none";
 
@@ -259,8 +258,8 @@ function startQrScan(targetPage) {
 }
 
 // Boutons
-document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
-document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
+document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.php"));
+document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.php"));
 
 
 
@@ -335,7 +334,7 @@ async function getHistoriquePrets(materielId) {
 }
 
 /**
- * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
+ * Ajouter un prêt via l'API (appelé depuis creation-pret.php)
  */
 // async function ajouterPret(materielId, pretData) {
 //   try {
