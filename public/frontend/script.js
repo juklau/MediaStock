@@ -812,6 +812,9 @@ function afficherHistoriquePretsDynamique(historique) {
   const historiqueTrié = [...historique].sort((a, b) => 
     new Date(b.date_pret || b.datePret) - new Date(a.date_pret || a.datePret)
   );
+
+  console.log('Historique trié:', historiqueTrié);
+  console.log('Historique non trié:', historique);
   
   let html = '<div class="list-group list-group-flush">';
   
@@ -820,9 +823,9 @@ function afficherHistoriquePretsDynamique(historique) {
     const emprunteur = pret.emprunteur_nom || pret.emprunteur_prenom || 'Emprunteur inconnu';
     const datePret = pret.date_sortie || pret.datePret || 'Non définie';
     const dateRetourPrevue = pret.date_retour_prevue || pret.dateRetourPrevue || pret.dateRetour || 'Non définie';
-    const dateRetourEffectif = pret.date_retour_effective || pret.dateRestitution || null;
-    const etatPret = pret.etat || pret.etat_pret || 'Bon';
-    const etatRetour = pret.etat_retour || pret.etatRetour || null;
+    const dateRetourEffectif = pret.date_retour_effective || pret.dateRetourEffectif || null;
+    const notePret = pret.note_debut || pret.notePret || null;
+    const noteRetour = pret.note_fin || pret.noteRetour || null;
     
     // ========== Détermination du statut ==========
     const estRestitue = dateRetourEffectif !== null;
@@ -840,59 +843,67 @@ function afficherHistoriquePretsDynamique(historique) {
 
     // ========== Génération du HTML pour ce prêt ==========
     html += `
-      <div class="list-group-item ${index === 0 ? 'border-top-0' : ''}">
-        
+      <div class="list-group-item ${index === 0 ? 'border-top-0' : ''}" style="display: block; padding: 14px 16px;">
+
         <!-- En-tête avec emprunteur et statut -->
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div class="fw-bold text-dark">
+        <div class="header" style="display: block; margin-bottom: 10px;">
+          <div class="fw-bold text-dark" style="margin-bottom: 4px;">
             <i class="fas fa-user me-1"></i>${emprunteur}
           </div>
-          ${badgeStatut}
-        </div>
-        
-        <!-- Dates de prêt -->
-        <div class="small text-muted mb-2">
-          <div class="row g-0">
-            <div class="col-sm-6">
-              <i class="fas fa-calendar-plus me-1 text-success"></i>
-              <strong>Prêt:</strong> ${formatDateFrancaise(datePret)}
-            </div>
-            <div class="col-sm-6">
-              <i class="fas fa-calendar-minus me-1 text-warning"></i>
-              <strong>Retour prévu:</strong> ${formatDateFrancaise(dateRetourPrevue)}
-            </div>
+          <div class="status" style="display: inline-block; margin-top: 2px;">
+            ${badgeStatut}
           </div>
         </div>
-        
-        <!-- États du matériel -->
-        <div class="d-flex align-items-center gap-2 small">
-          <span class="text-muted">État:</span>
-          ${genererBadgeEtatPret(etatPret)}
+
+        <!-- Dates de prêt -->
+        <div class="small text-muted mb-2" style="display: block; margin-bottom: 10px;">
+          <div style="margin-bottom: 4px;">
+            <i class="fas fa-calendar-plus me-1 text-success"></i>
+            <strong>Prêt :</strong> ${formatDateFrancaise(datePret)}
+          </div>
+          <div>
+            <i class="fas fa-calendar-minus me-1 text-warning"></i>
+            <strong>Retour prévu :</strong> ${formatDateFrancaise(dateRetourPrevue)}
+          </div>
+        </div>
+
+        <!-- Notes du matériel -->
+        <div class="notes small" style="display: block; margin-bottom: 8px;">
+          <div style="margin-bottom: 4px;">
+            <span class="text-muted">Note de prêt :</span> 
+            <strong>${notePret || '—'}</strong>
+          </div>
+
           ${estRestitue ? `
-            <i class="fas fa-arrow-right text-muted mx-1"></i>
-            ${genererBadgeEtatPret(etatRetour)}
+            <div>
+              <span class="text-muted">Note de retour :</span> 
+              <strong>${noteRetour || '—'}</strong>
+            </div>
           ` : `
-            <i class="fas fa-arrow-right text-muted mx-1"></i>
-            <span class="text-muted fst-italic">En cours...</span>
+            <div style="margin-top: 2px;">
+              <i class="fas fa-arrow-right text-muted mx-1"></i>
+              <span class="text-muted fst-italic">En cours...</span>
+            </div>
           `}
         </div>
-        
+
         <!-- Date de restitution si applicable -->
         ${estRestitue ? `
-          <div class="small text-success mt-2">
+          <div class="small text-success mt-2" style="display: block; margin-top: 8px;">
             <i class="fas fa-check-circle me-1"></i>
-            <strong>Restitué le:</strong> ${formatDateFrancaise(dateRetourEffectif)}
+            <strong>Restitué le :</strong> ${formatDateFrancaise(dateRetourEffectif)}
           </div>
         ` : ''}
-        
+
         <!-- Alerte retard si applicable -->
         ${estEnRetard ? `
-          <div class="small text-danger mt-2">
+          <div class="small text-danger mt-2" style="display: block; margin-top: 8px;">
             <i class="fas fa-exclamation-triangle me-1"></i>
             <strong>Retard de ${calculerJoursRetard(dateRetourPrevue)} jour(s)</strong>
           </div>
         ` : ''}
       </div>
+
     `;
   });
   
