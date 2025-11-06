@@ -1,6 +1,5 @@
 <?php
   include_once(__DIR__ . '/../login_verify.php');
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -8,16 +7,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>MediaStock - Gestion d'inventaire</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="style-materiel.css" />
+    <link rel="stylesheet" href="style-materiel.css"/>
   </head>
 
   <body class="bg-white">
@@ -25,18 +18,10 @@
     <header class="position-relative">
       <div class="container h-100">
         <div class="row h-100 align-items-center justify-content-center">
-          <div
-            class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center"
-          >
+          <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
             <!-- Logo MediaStock qui colle aux bords -->
-            <div
-              class="logo-app position-relative justify-content-center align-items-center d-flex h-100"
-            >
-              <img
-                src="logo.png"
-                alt="MediaStock"
-                class="img-fluid h-100 w-auto object-fit-contain"
-              />
+            <div class="logo-app position-relative justify-content-center align-items-center d-flex h-100">
+              <img src="logo.png" alt="MediaStock" class="img-fluid h-100 w-auto object-fit-contain"/>
             </div>
           </div>
         </div>
@@ -44,14 +29,12 @@
     </header>
 
     <!-- Main -->
-    <!-- peut être à enlever : min-vh-100?? -->
+    <!-- peut être à enlever : min-vh-100?????????????? -->
     <main class="container text-center py-4 min-vh-100">
       <!-- Bouton retour -->
       <div class="row mb-4">
         <div class="col-12">
-          <a href="Choixcat.php" class="btn btn-outline-secondary"
-            ><i class="fas fa-arrow-left me-2"></i
-          ></a>
+          <a href="index.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i></a>
         </div>
       </div>
       <h1 class="h4 fw-normal mt-5 mb-5">Ajouter votre matériel</h1>
@@ -64,22 +47,11 @@
       <!-- Champ nom (centré, responsive) -->
       <form class="mb-5" id="materielForm">
         <div class="d-flex justify-content-center">
-          <input
-            type="text"
-            id="materielNom"
-            class="form-control text-center"
-            placeholder="Veuillez saisir le nom du matériel"
-            required
-          />
+          <input type="text" id="materielNom" class="form-control text-center" placeholder="Veuillez saisir le nom du matériel" required/>
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-          <input
-            type="text"
-            id="modeleNom"
-            class="form-control text-center"
-            placeholder="Veuillez saisir le modèle du matériel"
-          />
+          <input type="text" id="modeleNom" class="form-control text-center" placeholder="Veuillez saisir le modèle du matériel"/>
         </div>
       </form>
 
@@ -91,11 +63,7 @@
       </div>
 
       <!-- Message de succès -->
-      <div
-        id="messageSucces"
-        class="alert alert-success d-none mb-3"
-        role="alert"
-      >
+      <div id="messageSucces" class="alert alert-success d-none mb-3" role="alert">
         <i class="fas fa-check-circle me-2"></i>
         <span id="messageTexte"></span>
       </div>
@@ -116,10 +84,7 @@
           <i class="fa fa-download"></i> Télécharger
         </button>
         <!-- <button id="btnPartager" class="btn d-flex align-items-center justify-content-center"><i class="fa fa-share"></i></button> -->
-        <button
-          id="btnImprimer"
-          class="btn d-flex align-items-center justify-content-center"
-        >
+        <button id="btnImprimer" class="btn d-flex align-items-center justify-content-center">
           <i class="fa fa-print"></i>
         </button>
       </div>
@@ -136,12 +101,7 @@
       <div class="container">
         <div class="text-center">
           <p class="mb-0 text-dark">
-            <a
-              href="mentions-legales.php"
-              class="text-dark text-decoration-none"
-            >
-              Mentions légales
-            </a>
+            <a href="mentions-legales.html" class="text-dark text-decoration-none">Mentions légales</a>
           </p>
           <p class="mb-0 text-dark">© 2025 MediaStock inc</p>
         </div>

@@ -49,7 +49,7 @@ CREATE TABLE `Emprunteur`(
     `emprunteur_nom` VARCHAR(50) NOT NULL,
     `emprunteur_prenom` VARCHAR(50) NOT NULL,
     `role` ENUM('etudiant(e)', 'intervenant') NOT NULL,
-    -- peut être à modifier NOT NULL sur NULL!!!!
+    --  modifié NOT NULL sur NULL, car l'intervenant n'a pas formation!!!!
     `formation_id` BIGINT UNSIGNED NULL,
     `archived` BOOLEAN NOT NULL DEFAULT FALSE
 );

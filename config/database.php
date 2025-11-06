@@ -13,7 +13,13 @@
 
     private function __construct(){
 
-        // Valeurs par défaut sensées
+        // $this->host = 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
+        // // $this->host = 'mysql-mediastock.alwaysdata.net'; // Identifiants AlwaysData
+        // $this->db   = 'mediastock_db';
+        // $this->user = '439141';
+        // $this->pass = '5247_Juklau+123!';
+
+        // Valeurs par défaut sensées => le DB local!!!!
         $this->host = getenv('DB_HOST') ?: 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
         $this->db   = getenv('DB_NAME') ?: 'mediastock';
         $this->user = getenv('DB_USER') ?: 'mediastock';

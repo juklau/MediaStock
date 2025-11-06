@@ -1,5 +1,4 @@
-
-/* style de index.html*/
+/* style de index.php*/
 
 :root {
   --coral: #ff9994;
@@ -55,7 +54,7 @@ header {
   margin-bottom: 8px;
 }
 
-/* acceuil.html */
+/* acceuil.php */
 .action-btn:active {
   transform: translateY(2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
@@ -446,7 +445,6 @@ header {
 }
 
 /* ************************   Fin Offcanvas Fiche Produit ************************* */
-
 
 
 footer {
