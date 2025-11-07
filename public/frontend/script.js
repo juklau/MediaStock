@@ -41,6 +41,7 @@ async function chargerMateriels() {
 function renderItems() {
   const categoryFilter = document.getElementById("categoryFilter").value;
   const statusFilter = document.getElementById("statusFilter").value;
+  const etatFilter = document.getElementById("etatFilter").value;
   const container = document.getElementById("inventoryList");
   container.innerHTML = "";
 
@@ -48,9 +49,11 @@ function renderItems() {
   const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
+    const matchEtat = !etatFilter || item.etat === etatFilter;
     const nonArchived = item.archived === 0;
-    return matchCategorie && matchStatut && nonArchived;
+    return matchCategorie && matchStatut && matchEtat && nonArchived ;
   });
+
 
   filteredItems.forEach(item => {
       const statusClass = `status-${item.statut.toLowerCase()}`;
@@ -65,6 +68,7 @@ function renderItems() {
             <div class="item-meta">
               <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
               <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
+              <div>${item.etat}</div>
             </div>
           </div>
           <div class="item-right">

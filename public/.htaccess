@@ -1,9 +1,12 @@
-
 RewriteEngine On
 
-# Ne pas réécrire si le fichier ou le dossier existe
+# Si le fichier ou le dossier existe → ne rien faire
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-RewriteRule ^ index.php [QSA,L]
+# Si on est sur la racine du site (http://localhost:8080/)
+RewriteRule ^$ /frontend/acceuil.html [R=302,L]
+
+# Si aucune autre règle ne correspond (page inexistante)
+RewriteRule ^ /frontend/acceuil.html [R=302,L]

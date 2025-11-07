@@ -83,7 +83,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label d-block">État : <span class="text-danger">*</span></label>
+          <label class="form-label d-block">État : <span class="text-danger">*</span></label> 
           <div class="btn-group" role="group" aria-label="État">
             <input type="radio" class="btn-check" name="etat" id="etatBon" value="Bon" autocomplete="off" checked required/>
             <label class="btn btn-outline-success state-btn" for="etatBon" >Bon</label>

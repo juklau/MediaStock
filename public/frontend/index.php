@@ -77,6 +77,13 @@ include_once(__DIR__ . '/../login_verify.php');
               <option value="indisponible">Indisponible</option>
               <option value="retard">Retard</option>
             </select>
+
+            <select id="etatFilter" class="form-select w-50">
+              <option value="">État</option>
+              <option value="bon">Bon</option>
+              <option value="moyen">Moyen</option>
+              <option value="mauvais">Mauvais</option>
+            </select>
           </div>
         </div>
       </div>
