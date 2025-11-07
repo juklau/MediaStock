@@ -43,10 +43,9 @@ include_once(__DIR__ . '/../login_verify.php');
     </div>
 
     <!-- Container pour le lecteur QR -->
-<div id="qr-reader-container" style="display:none;">
-  <div id="qr-reader" style="width:100%; max-width:400px; margin:auto;"></div>
-</div>
-
+    <div id="qr-reader-container" style="display:none">
+      <div id="qr-reader"></div>
+    </div>
 
     <hr class="w-100 m-0 border-0" id="hr" />
 
