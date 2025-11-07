@@ -11,13 +11,13 @@ include_once(__DIR__ . '/../login_verify.php');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <link rel="stylesheet" href="style-index.css" />
   </head>
+
   <body class="d-flex flex-column min-vh-100">
-    <!-- Header with coral background and centered logo -->
+    <!-- Header -->
     <header class="position-relative">
       <div class="container h-100">
         <div class="row h-100 align-items-center justify-content-center">
@@ -32,7 +32,6 @@ include_once(__DIR__ . '/../login_verify.php');
     </header>
 
     <div class="container py-4 flex-grow-1">
-      <!-- big action buttons - stack on mobile, side by side on larger screens -->
       <div class="d-grid gap-2 d-md-flex justify-content-md-center actions-row">
         <button class="btn action-btn w-100 w-md-auto" id="scanPretBtn">
           Crée un prêt
@@ -44,17 +43,16 @@ include_once(__DIR__ . '/../login_verify.php');
     </div>
 
     <!-- Container pour le lecteur QR -->
-    <div id="qr-reader-container" style="display:none">
-      <div id="qr-reader"></div>
-    </div>
+<div id="qr-reader-container" style="display:none;">
+  <div id="qr-reader" style="width:100%; max-width:400px; margin:auto;"></div>
+</div>
+
 
     <hr class="w-100 m-0 border-0" id="hr" />
 
     <div class="container py-4 flex-grow-1">
-      <!-- Titre -->
       <h2 class="text-center section-title mb-3">Patrimoine informatique</h2>
 
-      <!-- Filtres + Ajout - responsive layout -->
       <div class="row g-2 mb-3 toolbar">
         <div class="col-12 col-md-auto">
           <!-- window onclick??????????????????????????????????? -->
@@ -90,7 +88,6 @@ include_once(__DIR__ . '/../login_verify.php');
         </div>
       </div>
 
-      <!-- Liste des éléments -->
       <div id="inventoryList" class="list-group mb-5">
         <!-- JS injecte ici -->
       </div>
@@ -191,123 +188,56 @@ include_once(__DIR__ . '/../login_verify.php');
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
    
     <script src="script.js"></script>
 
     <!-- à mettre dans un js!!!!!!!! -->
     <script>
-      function startQrScan() {
-        const qrContainer = document.getElementById("qr-reader-container");
-        qrContainer.style.display = "block";
+  function startQrScan() {
+    const qrContainer = document.getElementById("qr-reader-container");
+    qrContainer.style.display = "block";
 
-        const html5QrCode = new Html5Qrcode("qr-reader");
+    const html5QrCode = new Html5Qrcode("qr-reader");
 
-        html5QrCode
-          .start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: 250 },
-            async (decodedText) => {
-              // Stop le scan
-              await html5QrCode.stop();
-              qrContainer.style.display = "none";
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      async (decodedText) => {
+        // Stop le scan
+        await html5QrCode.stop();
+        qrContainer.style.display = "none";
 
-              // Appel à l'API pour récupérer la page correspondant au QR code
-              try {
-                const resp = await fetch(
-                  `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
-                );
-                const data = await resp.json();
+        try {
+          const resp = await fetch(
+            `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
+          );
+          const data = await resp.json();
 
-                if (data.success && data.targetPage) {
-                  // Redirection vers la page renvoyée par l'API
-                  const finalUrl = `/frontend/${data.targetPage}?code=${encodeURIComponent(decodedText)}`;
-                  console.log("URL :", finalUrl);
-                  window.location.href = finalUrl;
-                } else {
-                  alert("QR code non reconnu !");
-                }
-              } catch (err) {
-                console.error(err);
-                alert("Erreur réseau ou QR code invalide");
-              }
-            },
-            (errorMessage) => {
-              // scan en cours
-            }
-          )
-          .catch((err) => {
-            console.error("Impossible d'accéder à la caméra :", err);
-            alert(
-              "Impossible d'accéder à la caméra. Vérifiez les permissions et HTTPS."
-            );
-          });
+          if (data.success && data.targetPage) {
+            const finalUrl = `/frontend/${data.targetPage}?code=${encodeURIComponent(decodedText)}`;
+            console.log("URL :", finalUrl);
+            window.location.href = finalUrl;
+          } else {
+            alert("QR code non reconnu !");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Erreur réseau ou QR code invalide");
+        }
+      },
+      (errorMessage) => {
+        // Scan en cours, pas une erreur
       }
+    )
+    .catch((err) => {
+      console.error("Impossible d'accéder à la caméra :", err);
+      alert("Impossible d'accéder à la caméra. Vérifiez les permissions et HTTPS.");
+    });
+  }
 
-      document
-        .getElementById("scanPretBtn")
-        .addEventListener("click", startQrScan);
-      document
-        .getElementById("scanRestitutionBtn")
-        .addEventListener("click", startQrScan);
-    </script>
+  document.getElementById("scanPretBtn").addEventListener("click", startQrScan);
+  document.getElementById("scanRestitutionBtn").addEventListener("click", startQrScan);
+</script>
 
-    <!-- <script>
-      function startQrScan() {
-        const qrReader = document.getElementById("qr-reader");
-        qrReader.style.display = "block";
-
-        const html5QrCode = new Html5Qrcode("qr-reader");
-
-        html5QrCode
-          .start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: 250 },
-            async (decodedText) => {
-              // Stop le scan
-              await html5QrCode.stop();
-              qrReader.style.display = "none";
-
-              // Appel à l'API pour récupérer la page correspondant au QR code
-              try {
-                const resp = await fetch(
-                  `../api/getPageByQRCode.php?code=${encodeURIComponent(
-                    decodedText
-                  )}`
-                );
-                const data = await resp.json();
-
-                if (data.success && data.targetPage) {
-                  // Redirection vers la page renvoyée par l'API
-                  window.location.href =
-                    data.targetPage +
-                    `?code=${encodeURIComponent(decodedText)}`;
-                } else {
-                  alert("QR code non reconnu !");
-                }
-              } catch (err) {
-                console.error(err);
-                alert("Erreur réseau ou QR code invalide");
-              }
-            },
-            (errorMessage) => {
-              // Optionnel : scan en cours
-            }
-          )
-          .catch((err) => {
-            console.error("Impossible d'accéder à la caméra :", err);
-            alert(
-              "Impossible d'accéder à la caméra. Vérifiez les permissions et HTTPS."
-            );
-          });
-      }
-
-      document
-        .getElementById("scanPretBtn")
-        .addEventListener("click", startQrScan);
-      document
-        .getElementById("scanRestitutionBtn")
-        .addEventListener("click", startQrScan);
-    </script> -->
   </body>
 </html>

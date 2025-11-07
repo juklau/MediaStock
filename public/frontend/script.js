@@ -1,4 +1,4 @@
-// ********************************************************** js pour la **********************************************************************
+ // ********************************************************** js pour la **********************************************************************
 
 //.............pour index.php.............//
 
@@ -202,7 +202,6 @@ if (statusFilterEl) statusFilterEl.addEventListener('change', renderItems);
 window.onload = function(){
   chargerMateriels();
 };
-
 
 // archivage d'un item
 document.addEventListener('click', function (e) {
