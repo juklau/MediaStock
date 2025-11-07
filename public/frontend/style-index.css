@@ -430,7 +430,7 @@ header {
 }
 
 /* Responsive */
-@media (max-width: 576px) {
+@media (min-width: 576px) {
   .offcanvas-fiche {
     width: 100% !important;
   }
