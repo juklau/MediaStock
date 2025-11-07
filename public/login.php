@@ -5,6 +5,7 @@
 
     try{
 
+
         if (isset($_POST['username']) && isset($_POST['password'])) {
             $username = $_POST['username'];
             $password = $_POST['password']; 
@@ -26,6 +27,7 @@
             
             if ($admin) {
                 $_SESSION['username'] = $username;
+
 
                 // utilisation de la couche d'accès aux données
                 header('Content-Type: application/json');
@@ -57,14 +59,14 @@
             }
         }else {
 
-            header('Content-Type: application/json');
+            header('Content-Type: application/json' );
             $response = [
                 "success" => false,
                 "title" => "Erreur de connexion",
                 "message" => "Les informations de connexion ne sont pas définies dans la session."
             ];
             
-            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            return json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
         }
     }catch(PDOException $e){
         error_log("Erreur de connexion: " . $e->getMessage());
@@ -74,5 +76,5 @@
         ];
 
     }
-    
+    header('Location: /frontend/acceuil.html');
 ?>

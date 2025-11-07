@@ -1,6 +1,6 @@
  // ********************************************************** js pour la **********************************************************************
 
-//.............pour index.html.............//
+//.............pour index.php.............//
 
 
 
@@ -84,31 +84,6 @@ function renderItems() {
 
 
 //attacher les gestionnaires de clic sur les items
-// function attachClickHandlers(filteredItems) {
-//   const listItems = document.querySelectorAll('#inventoryList .list-group-item');
-  
-//   listItems.forEach((listItem, index) => {
-//     listItem.style.cursor = 'pointer';
-    
-//     listItem.addEventListener('click', function(e) {
-
-//       // Ne pas ouvrir si on clique sur le bouton de suppression
-//       if (e.target.closest('.trash-btn')) {
-//         return;
-//       }
-      
-//       // Trouver l'item correspondant dans le tableau
-//       if (filteredItems[index]) {
-//         const itemIndex = items.indexOf(filteredItems[index]);
-//         ouvrirFicheProduit(filteredItems[index], itemIndex);
-//       }
-//     });
-//   });
-
-// }
-
-
-//attacher les gestionnaires de clic sur les items
 function attachClickHandlers(filteredItems) {
   const listItems = document.querySelectorAll('#inventoryList .list-group-item');
   
@@ -137,7 +112,6 @@ function attachClickHandlers(filteredItems) {
     });
   });
 }
-
 
 
 // Après rendu, attache les gestionnaires de suppression
@@ -295,45 +269,6 @@ async function getHistoriquePrets(materielId) {
   }
 }
 
-/**
- * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
- */
-// async function ajouterPret(materielId, pretData) {
-//   try {
-//     const pretPayload = {
-//       materielId: materielId,
-//       emprunteur: pretData.nom + ' ' + pretData.prenom,
-//       datePret: pretData.datePret,
-//       dateRetour: pretData.dateRetour,
-//       etatPret: pretData.etat,
-//       intervenant: pretData.intervenant,
-//       classe: pretData.classe,
-//       notes: pretData.notes
-//     };
-    
-//     await API.ajouterPret(pretPayload);
-//     return true;
-//   } catch (error) {
-//     console.error('Erreur lors de l\'ajout du prêt:', error);
-//     throw error;
-//   }
-// }
-
-/**
- * Mettre à jour un prêt lors de la restitution
-//  */
-// async function mettreAJourRestitution(pretId, etatRetour) {
-//   try {
-//     await API.updatePret(pretId, {
-//       etatRetour: etatRetour,
-//       dateRestitution: new Date().toISOString().split('T')[0]
-//     });
-//     return true;
-//   } catch (error) {
-//     console.error('Erreur lors de la mise à jour de la restitution:', error);
-//     throw error;
-//   }
-// }
 
 /**
  * =====================================
@@ -510,15 +445,15 @@ async function recupererDetailsItem(itemId) {
         console.log('🔗 Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
       }
       
-      console.log('✅ RÉSULTAT FINAL:', finalItem);
+      console.log(' RÉSULTAT FINAL:', finalItem);
       return finalItem;
     } else {
-      console.error('❌ Aucune donnée récupérée des deux APIs');
+      console.error(' Aucune donnée récupérée des deux APIs');
       return null;
     }
     
   } catch (error) {
-    console.error('💥 ERREUR GÉNÉRALE recupererDetailsItem:', error);
+    console.error(' ERREUR GÉNÉRALE recupererDetailsItem:', error);
     return null;
   }
 }
