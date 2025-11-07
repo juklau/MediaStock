@@ -189,8 +189,8 @@ include_once(__DIR__ . '/../login_verify.php');
     <!-- à mettre dans un js!!!!!!!! -->
     <script>
       function startQrScan() {
-        const qrReader = document.getElementById("qr-reader");
-        qrReader.style.display = "block";
+        const qrContainer = document.getElementById("qr-reader-container");
+        qrContainer.style.display = "block";
 
         const html5QrCode = new Html5Qrcode("qr-reader");
 
@@ -201,22 +201,19 @@ include_once(__DIR__ . '/../login_verify.php');
             async (decodedText) => {
               // Stop le scan
               await html5QrCode.stop();
-              qrReader.style.display = "none";
+              qrContainer.style.display = "none";
 
               // Appel à l'API pour récupérer la page correspondant au QR code
               try {
                 const resp = await fetch(
-                  `../api/getPageByQRCode.php?code=${encodeURIComponent(
-                    decodedText
-                  )}`
+                  `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
                 );
                 const data = await resp.json();
 
                 if (data.success && data.targetPage) {
                   // Redirection vers la page renvoyée par l'API
                   window.location.href =
-                    data.targetPage +
-                    `?code=${encodeURIComponent(decodedText)}`;
+                    data.targetPage + `?code=${encodeURIComponent(decodedText)}`;
                 } else {
                   alert("QR code non reconnu !");
                 }
@@ -226,7 +223,7 @@ include_once(__DIR__ . '/../login_verify.php');
               }
             },
             (errorMessage) => {
-              // Optionnel : scan en cours
+              // scan en cours
             }
           )
           .catch((err) => {
