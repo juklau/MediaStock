@@ -107,8 +107,9 @@ select#classe option {
   box-shadow: none !important;
 }
 
+
 .page-body {
-  max-width: 420px;
+  max-width: 420px; /* ???????????? */
   margin: 18px auto 48px;
 }
 

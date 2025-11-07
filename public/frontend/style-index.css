@@ -430,7 +430,7 @@ header {
 }
 
 /* Responsive */
-@media (max-width: 576px) {
+@media (min-width: 576px) {
   .offcanvas-fiche {
     width: 100% !important;
   }
@@ -485,6 +485,7 @@ footer p {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
+
 
 /* Zone du lecteur QR réelle */
 #qr-reader {
