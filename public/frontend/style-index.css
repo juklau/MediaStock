@@ -476,14 +476,27 @@ footer p {
   background-color: #dc3545;
 }
 
-#qr-reader {
-  width: 90vw;               /* prend 90% de la largeur de la fenêtre */
-  max-width: 400px;          /* limite sur les grands écrans */
-  margin: 20px auto;         /* espace au-dessus et en dessous + centrage horizontal */
-  padding: 15px;             /* petit espace intérieur partout */
-  border-radius: 15px;       /* coins arrondis, optionnel */
-  background-color: #fff;    /* pour que ça ressorte */
+/* Conteneur général du scanner */
+#qr-reader-container {
+  width: 90vw;
+  max-width: 400px;
+  margin: 30px auto; /* espace au-dessus et en dessous */
+  padding: 20px; /* espace autour du scanner */
+  background: #fff;
+  border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  display: none;             /* caché par défaut */
-  box-sizing: border-box;    /* pour que padding ne casse pas la largeur */
+  box-sizing: border-box;
+}
+
+/* Zone du lecteur QR réelle */
+#qr-reader {
+  width: 100%;
+  overflow: hidden; /* empêche la vidéo de dépasser */
+  border-radius: 10px;
+}
+
+/* Si tu veux que ça reste centré dans la page */
+#qr-reader-container {
+  display: none; /* masqué par défaut */
+  text-align: center;
 }
