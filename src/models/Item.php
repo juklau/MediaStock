@@ -204,7 +204,7 @@ class Item extends BaseModel {
      * @return array|false
      */
     public function getAvailableItemNames(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, 
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, i.etat,
                     c.categorie AS categorie
                 FROM {$this->table} i
                 INNER JOIN Categorie c ON i.categorie_id = c.id
@@ -231,7 +231,7 @@ class Item extends BaseModel {
      * @return array|false
      */
     public function afficheItemIndisponible(): array|false {
-        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived,
+        $sql = "SELECT i.id, i.nom, i.model, i.image_url, i.archived, i.etat,
                     p.date_retour_prevue,
                     c.categorie AS categorie
                 FROM {$this->table} i
