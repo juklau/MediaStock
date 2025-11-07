@@ -41,6 +41,7 @@ async function chargerMateriels() {
 function renderItems() {
   const categoryFilter = document.getElementById("categoryFilter").value;
   const statusFilter = document.getElementById("statusFilter").value;
+  const etatFilter = document.getElementById("etatFilter").value;
   const container = document.getElementById("inventoryList");
   container.innerHTML = "";
 
@@ -48,33 +49,36 @@ function renderItems() {
   const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
+    const matchEtat = !etatFilter || item.etat === etatFilter;
     const nonArchived = item.archived === 0;
-    return matchCategorie && matchStatut && nonArchived;
+    return matchCategorie && matchStatut && matchEtat && nonArchived ;
   });
 
-  filteredItems.forEach(item => {
-      const statusClass = `status-${item.statut.toLowerCase()}`;
 
-      const listItem = document.createElement("div");
-      listItem.className = "list-group-item";
-      listItem.dataset.itemId = item.id;
+filteredItems.forEach(item => {
+    const statusClass = `status-${item.statut.toLowerCase()}`;
 
-      listItem.innerHTML = `
-          <div class="left">
-            <div class="item-icon"><i class="${item.image_url}"></i></div>
-            <div class="item-meta">
-              <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
-              <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
-            </div>
+    const listItem = document.createElement("div");
+    listItem.className = "list-group-item";
+    listItem.dataset.itemId = item.id;
+
+    listItem.innerHTML = `
+        <div class="left">
+          <div class="item-icon"><i class="${item.image_url}"></i></div>
+          <div class="item-meta">
+            <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
+            <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
+            <div>${item.etat}</div>
           </div>
-          <div class="item-right">
-            ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
-            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
-          </div>
-        `;
+        </div>
+        <div class="item-right">
+          ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
+          <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
+        </div>
+      `;
 
-        container.appendChild(listItem);
-  });
+      container.appendChild(listItem);
+});
 
   // Attacher les gestionnaires de clic après le rendu
   attachClickHandlers(filteredItems);

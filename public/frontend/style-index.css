@@ -18,10 +18,10 @@ header {
 	z-index: 2;
 }
 
-#qr-reader{
+/* #qr-reader{
     width: 300px; 
     height: 300px;
-}
+} */
 
 #hr{
     background-color: var(--coral); 

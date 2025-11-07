@@ -92,7 +92,7 @@ class Pret extends BaseModel {
      */
     public function getOverdueLoans():array|false {
         $today = date('Y-m-d'); //p.ex: '2025-12-22'
-        $sql = "SELECT p.*, i.id, i.archived,
+        $sql = "SELECT p.*, i.id, i.archived,  i.etat,
                         i.nom AS item_nom, i.model AS item_model, i.qr_code, i.image_url,
                         e.emprunteur_nom, e.emprunteur_prenom,
                         c.categorie AS categorie

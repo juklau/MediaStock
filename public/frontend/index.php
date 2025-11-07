@@ -43,8 +43,10 @@ include_once(__DIR__ . '/../login_verify.php');
       </div>
     </div>
 
-    <!-- Container pour le lecteur QR ????????????????????????????????-->
-    <div id="qr-reader" style="width: 300px; display: none"></div>
+    <!-- Container pour le lecteur QR -->
+    <div id="qr-reader-container" style="display:none">
+      <div id="qr-reader"></div>
+    </div>
 
     <hr class="w-100 m-0 border-0" id="hr" />
 
@@ -76,6 +78,13 @@ include_once(__DIR__ . '/../login_verify.php');
               <option value="disponible">Disponible</option>
               <option value="indisponible">Indisponible</option>
               <option value="retard">Retard</option>
+            </select>
+
+            <select id="etatFilter" class="form-select w-50">
+              <option value="">État</option>
+              <option value="bon">Bon</option>
+              <option value="moyen">Moyen</option>
+              <option value="mauvais">Mauvais</option>
             </select>
           </div>
         </div>
