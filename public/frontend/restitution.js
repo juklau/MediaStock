@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           modal.show();
 
           document.getElementById("successModalReturn").addEventListener("hidden.bs.modal", () => {
-              window.location.href = "index.html";
+              window.location.href = "index.php";
           }, { once: true });
           
         } catch (err) {

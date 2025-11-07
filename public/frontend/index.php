@@ -13,8 +13,6 @@ include_once(__DIR__ . '/../login_verify.php');
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-
     <link rel="stylesheet" href="style-index.css" />
   </head>
 
@@ -45,7 +43,10 @@ include_once(__DIR__ . '/../login_verify.php');
     </div>
 
     <!-- Container pour le lecteur QR -->
-    <div id="qr-reader"></div>
+<div id="qr-reader-container" style="display:none;">
+  <div id="qr-reader" style="width:100%; max-width:400px; margin:auto;"></div>
+</div>
+
 
     <hr class="w-100 m-0 border-0" id="hr" />
 
@@ -180,63 +181,56 @@ include_once(__DIR__ . '/../login_verify.php');
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
    
     <script src="script.js"></script>
 
     <!-- à mettre dans un js!!!!!!!! -->
     <script>
-      function startQrScan() {
-        const qrContainer = document.getElementById("qr-reader-container");
-        qrContainer.style.display = "block";
+  function startQrScan() {
+    const qrContainer = document.getElementById("qr-reader-container");
+    qrContainer.style.display = "block";
 
-        const html5QrCode = new Html5Qrcode("qr-reader");
+    const html5QrCode = new Html5Qrcode("qr-reader");
 
-        html5QrCode
-          .start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: 250 },
-            async (decodedText) => {
-              // Stop le scan
-              await html5QrCode.stop();
-              qrContainer.style.display = "none";
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      async (decodedText) => {
+        // Stop le scan
+        await html5QrCode.stop();
+        qrContainer.style.display = "none";
 
-              // Appel à l'API pour récupérer la page correspondant au QR code
-              try {
-                const resp = await fetch(
-                  `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
-                );
-                const data = await resp.json();
+        try {
+          const resp = await fetch(
+            `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
+          );
+          const data = await resp.json();
 
-                if (data.success && data.targetPage) {
-                  window.location.href =
-                    data.targetPage + `?code=${encodeURIComponent(decodedText)}`;
-                } else {
-                  alert("QR code non reconnu !");
-                }
-              } catch (err) {
-                console.error(err);
-                alert("Erreur réseau ou QR code invalide");
-              }
-            },
-            (errorMessage) => {
-              // scan en cours
-            }
-          )
-          .catch((err) => {
-            console.error("Impossible d'accéder à la caméra :", err);
-            alert(
-              "Impossible d'accéder à la caméra. Vérifiez les permissions et HTTPS."
-            );
-          });
+          if (data.success && data.targetPage) {
+            const finalUrl = `/frontend/${data.targetPage}?code=${encodeURIComponent(decodedText)}`;
+            console.log("URL :", finalUrl);
+            window.location.href = finalUrl;
+          } else {
+            alert("QR code non reconnu !");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Erreur réseau ou QR code invalide");
+        }
+      },
+      (errorMessage) => {
+        // Scan en cours, pas une erreur
       }
+    )
+    .catch((err) => {
+      console.error("Impossible d'accéder à la caméra :", err);
+      alert("Impossible d'accéder à la caméra. Vérifiez les permissions et HTTPS.");
+    });
+  }
 
-      document
-        .getElementById("scanPretBtn")
-        .addEventListener("click", startQrScan);
-      document
-        .getElementById("scanRestitutionBtn")
-        .addEventListener("click", startQrScan);
-    </script>
+  document.getElementById("scanPretBtn").addEventListener("click", startQrScan);
+  document.getElementById("scanRestitutionBtn").addEventListener("click", startQrScan);
+</script>
+
   </body>
 </html>

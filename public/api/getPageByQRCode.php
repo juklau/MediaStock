@@ -46,10 +46,10 @@
 
         // 4. Décider la redirection selon le statut
         if ($itemEstPrete) {
-            $targetPage = "restitution.html";
+            $targetPage = "restitution.php";
             $message = "Matériel actuellement emprunté - redirection vers restitution";
         } else {
-            $targetPage = "creation-pret.html";
+            $targetPage = "creation-pret.php";
             $message = "Matériel disponible - redirection vers création de prêt";
         }
 

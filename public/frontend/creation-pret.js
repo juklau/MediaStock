@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 modal.show();
 
                 document.getElementById("successModal").addEventListener("hidden.bs.modal", () => {
-                    window.location.href = "index.html";
+                    window.location.href = "index.php";
                 }, { once: true });
 
                 form.reset();
