@@ -57,6 +57,7 @@ function renderItems() {
 
 filteredItems.forEach(item => {
     const statusClass = `status-${item.statut.toLowerCase()}`;
+    const etatClass = `etat-${item.etat.toLowerCase()}`;
 
     const listItem = document.createElement("div");
     listItem.className = "list-group-item";
@@ -68,7 +69,7 @@ filteredItems.forEach(item => {
           <div class="item-meta">
             <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
             <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
-            <div>${item.etat}</div>
+            <div><span class="etat-button ${etatClass}">${item.etat} état</span></div>
           </div>
         </div>
         <div class="item-right">
@@ -197,6 +198,8 @@ const catFilterEl = document.getElementById('categoryFilter');
 if (catFilterEl) catFilterEl.addEventListener('change', renderItems);
 const statusFilterEl = document.getElementById('statusFilter');
 if (statusFilterEl) statusFilterEl.addEventListener('change', renderItems);
+const etatFilterEl = document.getElementById('etatFilter');
+if (etatFilterEl) etatFilterEl.addEventListener('change', renderItems);
 
 // Charger les données au chargement de la page
 window.onload = function(){
