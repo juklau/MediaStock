@@ -72,7 +72,7 @@ async function getCategorieIdFromName(nomCategorie) {
         const id = result.categorie_id;
         return  id;// l'ID de la catégorie
       } else {
-        console.warn("Catégorie non trouvée :", result.message);
+        console.warn("Catégorie non trouvée :", result.message); 
         return null;
       }
     } catch (error) {

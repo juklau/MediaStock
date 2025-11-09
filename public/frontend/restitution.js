@@ -1,6 +1,6 @@
 
 // ============================================================================================
-// == récupération des éléments d'un prêt afin de remplir les champs sur restitution.html =====
+// == récupération des éléments d'un prêt afin de remplir les champs sur restitution.php =====
 // ============================================================================================
 
 // 
@@ -42,9 +42,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const prenomInput = document.getElementById("emprunteurPrenomReturn");
             if (prenomInput) prenomInput.value = emprunteurPrenom;
-
-
-
+ 
 
             const classeInput = document.getElementById("classeReturn");
             if (classeInput) {
@@ -54,10 +52,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 classeInput.value = classe;
               }else if(classe === null){
                 // si c'est null => Intervenant
-                classeInput.value = "INTERVENANT";
+                classeInput.value = "INTERVENANT"; 
               }
             }
-
 
             // Afficher l'état du prêt avec un badge coloré
             const etatPretBadge = document.getElementById("etatPretBadge");
@@ -148,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ========== clôturer un prêt actif ==============================
     // ================================================================
     
-    // 
+    
     const formReturn = document.getElementById("returnForm");
     if (formReturn) {
       formReturn.addEventListener("submit", async function (e) {

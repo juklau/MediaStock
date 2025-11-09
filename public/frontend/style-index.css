@@ -1,4 +1,4 @@
-/* style de index.php*/
+/* style de frontend/index.php*/
 
 :root {
   --coral: #ff9994;
@@ -163,17 +163,6 @@ header {
   height: 36px;
 }
 
-@media (min-width: 768px) {
-    .list-group-item .left {
-        gap: 12px;
-    }
-
-    .item-icon i {
-        width: 44px;
-        height: 44px;
-    }
-}
-
 .item-meta {
   color: #333;
 }
@@ -230,18 +219,6 @@ header {
   min-width: auto;
   font-size: 0.875rem;
 }
-
-@media (min-width: 768px) {
-    .section-title {
-        font-size: 1.1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .toolbar .form-select {
-        min-width: 140px;
-    }
-}
-
 
 /* Style du bouton Ajouter  => je ne sais pas s'il faut içi?????*/
 .btn-primary,
@@ -374,7 +351,7 @@ header {
   padding: 15px 20px;
   font-weight: 600;
   color: #495057;
-  border-bottom: 2px solid var(--coral);
+  border-bottom: 2px solid var(--coral); 
   display: flex;
   align-items: center;
 }
@@ -443,20 +420,6 @@ header {
   color: #dee2e6;
 }
 
-/* Responsive */
-@media (min-width: 576px) {
-  .offcanvas-fiche {
-    width: 100% !important;
-  }
-
-  .fiche-header {
-    padding: 50px 20px 30px;
-  }
-
-  .fiche-title {
-    font-size: 1.3rem;
-  }
-}
 
 /* ************************   Fin Offcanvas Fiche Produit ************************* */
 
@@ -512,4 +475,45 @@ footer p {
 #qr-reader-container {
   display: none; /* masqué par défaut */
   text-align: center;
+}
+
+
+
+/* Responsive */
+@media (min-width: 576px) {
+  .offcanvas-fiche {
+    width: 100% !important;
+  }
+
+  .fiche-header {
+    padding: 50px 20px 30px;
+  }
+
+  .fiche-title {
+    font-size: 1.3rem;
+  }
+}
+
+
+@media (min-width: 768px) {
+
+    /* Mobile-optimized list items */
+    .list-group-item .left {
+        gap: 12px;
+    }
+
+    .item-icon i {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* toolbar */
+    .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .toolbar .form-select {
+        min-width: 140px;
+    }
 }

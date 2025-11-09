@@ -254,9 +254,10 @@ class Item extends BaseModel {
      */
 
     public function getItemByID(int $id): array|false{
-        $sql = "SELECT *  
-                FROM {$this->table} 
-                WHERE id = :id";
+        $sql = "SELECT i.*, c.categorie AS categorie 
+                FROM {$this->table} i
+                JOIN Categorie c ON i.categorie_id = c.id
+                WHERE i.id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             ":id" => $id 

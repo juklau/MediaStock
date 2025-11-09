@@ -43,13 +43,13 @@
 
         <div class="mb-2">
           <label class="form-label">Nom de l'emprunteur : <span class="text-danger">*</span></label>
-          <input type="text" id="emprunteurNom" class="form-control" placeholder="nom" required/>
+          <input type="text" id="emprunteurNom" class="form-control" placeholder="Nom" required/>
           <div class="invalid-feedback">Le nom de l'emprunteur est requis</div>
         </div>
 
         <div class="mb-2">
           <label class="form-label">Prénom de l'emprunteur : <span class="text-danger">*</span></label>
-          <input type="text" id="emprunteurPrenom" class="form-control" placeholder="prénom" required/>
+          <input type="text" id="emprunteurPrenom" class="form-control" placeholder="Prénom" required/>
           <div class="invalid-feedback">
             Le prénom de l'emprunteur est requis
           </div>
@@ -98,7 +98,7 @@
 
         <div class="mb-3">
           <label class="form-label">Notes :</label>
-          <textarea id="notes" class="form-control notes-box" maxlength="500" placeholder="notes"></textarea>
+          <textarea id="notes" class="form-control notes-box" maxlength="500" placeholder="Notes"></textarea>
           <div class="form-text text-end" id="notesCount">0 / 500</div>
         </div>
 
@@ -139,9 +139,9 @@
         <div class="modal-content text-center p-4">
           <div class="modal-body">
             <div class="success-icon mb-3"><i class="fas fa-check"></i></div>
-            <h4 class="mb-3">Félicitation votre prêt a été effectuer</h4>
+            <h4 class="mb-3">Félicitation! Votre prêt a été effectuée.</h4>
             <button type="button" class="btn btn-success" data-bs-dismiss="modal">
-              validé
+              Valider
             </button>
           </div>
         </div>

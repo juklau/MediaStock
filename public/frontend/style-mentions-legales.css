@@ -186,6 +186,23 @@
   font-size: 1rem;
 }
 
+
+@media (max-width: 480px) {
+  .back-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  .mentions-content h1 {
+    font-size: 1.5rem !important;
+  }
+}
+
+
 /* Responsivité mobile */
 @media (max-width: 768px) {
   .mentions-content {
@@ -230,17 +247,4 @@
   }
 }
 
-@media (max-width: 480px) {
-  .back-btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
 
-  .card-body {
-    padding: 1.5rem !important;
-  }
-
-  .mentions-content h1 {
-    font-size: 1.5rem !important;
-  }
-}
