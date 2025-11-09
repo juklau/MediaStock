@@ -119,7 +119,7 @@
           <p class="mb-0 text-dark">
             <a href="mentions-legales.html" class="text-dark text-decoration-none">Mentions légales</a>
           </p>
-          <p class="mb-0 text-dark">© 2025 MediaStock inc</p>
+          <p class="mb-0 text-dark">© 2025 MediaStock Inc</p>
         </div>
       </div>
     </footer>

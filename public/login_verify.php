@@ -2,7 +2,6 @@
 session_start();
 
 // durée maximale d'inactivité en secondes (5min => 300s)
-
 $session_timeout = 300;
 
 // vérification si user est connecté
