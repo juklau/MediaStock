@@ -33,20 +33,22 @@
     <!-- Main Content -->
     <main class="py-5">
       <div class="container">
+
         <!-- Bouton retour -->
-        <div class="row mb-4">
+        <div class="row mb-4 text-center">
           <div class="col-12">
             <a href="index.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i></a>
           </div>
         </div>
+
         <!-- Choixcat Section -->
         <div class="row">
           <div class="col-12">
-            <h2 class="text-center mb-5 text-decoration-underline" id="item-dispo">
+            <h2 class="text-center my-5 text-decoration-underline" id="item-dispo">
               Matériel disponible :
             </h2>
 
-            <div class="row g-4">
+            <div class="row g-4 mt-3">
               <!-- Périphérique informatique -->
               <div class="col-6 col-md-6 col-lg-6">
                 <a href="materiel.php" class="text-decoration-none" onclick="localStorage.setItem('selectedCategory', 'Informatique')">

@@ -74,6 +74,8 @@ filteredItems.forEach(item => {
         </div>
         <div class="item-right">
           ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
+
+          <button class="change-btn" title="Modifier" data-id="${item.id}"><i class="fas fa-file-lines fa-lg"></i></button>
           <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
         </div>
       `;
@@ -97,14 +99,32 @@ function attachClickHandlers(filteredItems) {
     
     listItem.addEventListener('click', function(e) {
 
-      // Ne pas ouvrir si on clique sur le bouton de suppression
-      if (e.target.closest('.trash-btn')) {
-        attachDeleteHandlers(filteredItems);
+      // Si on clique sur le bouton de modification, on redirige vers la page de modif
+      const modifBtn = e.target.closest('.change-btn');
+      if (modifBtn) {
+        const itemId = parseInt(modifBtn.dataset.id);
+        if (itemId) {
+          const finalUrl = `/frontend/modification-item.php?code=${encodeURIComponent(itemId)}`;
+          window.location.href = finalUrl;
+        }
+        e.stopPropagation();
+        return;
+      }
+
+      // Si on clique sur le bouton de suppression, on appelle le handler de suppression
+      const deleteBtn = e.target.closest('.trash-btn');
+      if (deleteBtn) {
+        const itemId = parseInt(deleteBtn.dataset.id);
+        if (itemId) {
+          attachDeleteHandlers(itemId); 
+        }
+        e.stopPropagation();
+        return;
       }
       
-      // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
+       // Sinon, clic sur l’élément lui-même => ouvrir la fiche
+      // Utiliser l'ID réel depuis l'attribut data-item-id
       const itemId = parseInt(listItem.dataset.itemId);
-      
       if (itemId) {
         console.log('Clic sur item ID:', itemId);
         
@@ -118,6 +138,27 @@ function attachClickHandlers(filteredItems) {
   });
 }
 
+
+// function attachModifHandlers(filteredItems){
+//   const changeBtns = document.querySelectorAll('.change-btn');
+
+//   changeBtns.forEach((btn) => {
+//       btn.addEventListener('click', function (e){
+//         e.stopPropagation(); // Empêcher l'ouverture de l'offcanvas
+//         const itemId = parseInt(btn.dataset.id);
+
+//         if (!itemId || isNaN(itemId)){
+//           alert("Id du matériel non reconnu !");
+//           return;
+//         }
+
+//         const finalUrl = `/frontend/modification-item.php?code=${encodeURIComponent(itemId)}`;
+//         console.log("URL :", finalUrl);
+//         window.location.href = finalUrl;
+
+//       });
+//   });
+// }
 
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
