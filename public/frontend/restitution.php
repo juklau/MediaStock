@@ -35,7 +35,7 @@
 
       <div id="productVisualReturn" class="text-center mb-3">
         <div id="productImageWrapReturn">
-          <i id="productIconReturn" class="fas fa-mouse fa-5x"></i>
+          <i id="productIconReturn" class="fas fa-mouse fa-5x"></i> 
         </div>
       </div>
 
@@ -47,17 +47,17 @@
 
         <div class="mb-2">
           <label class="form-label">Nom de l'emprunteur :</label>
-          <input type="text" id="emprunteurNomReturn" class="form-control" placeholder="nom" readonly/>
+          <input type="text" id="emprunteurNomReturn" class="form-control" placeholder="Nom" readonly/>
         </div>
 
         <div class="mb-2">
           <label class="form-label">Prénom de l'emprunteur :</label>
-          <input type="text" id="emprunteurPrenomReturn" class="form-control" placeholder="prénom" readonly/>
+          <input type="text" id="emprunteurPrenomReturn" class="form-control" placeholder="Prénom" readonly/>
         </div>
 
         <div class="mb-2">
           <label class="form-label">Classe :</label>
-          <input type="text" id="classeReturn" class="form-control" placeholder="classe" readonly/>
+          <input type="text" id="classeReturn" class="form-control" placeholder="Classe" readonly/>
         </div>
 
         <div class="mb-3">
@@ -83,7 +83,7 @@
 
         <div class="mb-3">
           <label class="form-label">Notes :</label>
-          <textarea id="notesReturn" class="form-control notes-box" maxlength="500" placeholder="notes" readonly></textarea>
+          <textarea id="notesReturn" class="form-control notes-box" maxlength="500" placeholder="Notes" readonly></textarea>
           <div class="form-text text-end" id="notesCountReturn">0 / 500</div>
         </div>
 

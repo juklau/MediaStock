@@ -2,7 +2,7 @@
 include_once(__DIR__ . '/../login_verify.php');
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr"> 
 
   <head>
     <meta charset="UTF-8" />
@@ -10,8 +10,6 @@ include_once(__DIR__ . '/../login_verify.php');
     <title>MediaStock - Patrimoine informatique</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
     <link rel="stylesheet" href="style-index.css" />
   </head>
@@ -139,7 +137,7 @@ include_once(__DIR__ . '/../login_verify.php');
               <div id="ficheQRCode" class="qr-container">
                 <!-- QR code généré ici -->
               </div>
-              <p class="text-muted small mt-2 mb-0">
+              <p class="text-muted small mt-2 mb-0"> 
                 Scannez pour accéder aux détails
               </p>
             </div>
@@ -186,6 +184,8 @@ include_once(__DIR__ . '/../login_verify.php');
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
    
     <script src="script.js"></script>

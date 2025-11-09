@@ -661,7 +661,7 @@ async function genererQRCodeDynamique(materielId) {
     qrContainer.style.display = 'flex';
     qrContainer.style.justifyContent = 'center';
     qrContainer.style.alignItems = 'center';
-    ficheQRCode.appendChild(qrContainer);
+    ficheQRCode.appendChild(qrContainer); 
     
     // Générer le QR code avec l'ID du matériel (même logique que materiel_test.js)
     new QRCode(qrContainer, {
