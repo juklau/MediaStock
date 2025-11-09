@@ -72,7 +72,7 @@ header {
 /* pour afficher les dot en couleur selon leur disponibilité */
 /* pour afficher les états en couleur */
 .status-disponible,
- .etat-bon {
+.etat-bon {
   background-color: var(--success);
 }
 
@@ -174,10 +174,15 @@ header {
   color: #6c757d;
 }
 
-.trash-btn {
+.trash-btn,
+.change-btn {
   color: #6c757d;
   background: transparent;
   border: none;
+}
+
+.fa-lg{
+  font-size: 1.5em !important;
 }
 
 .badge-etat {
@@ -453,6 +458,7 @@ footer p {
 
 /* Conteneur général du scanner */
 #qr-reader-container {
+  display: none;
   width: 90vw;
   max-width: 400px;
   margin: 30px auto; /* espace au-dessus et en dessous */
@@ -475,6 +481,12 @@ footer p {
 #qr-reader-container {
   display: none; /* masqué par défaut */
   text-align: center;
+}
+
+/* pour la page modification-item.php =>icon de retour */
+.change.fas{
+	font-size: 2rem; 
+	opacity: 0.69;
 }
 
 

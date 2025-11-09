@@ -29,6 +29,14 @@
    
     <!-- Corps principal -->
     <main class="page-body">
+        
+         <!-- Bouton retour -->
+        <div class="row mb-4 mt-5 text-center">
+          <div class="change col-12">
+            <a href="index.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i></a>
+          </div>
+        </div>
+
         <div class="text-center text-muted my-4" id="itemNameReturn">Nom de l'élément</div>
 
         <!-- image url -->
@@ -71,7 +79,7 @@
             </div> -->
 
             <div class="mb-5">
-                <label class="form-label d-block">État du matériel: <span class="text-danger">*</span></label>
+                <label class="form-label d-block">État du matériel: </label>
                 <div class="btn-group" role="group" aria-label="État de l'item">
                     <input type="radio" class="btn-check" name="etatModif" id="etatBonModif" value="Bon" autocomplete="off" required checked/>
                     <label class="btn btn-outline-success state-btn" for="etatBonModif">Bon</label>
@@ -110,7 +118,7 @@
           <p class="mb-0 text-dark">
             <a href="mentions-legales.html" class="text-dark text-decoration-none"> Mentions légales</a>
           </p>
-          <p class="mb-0 text-dark">© 2025 MediaStock inc</p>
+          <p class="mb-0 text-dark">© 2025 MediaStock Inc</p>
         </div>
       </div>
     </footer>

@@ -31,8 +31,9 @@
     <!-- Main -->
     <!-- peut être à enlever : min-vh-100?????????????? -->
     <main class="container text-center py-4 min-vh-100">
+
       <!-- Bouton retour -->
-      <div class="row mb-4">
+      <div class="row mb-4 pt-5">
         <div class="col-12">
           <a href="index.php" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i></a>
         </div>
@@ -103,7 +104,7 @@
           <p class="mb-0 text-dark">
             <a href="mentions-legales.html" class="text-dark text-decoration-none">Mentions légales</a>
           </p>
-          <p class="mb-0 text-dark">© 2025 MediaStock inc</p>
+          <p class="mb-0 text-dark">© 2025 MediaStock Inc</p>
         </div>
       </div>
     </footer>

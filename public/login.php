@@ -5,7 +5,6 @@
 
     try{
 
-
         if (isset($_POST['username']) && isset($_POST['password'])) {
             $username = $_POST['username'];
             $password = $_POST['password']; 
@@ -27,7 +26,7 @@
             
             if ($admin) {
                 $_SESSION['username'] = $username;
-
+                $_SESSION['last_activity'] = time();
 
                 // utilisation de la couche d'accès aux données
                 header('Content-Type: application/json');
@@ -38,7 +37,6 @@
                     "message" => "Vous serez redirigé vers la page d'accueil."
                 ];
                 
-
                 echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
                 // afficher en JSON le résultat
                 // Rediriger vers la page de tableau de bord

@@ -30,9 +30,10 @@
 Elle permet à une organisation (ex. établissement scolaire, entreprise) de :
 
 - gérer un **inventaire de matériel** (ajout, modification, archivage),
-- **suivre les prêts et retours** de matériels par les utilisateurs,
+- **suivre les prêts et retours** de matériels par les utilisateurs via des QR codes uniques,
 - **identifier chaque matériel via un QR code unique**,
-- permettre la **création et la restitution de prêts** directement depuis un **smartphone** (scan du QR code).
+- permettre la **création et la restitution de prêts** directement depuis un **smartphone** (scan du QR code), 
+- **filtrer, rechercher et modifier** les éléments rapidement.
 
 L’application est **conteneurisée avec Docker** pour garantir un environnement stable et portable.  
 
@@ -76,9 +77,10 @@ Application **MVC simplifié** en **PHP procédural**, conteneurisée avec Docke
         ├── public/                          # Dossier exposé par Apache
         │   ├── api/                         # Endpoints backend (CRUD, prêts, restitutions…)
         │   ├── tests/                       # Fichier tests API / intégration
-        │   ├── .htaccess                    # Réécriture d'URL vers index.php
-        │   ├── index.php                    # Point d’entrée (routeur)
+        │   ├── .htaccess                    # Réécriture d'URL et accès frontend
+        │   ├── index.php                    # Point d’entrée avec redirection
         │   ├── login.php                    # Authentification d'administrateur
+        │   ├── login-verify.php             # Vérification + timeout session
         │   └── frontend/                    # Pages HTML/ CSS/ JS (interface utilisateur)
         │       ├── acceuil.html             # Page statique
         │       ├── *.php                    # Pages dynamiques
@@ -101,7 +103,7 @@ Trois services :
     |---------------|-------------------|-------------|----------------------------|
     | `web`         | php:8.2-apache    | 8080        | Serveur PHP + Apache       |
     | `mysql`       | mysql:8.0         | interne     | Base de données MySQL      |
-    | `phpmyadmin`  | phpmyadmin:latest | 8081        | Interface de gestion MySQL |
+    | `phpmyadmin`  | phpmyadmin:latest | 8081        | Interface graphique MySQL  |
 ```
 
 **Commandes principales :**
@@ -141,9 +143,9 @@ Les volumes assurent la persistance des données MySQL (mysql-data).
 ## 💻 Fonctionnalités principales
 
 **Inventaire (CRUD complet)**
-- Ajouter, modifier, supprimer, archiver un matériel
+- Ajouter, modifier, supprimer (archiver) un matériel
 - Génération automatique et impression d'un QR code unique
-- Filtrage et affichage dynamique par catégories
+- Filtrage et affichage dynamique par catégories, disponibilités et états
 
 **Gestion des prêts et restitutions**
 - Enregistrement des prêts par scan QR
@@ -156,6 +158,7 @@ Les volumes assurent la persistance des données MySQL (mysql-data).
 - Rôles : étudiant(e) ou intervenant
 - Liaison aux formations (sauf intervenants)
 - Authentification administrateur (login / session PHP)
+- Expiration automatique de session après 5 minutes d'inactivité
 
 **Interface web responsive**
 - Adaptée aux smartphones, tablettes et ordinateurs
@@ -172,14 +175,14 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 
 # Entités principales :
 - Item – matériel (nom, modèle, état, QR code, catégorie)
-- Categorie - informatique/ audio/ connectique/ autres 
+- Categorie - type (informatique/ audio/ connectique/ autres) 
 - Formation – regroupement d’emprunteurs
 - Emprunteur – étudiant ou intervenant
-- Pret – gestion des prêts
-- Administrateur – gestion du système
+- Pret – gestion des prêts et retours
+- Administrateur – authentification des administrateurs
 
 # Relations clés :
-- Un ***Emprunteur*** appartient à une ***Formation***
+- Un ***Emprunteur*** peut appartenir à une ***Formation***
 - Un ***Pret*** relie un ***Item***, un ***Emprunteur***, et un ***Administrateur***
 - Un ***Item*** appartient à une ***Categorie***
 
@@ -188,11 +191,12 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 ## Flux typiques de l’application
 
 1. L’administrateur se connecte à l’application.
-2. Il sélectionne une catégorie → ajoute ou modifie un matériel.
-3. Le QR code est généré et imprimable.
-4. L'administrateur scanne le QR code pour créer un prêt.
-5. À la restitution, le matériel est scanné à nouveau → prêt clôturé.
-6. L’état et la disponibilité sont mis à jour automatiquement.
+2. Depuis la page Accueil, il peut ajouter, modifier ou supprimer (archiver) un matériel.
+3. Lors de l’ajout, il sélectionne la catégorie du matériel et saisit ses caractéristiques.
+4. Un QR code unique est automatiquement généré et peut être imprimé.
+5. Lors d’un prêt, l’administrateur scanne le QR code du matériel pour enregistrer l’emprunt.
+6. À la restitution, le QR code est scanné à nouveau pour clôturer le prêt.
+7. L’état et la disponibilité du matériel sont alors mis à jour automatiquement dans la base de données.
 
 ---
 
@@ -200,12 +204,14 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 
 - Mots de passe administrateurs ***hachés avec bcrypt***
 - Connexions sécurisées via ***HTTPS***
+- ***Sessions PHP sécurisées*** (timeout 5 min, redirection automatique)
 - Protection contre :
   - ***Injection SQL*** (requêtes préparées PDO)
   - ***XSS*** (htmlspecialchars)
   - ***CSRF*** (token)
 - Respect du ***RGPD*** : collecte minimale, suppression après 24 mois
 - Accès à la BDD isolé dans Docker (non exposé en production)
+- ***Aucune donnée sensible*** dans le dépôt GitHub (.env ignoré).
 
 ---
 
@@ -271,15 +277,16 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 - Documentation officielle de PHP, PDO, Bootstrap, Docker et Flatpickr,
 - Tutoriels sur QR code en JS,
 - Exemples de code et dossiers “mediastock_backend” fournis par le professeur.
+- [Maquettes Figma ](https://www.figma.com/design/8YYwxKWra3P9QWC6UJBv2L/Untitled?node-id=1-3&t=VbQzFZxMR3Aizp1A-0)
 
 ---
 
-## Captures et 
+## Captures et annexes
 
 - [Maquettes Figma ](https://www.figma.com/design/8YYwxKWra3P9QWC6UJBv2L/Untitled?node-id=1-3&t=VbQzFZxMR3Aizp1A-0)
 - Schémas de base de données :
- - ***MCD et MLD*** (page 19 du cahier des charges)
- - ***Diagrammes de Gantt et Kanban*** (pages 21–22 du cahier des charges)
+ - MCD et MLD (page 19 du cahier des charges)
+ - Diagrammes de Gantt et Kanban (pages 21–22 du cahier des charges)
 
 
 © 2025 MediaStock – Projet étudiant BTS SIO SLAM
