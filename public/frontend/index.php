@@ -41,7 +41,7 @@ include_once(__DIR__ . '/../login_verify.php');
     </div>
 
     <!-- Container pour le lecteur QR -->
-    <div id="qr-reader-container" style="display:none">
+    <div id="qr-reader-container">
       <div id="qr-reader"></div>
     </div>
 
@@ -52,7 +52,6 @@ include_once(__DIR__ . '/../login_verify.php');
 
       <div class="row g-2 mb-3 toolbar">
         <div class="col-12 col-md-auto">
-          <!-- window onclick??????????????????????????????????? -->
           <button class="btn btn-primary w-100" onclick="location.href='Choixcat.php'">
             <i class="fas fa-plus me-2"></i>Ajouter un élément
           </button>
