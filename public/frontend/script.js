@@ -139,27 +139,6 @@ function attachClickHandlers(filteredItems) {
 }
 
 
-// function attachModifHandlers(filteredItems){
-//   const changeBtns = document.querySelectorAll('.change-btn');
-
-//   changeBtns.forEach((btn) => {
-//       btn.addEventListener('click', function (e){
-//         e.stopPropagation(); // Empêcher l'ouverture de l'offcanvas
-//         const itemId = parseInt(btn.dataset.id);
-
-//         if (!itemId || isNaN(itemId)){
-//           alert("Id du matériel non reconnu !");
-//           return;
-//         }
-
-//         const finalUrl = `/frontend/modification-item.php?code=${encodeURIComponent(itemId)}`;
-//         console.log("URL :", finalUrl);
-//         window.location.href = finalUrl;
-
-//       });
-//   });
-// }
-
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
   const deleteBtns = document.querySelectorAll('.trash-btn');
@@ -450,7 +429,7 @@ async function recupererDetailsItem(itemId) {
         itemAvailability = items.find(item => item.id == itemId);
         
         if (itemAvailability) {
-          console.log('✅ Disponibilité récupérée depuis getitemsavailability.php:', {
+          console.log('Disponibilité récupérée depuis getitemsavailability.php:', {
             id: itemAvailability.id,
             nom: itemAvailability.nom,
             is_available: itemAvailability.is_available,
@@ -470,7 +449,7 @@ async function recupererDetailsItem(itemId) {
         const resultDetails = await responseDetails.json();
         if (resultDetails.success && resultDetails.data) {
           itemDetails = resultDetails.data;
-          console.log('✅ Détails récupérés depuis getoneitem.php:', {
+          console.log('Détails récupérés depuis getoneitem.php:', {
             id: itemDetails.id,
             nom: itemDetails.nom,
             etat: itemDetails.etat
@@ -490,7 +469,7 @@ async function recupererDetailsItem(itemId) {
       if (itemAvailability && finalItem) {
         finalItem.is_available = itemAvailability.is_available;
         finalItem.statut = itemAvailability.statut;
-        console.log('🔗 Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
+        console.log('Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
       }
       
       console.log(' RÉSULTAT FINAL:', finalItem);
