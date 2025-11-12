@@ -1,4 +1,8 @@
 
+// Configuration de la langue française pour Flatpickr => était dans le .html
+flatpickr.localize(flatpickr.l10ns.fr);
+
+
 // ===============================================================
 // == récupération des éléments d'un item (QRCode, nom, icon) ====
 // ===============================================================
