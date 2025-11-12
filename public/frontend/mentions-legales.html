@@ -206,7 +206,6 @@
                     <li>La gestion de l'inventaire du matériel informatique</li>
                     <li>Le suivi des prêts et restitutions</li>
                     <li>L'authentification des utilisateurs administrateurs</li>
-                    <li>La génération de rapports et statistiques d'utilisation</li>
                     <li>Le respect des obligations légales et réglementaires</li>
                   </ul>
 
@@ -280,7 +279,6 @@
                   <ul>
                     <li>Chiffrement des données sensibles</li>
                     <li>Authentification sécurisée des administrateurs</li>
-                    <li>Journalisation des accès et modifications</li>
                     <li>Sauvegardes régulières des données</li>
                   </ul>
 
@@ -339,30 +337,20 @@
     </main>
 
     <!-- Footer -->
-     <footer class="py-4">
-            <div class="container">
-                <div class="text-center">
-                    <p class="mb-0 text-dark">
-                      <a href="index.html" class="text-dark text-decoration-none" id="footerBackBtn">
-                        Retourner à la page d'accueil
-                      </a>
-                    </p>
-                    <p class="mb-0 text-dark">© 2025 MediaStock Inc</p>
-                </div>
-            </div>
-        </footer>
+    <footer class="py-4">
+        <div class="container">
+          <div class="text-center">
+            <p class="mb-0 text-dark">
+              <a href="index.html" class="text-dark text-decoration-none" id="footerBackBtn">
+                  Retourner à la page d'accueil
+              </a>
+            </p>
+            <p class="mb-0 text-dark">© 2025 MediaStock Inc</p>
+          </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      // Navigation intelligente selon la provenance
-      const urlParams = new URLSearchParams(window.location.search);
-      const fromPage = urlParams.get('from');
-
-      if (fromPage === 'accueil') {
-          // Retourner vers accueil.html si on vient de la page de connexion
-          document.getElementById('backBtn').href = 'accueil.html';
-          document.getElementById('footerBackBtn').href = 'accueil.html';
-      }
-    </script>
+    <script src="mentions-legales.js"></script>
   </body>
 </html>

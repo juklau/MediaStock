@@ -29,7 +29,6 @@
     </header>
 
     <!-- Main -->
-    <!-- peut être à enlever : min-vh-100?????????????? -->
     <main class="container text-center py-4 min-vh-100">
 
       <!-- Bouton retour -->
