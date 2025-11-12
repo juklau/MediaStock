@@ -1,4 +1,13 @@
 /* Styles pour la page des mentions légales */
+
+:root {
+  --coral: #ff9994;
+  --success: #28a745;
+  --warning: #fd7e14;
+  --danger: #ff7f50;
+  --white: white;
+}
+
 .mentions-content {
   line-height: 1.6;
   letter-spacing: normal;
@@ -6,11 +15,11 @@
 }
 
 .mentions-content h2 {
-  color: #ff9994;
+  color: var(--coral);
   margin-top: 2.5rem;
   margin-bottom: 1.5rem;
   font-weight: 600;
-  border-bottom: 3px solid #ff9994;
+  border-bottom: 3px solid var(--coral);
   padding-bottom: 0.5rem;
 }
 
@@ -30,9 +39,9 @@
 }
 
 .back-btn {
-  background-color: #ff9994;
+  background-color: var(--coral);
   border: none;
-  color: white;
+  color: var(--white);
   padding: 12px 25px;
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -44,7 +53,7 @@
 
 .back-btn:hover {
   background-color: #e6847f;
-  color: white;
+  color: var(--white);
   transform: translateY(-2px);
   text-decoration: none;
 }
@@ -52,7 +61,7 @@
 /* Sections organisées */
 .info-section {
   background: #f8f9fa;
-  border-left: 4px solid #ff9994;
+  border-left: 4px solid var(--coral);
   padding: 2rem;
   margin-bottom: 2rem;
   border-radius: 8px;
@@ -67,7 +76,7 @@
 }
 
 .contact-card {
-  background: white;
+  background: var(--white);
   padding: 1.5rem;
   border-radius: 8px;
   border: 1px solid #dee2e6;
@@ -87,7 +96,7 @@
 
 .contact-label {
   font-weight: 600;
-  color: #ff9994;
+  color: var(--coral);
   min-width: 100px;
   margin-right: 1rem;
   flex-shrink: 0;
@@ -118,7 +127,7 @@
 }
 
 .warning-box {
-  background: #fff;
+  background: var(--white);
   border: 2px solid #dc3545;
   border-radius: 8px;
   padding: 1.5rem;
@@ -148,7 +157,7 @@
 }
 
 .data-card {
-  background: white;
+  background: var(--white);
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -172,10 +181,27 @@
 }
 
 .check-icon {
-  color: #28a745;
+  color: var(--success);
   margin-right: 0.8rem;
   font-size: 1rem;
 }
+
+
+@media (max-width: 480px) {
+  .back-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .card-body {
+    padding: 1.5rem !important;
+  }
+
+  .mentions-content h1 {
+    font-size: 1.5rem !important;
+  }
+}
+
 
 /* Responsivité mobile */
 @media (max-width: 768px) {
@@ -221,17 +247,4 @@
   }
 }
 
-@media (max-width: 480px) {
-  .back-btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
 
-  .card-body {
-    padding: 1.5rem !important;
-  }
-
-  .mentions-content h1 {
-    font-size: 1.5rem !important;
-  }
-}

@@ -26,10 +26,11 @@
                 "id" => $item['id'],
                 "nom" => $item['nom'],
                 "model" => $item['model'],
+                "etat" => $item['etat'],
                 "statut" => "disponible",
                 "categorie" => $item['categorie'],
                 "archived" => $item['archived']
-            ];
+            ]; 
         }
 
         // ajouter les indisponibles
@@ -43,6 +44,7 @@
                     "id" => $item['id'],
                     "nom" => $item['nom'],
                     "model" => $item['model'],
+                    "etat" => $item['etat'],
                     "statut" => "indisponible",
                     "date_retour_prévu" => $item['date_retour_prevue'],
                     "categorie" => $item['categorie'],
@@ -60,6 +62,7 @@
                 "id" => $pret['id'],
                 "nom" => $pret['item_nom'],
                 "model" => $pret['item_model'],
+                "etat" => $pret['etat'],
                 "statut" => "retard",
                 "date_retour_prévu" => $pret['date_retour_prevue'],
                 "categorie" => $pret['categorie'],

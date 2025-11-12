@@ -29,7 +29,7 @@
         if($item){
             $response = [
                 "success" => true,
-                "data" => $item, 
+                "data" => $item,
                 "message" => "Item trouvé avec succès"
             ];
         }else{

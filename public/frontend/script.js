@@ -1,4 +1,4 @@
-// ********************************************************** js pour la **********************************************************************
+ // ********************************************************** js pour la **********************************************************************
 
 //.............pour index.php.............//
 
@@ -41,6 +41,7 @@ async function chargerMateriels() {
 function renderItems() {
   const categoryFilter = document.getElementById("categoryFilter").value;
   const statusFilter = document.getElementById("statusFilter").value;
+  const etatFilter = document.getElementById("etatFilter").value;
   const container = document.getElementById("inventoryList");
   container.innerHTML = "";
 
@@ -48,64 +49,45 @@ function renderItems() {
   const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
+    const matchEtat = !etatFilter || item.etat === etatFilter;
     const nonArchived = item.archived === 0;
-    return matchCategorie && matchStatut && nonArchived;
+    return matchCategorie && matchStatut && matchEtat && nonArchived ;
   });
 
-  filteredItems.forEach(item => {
-      const statusClass = `status-${item.statut.toLowerCase()}`;
 
-      const listItem = document.createElement("div");
-      listItem.className = "list-group-item";
-      listItem.dataset.itemId = item.id;
+filteredItems.forEach(item => {
+    const statusClass = `status-${item.statut.toLowerCase()}`;
+    const etatClass = `etat-${item.etat.toLowerCase()}`;
 
-      listItem.innerHTML = `
-          <div class="left">
-            <div class="item-icon"><i class="${item.image_url}"></i></div>
-            <div class="item-meta">
-              <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
-              <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
-            </div>
+    const listItem = document.createElement("div");
+    listItem.className = "list-group-item";
+    listItem.dataset.itemId = item.id;
+
+    listItem.innerHTML = `
+        <div class="left">
+          <div class="item-icon"><i class="${item.image_url}"></i></div>
+          <div class="item-meta">
+            <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
+            <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
+            <div><span class="etat-button ${etatClass}">${item.etat} état</span></div>
           </div>
-          <div class="item-right">
-            ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
-            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
-          </div>
-        `;
+        </div>
+        <div class="item-right">
+          ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
 
-        container.appendChild(listItem);
-  });
+          <button class="change-btn" title="Modifier" data-id="${item.id}"><i class="fas fa-file-lines fa-lg"></i></button>
+          <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
+        </div>
+      `;
+
+      container.appendChild(listItem);
+});
 
   // Attacher les gestionnaires de clic après le rendu
   attachClickHandlers(filteredItems);
 
   console.log("Catégories disponibles :", items.map(i => i.categorie));
 }
-
-
-//attacher les gestionnaires de clic sur les items
-// function attachClickHandlers(filteredItems) {
-//   const listItems = document.querySelectorAll('#inventoryList .list-group-item');
-  
-//   listItems.forEach((listItem, index) => {
-//     listItem.style.cursor = 'pointer';
-    
-//     listItem.addEventListener('click', function(e) {
-
-//       // Ne pas ouvrir si on clique sur le bouton de suppression
-//       if (e.target.closest('.trash-btn')) {
-//         return;
-//       }
-      
-//       // Trouver l'item correspondant dans le tableau
-//       if (filteredItems[index]) {
-//         const itemIndex = items.indexOf(filteredItems[index]);
-//         ouvrirFicheProduit(filteredItems[index], itemIndex);
-//       }
-//     });
-//   });
-
-// }
 
 
 //attacher les gestionnaires de clic sur les items
@@ -117,14 +99,32 @@ function attachClickHandlers(filteredItems) {
     
     listItem.addEventListener('click', function(e) {
 
-      // Ne pas ouvrir si on clique sur le bouton de suppression
-      if (e.target.closest('.trash-btn')) {
-        attachDeleteHandlers(filteredItems);
+      // Si on clique sur le bouton de modification, on redirige vers la page de modif
+      const modifBtn = e.target.closest('.change-btn');
+      if (modifBtn) {
+        const itemId = parseInt(modifBtn.dataset.id);
+        if (itemId) {
+          const finalUrl = `/frontend/modification-item.php?code=${encodeURIComponent(itemId)}`;
+          window.location.href = finalUrl;
+        }
+        e.stopPropagation();
+        return;
+      }
+
+      // Si on clique sur le bouton de suppression, on appelle le handler de suppression
+      const deleteBtn = e.target.closest('.trash-btn');
+      if (deleteBtn) {
+        const itemId = parseInt(deleteBtn.dataset.id);
+        if (itemId) {
+          attachDeleteHandlers(itemId); 
+        }
+        e.stopPropagation();
+        return;
       }
       
-      // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
+       // Sinon, clic sur l’élément lui-même => ouvrir la fiche
+      // Utiliser l'ID réel depuis l'attribut data-item-id
       const itemId = parseInt(listItem.dataset.itemId);
-      
       if (itemId) {
         console.log('Clic sur item ID:', itemId);
         
@@ -137,7 +137,6 @@ function attachClickHandlers(filteredItems) {
     });
   });
 }
-
 
 
 // Après rendu, attache les gestionnaires de suppression
@@ -219,49 +218,13 @@ const catFilterEl = document.getElementById('categoryFilter');
 if (catFilterEl) catFilterEl.addEventListener('change', renderItems);
 const statusFilterEl = document.getElementById('statusFilter');
 if (statusFilterEl) statusFilterEl.addEventListener('change', renderItems);
+const etatFilterEl = document.getElementById('etatFilter');
+if (etatFilterEl) etatFilterEl.addEventListener('change', renderItems);
 
 // Charger les données au chargement de la page
 window.onload = function(){
   chargerMateriels();
 };
-
-
-
-
-
-//Scanner QR code pour creer ou restituer un materiel !!!!//
-
-const qrReader = document.getElementById("qr-reader");
-
-function startQrScan(targetPage) {
-  qrReader.style.display = "block";
-
-  const html5QrCode = new Html5Qrcode("qr-reader");
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    (decodedText, decodedResult) => {
-      console.log("QR Code détecté :", decodedText);
-      html5QrCode.stop();
-      qrReader.style.display = "none";
-
-      // Rediriger vers la page correspondante en passant le code QR
-      window.location.href = `${targetPage}?code=${encodeURIComponent(decodedText)}`;
-    },
-    (errorMessage) => {
-      // Scan en cours
-    }
-  ).catch(err => {
-    console.error("Impossible d'accéder à la caméra :", err);
-  });
-}
-
-// Boutons
-document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.php"));
-document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.php"));
-
-
 
 // archivage d'un item
 document.addEventListener('click', function (e) {
@@ -333,45 +296,6 @@ async function getHistoriquePrets(materielId) {
   }
 }
 
-/**
- * Ajouter un prêt via l'API (appelé depuis creation-pret.php)
- */
-// async function ajouterPret(materielId, pretData) {
-//   try {
-//     const pretPayload = {
-//       materielId: materielId,
-//       emprunteur: pretData.nom + ' ' + pretData.prenom,
-//       datePret: pretData.datePret,
-//       dateRetour: pretData.dateRetour,
-//       etatPret: pretData.etat,
-//       intervenant: pretData.intervenant,
-//       classe: pretData.classe,
-//       notes: pretData.notes
-//     };
-    
-//     await API.ajouterPret(pretPayload);
-//     return true;
-//   } catch (error) {
-//     console.error('Erreur lors de l\'ajout du prêt:', error);
-//     throw error;
-//   }
-// }
-
-/**
- * Mettre à jour un prêt lors de la restitution
-//  */
-// async function mettreAJourRestitution(pretId, etatRetour) {
-//   try {
-//     await API.updatePret(pretId, {
-//       etatRetour: etatRetour,
-//       dateRestitution: new Date().toISOString().split('T')[0]
-//     });
-//     return true;
-//   } catch (error) {
-//     console.error('Erreur lors de la mise à jour de la restitution:', error);
-//     throw error;
-//   }
-// }
 
 /**
  * =====================================
@@ -505,7 +429,7 @@ async function recupererDetailsItem(itemId) {
         itemAvailability = items.find(item => item.id == itemId);
         
         if (itemAvailability) {
-          console.log('✅ Disponibilité récupérée depuis getitemsavailability.php:', {
+          console.log('Disponibilité récupérée depuis getitemsavailability.php:', {
             id: itemAvailability.id,
             nom: itemAvailability.nom,
             is_available: itemAvailability.is_available,
@@ -525,7 +449,7 @@ async function recupererDetailsItem(itemId) {
         const resultDetails = await responseDetails.json();
         if (resultDetails.success && resultDetails.data) {
           itemDetails = resultDetails.data;
-          console.log('✅ Détails récupérés depuis getoneitem.php:', {
+          console.log('Détails récupérés depuis getoneitem.php:', {
             id: itemDetails.id,
             nom: itemDetails.nom,
             etat: itemDetails.etat
@@ -545,18 +469,18 @@ async function recupererDetailsItem(itemId) {
       if (itemAvailability && finalItem) {
         finalItem.is_available = itemAvailability.is_available;
         finalItem.statut = itemAvailability.statut;
-        console.log('🔗 Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
+        console.log('Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
       }
       
-      console.log('✅ RÉSULTAT FINAL:', finalItem);
+      console.log(' RÉSULTAT FINAL:', finalItem);
       return finalItem;
     } else {
-      console.error('❌ Aucune donnée récupérée des deux APIs');
+      console.error(' Aucune donnée récupérée des deux APIs');
       return null;
     }
     
   } catch (error) {
-    console.error('💥 ERREUR GÉNÉRALE recupererDetailsItem:', error);
+    console.error(' ERREUR GÉNÉRALE recupererDetailsItem:', error);
     return null;
   }
 }
@@ -757,7 +681,7 @@ async function genererQRCodeDynamique(materielId) {
     qrContainer.style.display = 'flex';
     qrContainer.style.justifyContent = 'center';
     qrContainer.style.alignItems = 'center';
-    ficheQRCode.appendChild(qrContainer);
+    ficheQRCode.appendChild(qrContainer); 
     
     // Générer le QR code avec l'ID du matériel (même logique que materiel_test.js)
     new QRCode(qrContainer, {

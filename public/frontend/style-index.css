@@ -1,5 +1,4 @@
-
-/* style de index.html*/
+/* style de frontend/index.php*/
 
 :root {
   --coral: #ff9994;
@@ -19,10 +18,10 @@ header {
 	z-index: 2;
 }
 
-#qr-reader{
+/* #qr-reader{
     width: 300px; 
     height: 300px;
-}
+} */
 
 #hr{
     background-color: var(--coral); 
@@ -55,7 +54,7 @@ header {
   margin-bottom: 8px;
 }
 
-/* acceuil.html */
+/* acceuil.php */
 .action-btn:active {
   transform: translateY(2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
@@ -71,17 +70,31 @@ header {
 }
 
 /* pour afficher les dot en couleur selon leur disponibilité */
-.status-disponible {
+/* pour afficher les états en couleur */
+.status-disponible,
+.etat-bon {
   background-color: var(--success);
 }
 
-.status-indisponible {
+.status-indisponible,
+.etat-moyen {
   background-color: var(--danger);
 }
 
-.status-retard {
+.status-retard,
+.etat-mauvais  {
   background-color: #dc3545;
 }
+
+.etat-button {
+  margin-left: 15px;
+  margin-top: 2px;
+  border-radius: 30px;
+  display: inline-block;
+  padding: 2px 10px;
+  color: var(--white);
+}
+
 
 /* ____________________________________________ */
 /* dans script.js */
@@ -150,17 +163,6 @@ header {
   height: 36px;
 }
 
-@media (min-width: 768px) {
-    .list-group-item .left {
-        gap: 12px;
-    }
-
-    .item-icon i {
-        width: 44px;
-        height: 44px;
-    }
-}
-
 .item-meta {
   color: #333;
 }
@@ -172,10 +174,15 @@ header {
   color: #6c757d;
 }
 
-.trash-btn {
+.trash-btn,
+.change-btn {
   color: #6c757d;
   background: transparent;
   border: none;
+}
+
+.fa-lg{
+  font-size: 1.5em !important;
 }
 
 .badge-etat {
@@ -217,18 +224,6 @@ header {
   min-width: auto;
   font-size: 0.875rem;
 }
-
-@media (min-width: 768px) {
-    .section-title {
-        font-size: 1.1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .toolbar .form-select {
-        min-width: 140px;
-    }
-}
-
 
 /* Style du bouton Ajouter  => je ne sais pas s'il faut içi?????*/
 .btn-primary,
@@ -361,7 +356,7 @@ header {
   padding: 15px 20px;
   font-weight: 600;
   color: #495057;
-  border-bottom: 2px solid var(--coral);
+  border-bottom: 2px solid var(--coral); 
   display: flex;
   align-items: center;
 }
@@ -430,23 +425,8 @@ header {
   color: #dee2e6;
 }
 
-/* Responsive */
-@media (max-width: 576px) {
-  .offcanvas-fiche {
-    width: 100% !important;
-  }
-
-  .fiche-header {
-    padding: 50px 20px 30px;
-  }
-
-  .fiche-title {
-    font-size: 1.3rem;
-  }
-}
 
 /* ************************   Fin Offcanvas Fiche Produit ************************* */
-
 
 
 footer {
@@ -474,4 +454,78 @@ footer p {
 
 .status-retard {
   background-color: #dc3545;
+}
+
+/* Conteneur général du scanner */
+#qr-reader-container {
+  display: none;
+  width: 90vw;
+  max-width: 400px;
+  margin: 30px auto; /* espace au-dessus et en dessous */
+  padding: 20px; /* espace autour du scanner */
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+
+/* Zone du lecteur QR réelle */
+#qr-reader {
+  width: 100%;
+  overflow: hidden; /* empêche la vidéo de dépasser */
+  border-radius: 10px;
+}
+
+/* Si tu veux que ça reste centré dans la page */
+#qr-reader-container {
+  display: none; /* masqué par défaut */
+  text-align: center;
+}
+
+/* pour la page modification-item.php =>icon de retour */
+.change.fas{
+	font-size: 2rem; 
+	opacity: 0.69;
+}
+
+
+
+/* Responsive */
+@media (min-width: 576px) {
+  .offcanvas-fiche {
+    width: 100% !important;
+  }
+
+  .fiche-header {
+    padding: 50px 20px 30px;
+  }
+
+  .fiche-title {
+    font-size: 1.3rem;
+  }
+}
+
+
+@media (min-width: 768px) {
+
+    /* Mobile-optimized list items */
+    .list-group-item .left {
+        gap: 12px;
+    }
+
+    .item-icon i {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* toolbar */
+    .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .toolbar .form-select {
+        min-width: 140px;
+    }
 }

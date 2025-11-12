@@ -1,5 +1,5 @@
 
-/* style de restitution.html*/
+/* style de restitution.php*/
 
 :root {
   --coral: #ff9994;
@@ -63,7 +63,7 @@ header {
   cursor: text;
 }
 
-/* Affichage de l'état du prêt avec badge coloré */
+/* Affichage de l'état du prêt avec badge coloré !!!!!!kell a modifhoz!!!!!*/
 .etat-pret-display {
   display: flex;
   align-items: center;
@@ -156,9 +156,6 @@ header {
   box-shadow: none !important;
 }
 
-
-
-
 footer {
   background: var(--coral);
   /* background-color: var(--coral); ??????????*/
@@ -172,7 +169,3 @@ footer p {
   font-weight: 400; 
   opacity: 0.69;
 }
-
-
-
-

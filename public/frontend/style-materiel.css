@@ -1,5 +1,5 @@
 
-/* style de materiel.html*/
+/* style de materiel.php*/
 
 :root {
   --coral: #ff9994;
@@ -20,12 +20,17 @@ header {
 }
 
 #icon-container{
-    max-width:360px;
+    max-width:360px;  /* ?????????????????? */
+}
+
+.fas{
+	font-size: 2rem; 
+	opacity: 0.69;
 }
 
 #materielNom,
 #modeleNom{
-    max-width:420px;
+    max-width:420px;  /* ?????????????????? */
 }
 
 #btnAjouterBD{
@@ -33,7 +38,7 @@ header {
     color:#111; 
     border-radius:10px; 
     padding:10px 20px;
-}
+} 
 
 #btnTelecharger{
     background:var(--coral); 

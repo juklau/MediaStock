@@ -3,37 +3,39 @@
 // =========================
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
-e.preventDefault();
-const formData = new FormData(e.target);
+    e.preventDefault();
+    const formData = new FormData(e.target);
 
-const res = await fetch('../login.php', { method: 'POST', body: formData });
-const data = await res.json();
+    const res = await fetch('../login.php', { method: 'POST', body: formData });
+    const data = await res.json();
 
-const username = document.getElementById('username').value.trim();
-const password = document.getElementById('password').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
 
-if (data.success) {
-    Swal.fire({
-        icon: 'success',
-        title: data.title,
-        text: data.message,
-        confirmButtonColor: '#4CAF50'
-    }).then(() => {
-        window.location.href = '../frontend/index.php';
-    });
-} else {
-    Swal.fire({
-        icon: 'error',
-        title: data.title,
-        text: data.message,
-        confirmButtonColor: '#FF9994'
-    });
-}
+    if (data.success) {
+        Swal.fire({
+            icon: 'success',
+            title: data.title,
+            text: data.message,
+            confirmButtonColor: '#4CAF50'
+        }).then(() => {
+            window.location.href = '../frontend/index.php';
+        });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: data.title,
+            text: data.message,
+            confirmButtonColor: '#FF9994'
+        });
+    }
 
 });
 
 
-/******* le code créer *******/
+// ============================================================
+// == Affichage le nombre du matériel de chaque catégorie =====
+// ============================================================
      
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -55,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const cat = data.find(item => item.categorie === nom);
             
-            if (cat) {
+            if(cat) {
 
                 //création un div
                 const element = document.createElement('div');

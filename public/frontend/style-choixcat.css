@@ -1,5 +1,5 @@
 
-/* style de Choixcat.html*/
+/* style de Choixcat.php*/
 
 :root {
   --coral: #ff9994;
@@ -48,7 +48,7 @@ header {
 }
 
 .fas{
-	font-size: 3rem; 
+	font-size: 2rem; 
 	opacity: 0.69;
 }
 

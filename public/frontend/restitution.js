@@ -1,6 +1,6 @@
 
 // ============================================================================================
-// == récupération des éléments d'un prêt afin de remplir les champs sur restitution.html =====
+// == récupération des éléments d'un prêt afin de remplir les champs sur restitution.php =====
 // ============================================================================================
 
 // 
@@ -42,9 +42,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const prenomInput = document.getElementById("emprunteurPrenomReturn");
             if (prenomInput) prenomInput.value = emprunteurPrenom;
+ 
 
             const classeInput = document.getElementById("classeReturn");
-            if (classeInput) classeInput.value = classe;
+            if (classeInput) {
+
+              // si la formation est définie => on affiche
+              if(classe !== null && classe !== undefined && classe.trim() !== ""){
+                classeInput.value = classe;
+              }else if(classe === null){
+                // si c'est null => Intervenant
+                classeInput.value = "INTERVENANT"; 
+              }
+            }
 
             // Afficher l'état du prêt avec un badge coloré
             const etatPretBadge = document.getElementById("etatPretBadge");
@@ -135,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ========== clôturer un prêt actif ==============================
     // ================================================================
     
-    // 
+    
     const formReturn = document.getElementById("returnForm");
     if (formReturn) {
       formReturn.addEventListener("submit", async function (e) {
@@ -250,7 +260,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           modal.show();
 
           document.getElementById("successModalReturn").addEventListener("hidden.bs.modal", () => {
-              window.location.href = "index.html";
+              window.location.href = "index.php";
           }, { once: true });
           
         } catch (err) {

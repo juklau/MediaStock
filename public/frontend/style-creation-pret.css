@@ -1,5 +1,5 @@
 
-/* style de creation-pret.html*/
+/* style de creation-pret.php*/
 
 :root {
   --coral: #ff9994;
@@ -107,8 +107,9 @@ select#classe option {
   box-shadow: none !important;
 }
 
+
 .page-body {
-  max-width: 420px;
+  max-width: 420px; /* ???????????? */
   margin: 18px auto 48px;
 }
 
