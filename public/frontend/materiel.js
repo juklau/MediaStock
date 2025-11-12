@@ -164,6 +164,49 @@ function afficherActions() {
   }
 }
 
+/**
+ * Affiche le bouton "Terminer" après l'ajout à la BDD
+ */
+function afficherBoutonTerminer() {
+  console.log('🔵 Fonction afficherBoutonTerminer appelée');
+  const btnTerminerContainer = document.getElementById('btnTerminerContainer');
+  console.log('🔵 btnTerminerContainer trouvé:', btnTerminerContainer);
+  
+  if (!btnTerminerContainer) {
+    console.error('❌ btnTerminerContainer introuvable !');
+    return;
+  }
+  
+  btnTerminerContainer.classList.remove('d-none');
+  console.log('✅ Bouton Terminer affiché !');
+}
+
+/**
+ * Initialiser le bouton "Terminer"
+ */
+function initialiserBoutonTerminer() {
+  console.log('🔵 Initialisation du bouton Terminer');
+  const btnTerminer = document.getElementById('btnTerminer');
+  console.log('🔵 btnTerminer trouvé:', btnTerminer);
+  
+  if (btnTerminer) {
+    btnTerminer.addEventListener('click', function() {
+      console.log('🔵 Clic sur bouton Terminer - Redirection vers index.php');
+      // Rediriger vers index.php
+      window.location.href = 'index.php';
+    });
+    console.log('✅ Event listener ajouté au bouton Terminer');
+  } else {
+    console.error('❌ btnTerminer introuvable !');
+  }
+}
+
+// Initialiser le bouton "Terminer" au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔵 DOMContentLoaded - Initialisation du bouton Terminer');
+  initialiserBoutonTerminer();
+});
+
 
 // ==============================================================
 // ========== Télécharge le QR code en format PNG ===============
@@ -392,6 +435,9 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
             genererQRCode(itemId);
             afficherMessageSucces(itemId);
             afficherActions();
+            console.log('🟢 Avant appel afficherBoutonTerminer');
+            afficherBoutonTerminer(); // Afficher le bouton "Terminer"
+            console.log('🟢 Après appel afficherBoutonTerminer');
 
             // Désactiver le bouton
             const btn = document.getElementById('btnAjouterBD');

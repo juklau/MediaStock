@@ -32,16 +32,16 @@
     $data = [];
 
     if (isset($input['nom'])) {
-        $data['nom'] = $input['nom'];
+        $data['nom'] = htmlspecialchars($input['nom']);
     }
     if (array_key_exists('model', $input)) {
-        $data['model'] = $input['model']; // peut être null
+        $data['model'] = htmlspecialchars($input['model']); // peut être null
     }
     if (isset($input['image_url'])) {
-        $data['image_url'] = $input['image_url'];
+        $data['image_url'] = htmlspecialchars($input['image_url']);
     }
     if (isset($input['etat'])) {
-        $data['etat'] = $input['etat'];
+        $data['etat'] = htmlspecialchars($input['etat']);
     }
     
     if (isset($input['categorie_id'])) {

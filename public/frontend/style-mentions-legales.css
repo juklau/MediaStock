@@ -88,6 +88,7 @@
 }
 
 .contact-item {
+  /* display: flex; */
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 0.8rem;
@@ -196,6 +197,10 @@
     padding: 12px 25px;
     font-size: 0.9rem;
   }
+
+  /* .card-body {
+    padding: 1.5rem !important;
+  } */
 
   .mentions-content h1 {
     font-size: 1.5rem !important;
