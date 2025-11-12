@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     console.log("Erreur pendant la récupération de la catégorie de l'item.");
                 }
             }
-
+ 
              genererQRCodeDynamique(itemId);
 
         } else {
@@ -274,11 +274,8 @@ async function getCategorieIdFromName(nomCategorie) {
  */
 function getImageUrlByCategorie(categorie) {
     const mapping = {
-        "pc portable": "fa-solid fa-laptop",
-        "tv": "fa-solid fa-tv",
-        "micro": "fa-solid fa-microphone",
-        "informatique": "fa-solid fa-mouse",
-        "audio": "fa-solid fa-headphones",
+        "informatique": "fa-solid fa-desktop",
+        "audio": "fa-solid fa-volume-high",
         "connectique": "fa-solid fa-plug",
         "autres": "fa-solid fa-server"
     };

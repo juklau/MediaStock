@@ -42,7 +42,7 @@
         <!-- image url -->
         <div id="productVisualReturn" class="text-center mb-5">
             <div id="productImageWrapReturn">
-                <i id="productIconReturn" class="fas fa-mouse fa-5x"></i>
+                <!-- <i id="productIconReturn" class="fas fa-mouse fa-5x"></i> -->
             </div>
         </div>
 
