@@ -89,6 +89,14 @@
           <i class="fa fa-print"></i>
         </button>
       </div>
+      
+      <!-- Bouton Terminer (caché par défaut, apparaît après ajout à la BDD) -->
+      <div class="d-flex justify-content-center mt-4 d-none" id="btnTerminerContainer">
+        <button id="btnTerminer" class="btn btn-terminer d-flex align-items-center gap-2">
+          <i class="fa fa-check-circle"></i> Terminer
+        </button>
+      </div>
+      
       <div class="my-5">
         <h6 id="text-non-imprimable">
           Si Vous ne pouvez pas imprimer le QR code, vous pouvez le retrouver
