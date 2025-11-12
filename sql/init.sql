@@ -1,5 +1,5 @@
 
-USE mediastock;
+USE mediastock_db;
 -- même que le dump.sql du prof
 -- il faut enlever les accents !!!
 CREATE TABLE `Item`(
