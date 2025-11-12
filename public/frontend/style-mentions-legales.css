@@ -74,7 +74,7 @@
 
 .contact-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, max(300px, 1fr));
   gap: 2rem;
   margin-top: 1.5rem;
 }
@@ -191,7 +191,7 @@
   padding: 1.5rem !important;
 }
 
-@media (max-width: 480px) {
+@media (min-width: 480px) {
   .back-btn {
     padding: 12px 25px;
     font-size: 0.9rem;
@@ -204,7 +204,7 @@
 
 
 /* Responsivité desktop */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .mentions-content {
     font-size: 0.95rem;
   }
