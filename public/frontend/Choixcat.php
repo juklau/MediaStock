@@ -68,7 +68,7 @@
                 <a href="materiel.php" class="text-decoration-none" onclick="localStorage.setItem('selectedCategory', 'Audio')">
                   <div class="card h-100 shadow-sm border-3 rounded-4 equipment-card">
                     <div class="card-body text-center p-4">
-                      <div class="mb-3"><i class="fas fa-volume text-dark"></i></div>
+                      <div class="mb-3"><i class="fas fa-volume-high text-dark"></i></div>
                       <h5 class="card-title text-dark mb-2 items-Choixcat">
                         Périphérique audio
                       </h5>
