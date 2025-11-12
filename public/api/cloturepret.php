@@ -28,7 +28,7 @@
     }
 
     $itemId = (int)$input['id'];  //=>selon item_id et pas id de prêt!!!
-    $noteFin = $input['note_fin'];
+    $noteFin = htmlspecialchars($input['note_fin']);
 
     try{
 

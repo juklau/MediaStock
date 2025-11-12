@@ -6,8 +6,8 @@
     try{
 
         if (isset($_POST['username']) && isset($_POST['password'])) {
-            $username = $_POST['username'];
-            $password = $_POST['password']; 
+            $username = htmlspecialchars($_POST['username']);
+            $password = htmlspecialchars($_POST['password']); 
 
             if (empty($username) || empty($password)) {
                 header('Content-Type: application/json');

@@ -26,8 +26,8 @@
         exit;
     }
 
-    $nom = $input['nom'];
-    $model = $input['model'] ?? null;
+    $nom = htmlspecialchars($input['nom']);
+    $model = htmlspecialchars($input['model']) ?? null;
     $QRCode = $input['qr_code'];
     $imgUrl = $input['image_url'];
     $etat = $input['etat'];
