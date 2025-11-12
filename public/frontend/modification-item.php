@@ -43,9 +43,7 @@
 
         <!-- image url -->
         <div id="productVisualReturn" class="text-center mb-5">
-            <div id="productImageWrapReturn">
-                <i id="productIconReturn" ></i><!--class="fas fa-mouse fa-5x"-->
-            </div>
+            <div id="productImageWrapReturn"></div>
         </div>
 
        <!-- QR Code Card -->
