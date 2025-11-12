@@ -23,9 +23,9 @@
         exit;
     }
 
-    $nom = trim($input['emprunteur_nom']);
-    $prenom = trim($input['emprunteur_prenom']);
-    $role= trim($input['role']);
+    $nom = htmlspecialchars(trim($input['emprunteur_nom']));
+    $prenom = htmlspecialchars(trim($input['emprunteur_prenom']));
+    $role= htmlspecialchars(trim($input['role']));
     $formationId = $input['formation_id'] ?? null;
 
    

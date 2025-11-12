@@ -32,8 +32,10 @@
     $emprunteurId = (int)$input['emprunteur_id'];
     $dateSortie = $input['date_sortie'] ?? null;
     $dateRetourPrevu = $input['date_retour_prevue'] ?? null;
-    $noteDebut = $input['note_debut'];
-    $noteFin = $input['note_fin'];
+    $noteDebut = htmlspecialchars($input['note_debut']);
+    // $noteDebut = $input['note_debut'];
+    $noteFin = htmlspecialchars($input['note_fin']);
+    // $noteFin = $input['note_fin'];
     $preteurId = (int)$input['preteur_id'];
 
    

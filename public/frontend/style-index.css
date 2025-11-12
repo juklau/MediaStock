@@ -82,7 +82,7 @@ header {
 }
 
 .status-retard,
-.etat-mauvais  {
+.etat-mauvais {
   background-color: #dc3545;
 }
 
@@ -239,6 +239,39 @@ header {
 .offcanvas-fiche {
   width: 520px !important;
 }
+
+/* Boutons QR Code dans la fiche produit */
+.btn-qr {
+  background: linear-gradient(135deg, #ff9994, #ffb3b0);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 153, 148, 0.3);
+}
+
+.btn-qr:hover {
+  background: linear-gradient(135deg, #ff8580, #ff9994);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 153, 148, 0.5);
+}
+
+.btn-qr:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(255, 153, 148, 0.4);
+}
+
+.btn-qr i {
+  font-size: 1rem;
+}
+
+#qrcodeActionsIndex {
+  margin-top: 1rem;
+}
+
 
 .offcanvas-header-custom {
   position: absolute;

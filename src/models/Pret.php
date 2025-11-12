@@ -353,7 +353,8 @@ class Pret extends BaseModel {
                  JOIN Emprunteur e ON p.emprunteur_id = e.id
                  LEFT JOIN Formation f ON e.formation_id = f.id
                  JOIN Administrateur a ON p.preteur_id = a.id
-                 WHERE p.item_id = :id";
+                 WHERE p.item_id = :id
+                 AND p.date_retour_effective IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

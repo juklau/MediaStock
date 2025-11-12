@@ -139,6 +139,16 @@ include_once(__DIR__ . '/../login_verify.php');
               <p class="text-muted small mt-2 mb-0"> 
                 Scannez pour accéder aux détails
               </p>
+
+              <!-- Boutons d'action QR Code -->
+              <div class="d-flex justify-content-center gap-3 mt-3 d-none" id="qrcodeActionsIndex">
+                <button id="btnTelechargerIndex" class="btn btn-qr d-flex align-items-center gap-2">
+                  <i class="fa fa-download"></i> Télécharger
+                </button>
+                <button id="btnImprimerIndex" class="btn btn-qr d-flex align-items-center gap-2">
+                  <i class="fa fa-print"></i> Imprimer
+                </button>
+              </div>
             </div>
           </div>
 
@@ -188,54 +198,6 @@ include_once(__DIR__ . '/../login_verify.php');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
    
     <script src="script.js"></script>
-
-    <!-- à mettre dans un js!!!!!!!! -->
-    <script>
-      function startQrScan() {
-        const qrContainer = document.getElementById("qr-reader-container");
-        qrContainer.style.display = "block";
-
-        const html5QrCode = new Html5Qrcode("qr-reader");
-
-        html5QrCode.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 250 },
-          async (decodedText) => {
-            // Stop le scan
-            await html5QrCode.stop();
-            qrContainer.style.display = "none";
-
-            try {
-              const resp = await fetch(
-                `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
-              );
-              const data = await resp.json();
-
-              if (data.success && data.targetPage) {
-                const finalUrl = `/frontend/${data.targetPage}?code=${encodeURIComponent(decodedText)}`;
-                console.log("URL :", finalUrl);
-                window.location.href = finalUrl;
-              } else {
-                alert("QR code non reconnu !");
-              }
-            } catch (err) {
-              console.error(err);
-              alert("Erreur réseau ou QR code invalide");
-            }
-          },
-          (errorMessage) => {
-            // Scan en cours, pas une erreur
-          }
-        )
-        .catch((err) => {
-          console.error("Impossible d'accéder à la caméra :", err);
-          alert("Impossible d'accéder à la caméra. Vérifiez les permissions et HTTPS.");
-        });
-      }
-
-      document.getElementById("scanPretBtn").addEventListener("click", startQrScan);
-      document.getElementById("scanRestitutionBtn").addEventListener("click", startQrScan);
-    </script>
 
   </body>
 </html>
