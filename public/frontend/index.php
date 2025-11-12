@@ -22,7 +22,7 @@ include_once(__DIR__ . '/../login_verify.php');
           <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
             <!-- Logo MediaStock qui colle aux bords -->
             <div class="logo-app position-relative justify-content-center align-items-center d-flex h-100">
-              <a href="./acceuil.html"><img src="logo.png" alt="MediaStock" class="img-logo"/></a>
+              <a href="./index.php"><img src="logo.png" alt="MediaStock" class="img-logo"/></a>
             </div>
           </div>
         </div>

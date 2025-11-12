@@ -23,7 +23,7 @@
           <div class="row h-100 align-items-center justify-content-center">
           <div class="col-12 text-center">
               <div class="logo-app d-flex align-items-center justify-content-center">
-              <a href="./acceuil.html">
+              <a href="./index.php">
                   <img src="logo.png" alt="MediaStock" class="img-logo"/>
               </a>
               </div>
