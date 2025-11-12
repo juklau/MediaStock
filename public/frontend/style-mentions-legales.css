@@ -31,6 +31,7 @@
   margin-bottom: 1rem;
   font-weight: 500;
   font-size: 1.1rem;
+
 }
 
 .mentions-content p {
@@ -152,9 +153,9 @@
 
 .data-grid {
   display: grid;
+  margin-top: 1.5rem;
   grid-template-columns: 1fr;
   gap: 1rem;
-  margin-top: 1.5rem;
 }
 
 .data-card {
@@ -190,7 +191,6 @@
 .card-body {
   padding: 1.5rem !important;
 }
-
 
 @media (max-width: 480px) {
   .back-btn {
@@ -242,7 +242,7 @@
     min-width: auto;
     min-width: 100px;
     margin-right: 1rem;
-    flex-shrink: 0;
+    flex-shrink: 0;  
   }
 
   .mentions-content h2 {

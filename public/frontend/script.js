@@ -570,6 +570,181 @@ function imprimerQRCode() {
 
 /**
  * =====================================
+ * FONCTIONS POUR LES BOUTONS QR CODE
+ * =====================================
+ */
+
+/**
+ * Initialiser les boutons d'action du QR Code
+ */
+function initialiserBoutonsQRCode() {
+  const btnTelecharger = document.getElementById('btnTelechargerIndex');
+  const btnImprimer = document.getElementById('btnImprimerIndex');
+
+  if (btnTelecharger) {
+    btnTelecharger.addEventListener('click', telechargerQRCode);
+  }
+
+  if (btnImprimer) {
+    btnImprimer.addEventListener('click', imprimerQRCode);
+  }
+}
+
+/**
+ * Télécharger le QR Code en tant qu'image PNG
+ */
+function telechargerQRCode() {
+  const qrcodeContainer = document.getElementById('ficheQRCode');
+  
+  if (!qrcodeContainer) {
+    console.error('Container QR code introuvable');
+    return;
+  }
+
+  // Récupérer l'image du QR code
+  const qrcodeImg = qrcodeContainer.querySelector('img');
+  
+  if (!qrcodeImg) {
+    console.error('Image QR code introuvable');
+    alert('Aucun QR code à télécharger');
+    return;
+  }
+
+  // Créer un lien de téléchargement
+  const link = document.createElement('a');
+  link.href = qrcodeImg.src;
+  
+  // Récupérer le nom du matériel pour nommer le fichier
+  const nomMateriel = document.getElementById('ficheNom')?.textContent || 'qrcode';
+  link.download = `QRCode_${nomMateriel.replace(/\s+/g, '_')}.png`;
+  
+  // Déclencher le téléchargement
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('QR code téléchargé:', link.download);
+}
+
+/**
+ * Imprimer le QR Code
+ */
+function imprimerQRCode() {
+  const qrcodeContainer = document.getElementById('ficheQRCode');
+  
+  if (!qrcodeContainer) {
+    console.error('Container QR code introuvable');
+    return;
+  }
+
+  // Récupérer l'image du QR code
+  const qrcodeImg = qrcodeContainer.querySelector('img');
+  
+  if (!qrcodeImg) {
+    console.error('Image QR code introuvable');
+    alert('Aucun QR code à imprimer');
+    return;
+  }
+
+  // Récupérer le nom du matériel
+  const nomMateriel = document.getElementById('ficheNom')?.textContent || 'Matériel';
+
+  // Créer une nouvelle fenêtre pour l'impression
+  const printWindow = window.open('', '_blank', 'width=800,height=600');
+  
+  if (!printWindow) {
+    alert('Veuillez autoriser les pop-ups pour imprimer le QR code');
+    return;
+  }
+
+  // Contenu HTML pour l'impression
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Impression QR Code - ${nomMateriel}</title>
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+        .print-container {
+          text-align: center;
+          max-width: 400px;
+        }
+        h1 {
+          color: #333;
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
+        .qr-code {
+          margin: 20px 0;
+          padding: 20px;
+          background: white;
+          border: 2px solid #ddd;
+          border-radius: 10px;
+          display: inline-block;
+        }
+        .qr-code img {
+          display: block;
+          width: 250px;
+          height: 250px;
+        }
+        .info {
+          color: #666;
+          font-size: 14px;
+          margin-top: 20px;
+        }
+        @media print {
+          body {
+            background: white;
+          }
+          .no-print {
+            display: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="print-container">
+        <h1>${nomMateriel}</h1>
+        <div class="qr-code">
+          <img src="${qrcodeImg.src}" alt="QR Code ${nomMateriel}">
+        </div>
+        <div class="info">
+          <p><strong>MediaStock Inc</strong></p>
+          <p>Scannez ce code pour accéder aux détails du matériel</p>
+        </div>
+      </div>
+      <script>
+        window.onload = function() {
+          window.print();
+          // Fermer la fenêtre après l'impression (optionnel)
+          // window.onafterprint = function() { window.close(); };
+        };
+      </script>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+  console.log('Fenêtre d\'impression ouverte pour:', nomMateriel);
+}
+
+/**
+ * =====================================
  * FONCTIONS D'AFFICHAGE ET D'ÉTAT
  * =====================================
  */

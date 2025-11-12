@@ -140,6 +140,7 @@ include_once(__DIR__ . '/../login_verify.php');
                 Scannez pour accéder aux détails
               </p>
 
+              
               <!-- Boutons d'action QR Code -->
               <div class="d-flex justify-content-center gap-3 mt-3 d-none" id="qrcodeActionsIndex">
                 <button id="btnTelechargerIndex" class="btn btn-qr d-flex align-items-center gap-2">
