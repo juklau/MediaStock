@@ -13,7 +13,7 @@
 
     private function __construct(){
 
-        $this->host = 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
+        // $this->host = 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
         $this->host = 'mysql-mediastock.alwaysdata.net'; // Identifiants AlwaysData
         $this->db   = 'mediastock_db';
         $this->user = '439141';
