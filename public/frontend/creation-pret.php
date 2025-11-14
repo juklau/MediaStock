@@ -52,9 +52,7 @@
         <div class="mb-2">
           <label class="form-label">Prénom de l'emprunteur : <span class="text-danger">*</span></label>
           <input type="text" id="emprunteurPrenom" class="form-control" placeholder="Prénom" required/>
-          <div class="invalid-feedback">
-            Le prénom de l'emprunteur est requis
-          </div>
+          <div class="invalid-feedback">Le prénom de l'emprunteur est requis</div>
         </div>
 
         <div class="mb-2">

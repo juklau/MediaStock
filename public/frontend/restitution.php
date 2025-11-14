@@ -132,9 +132,9 @@
             <div class="success-icon mb-3">
               <i class="fas fa-check fa-3x text"></i>
             </div>
-            <h4 class="mb-3">Félicitations La restitution a été effectuée</h4>
+            <h4 class="mb-3">Félicitations! La restitution a été effectuée.</h4>
             <button type="button" class="btn btn-success" data-bs-dismiss="modal">
-              Validé
+              Valider
             </button>
           </div>
         </div>

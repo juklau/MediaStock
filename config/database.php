@@ -1,4 +1,5 @@
 <?php
+
   namespace Config;
 
   class Database{
@@ -13,25 +14,27 @@
 
     private function __construct(){
 
-        // $this->host = 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
-        $this->host = 'mysql-mediastock.alwaysdata.net'; // Identifiants AlwaysData
-        $this->db   = 'mediastock_db';
-<<<<<<< HEAD
-        $this->user = '439141';
-        $this->pass = '5247_Juklau+123!';
+        $config = require_once __DIR__ . '/env.php';
 
-        // Valeurs par défaut sensées => le DB local!!!!
-=======
-        $this->user = getenv('DB_USER');
-        $this->pass = getenv('DB_PASSWORD');
+        // Identifiants AlwaysData => user et pass à mettre en claire!!
+        // $this->host = 'mysql-mediastock.alwaysdata.net'; 
+        // $this->db   = 'mediastock_db';
+        // $this->user = $DB_USER;
+        // $this->pass = $DB_PASSWORD;
 
         // Valeurs par défaut sensées => le DB local!!!!
         // à vérifier le user avant la connection au database local dans .env
->>>>>>> fe3d10de9de2cf3612e4aeef802b8843aa12de09
         // $this->host = getenv('DB_HOST') ?: 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
         // $this->db   = getenv('DB_NAME') ?: 'mediastock';
         // $this->user = getenv('DB_USER') ?: 'mediastock';
         // $this->pass = getenv('DB_PASSWORD') ?: '';
+
+        // Valeurs par défaut sensées => le DB local => version env.php !!!!
+        // à vérifier le user avant la connection au database local dans env.php
+        $this->host = $config['DB_HOST']; 
+        $this->db   = $config['DB_NAME'];
+        $this->user = $config['DB_USER'];
+        $this->pass = $config['DB_PASSWORD'];
 
       try {
         //connexion PDO à la base applicative
