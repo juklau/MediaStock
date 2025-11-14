@@ -53,6 +53,7 @@ function startQrScan() {
         const resp = await fetch(
           `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
         );
+        console.log("Response Status:", resp.status);
         const data = await resp.json();
 
         if (data.success && data.targetPage) {
@@ -1175,7 +1176,9 @@ function afficherHistoriquePretsDynamique(historique) {
   
   historiqueTrié.forEach((pret, index) => {
     // ========== Analyse des données de prêt ==========
-    const emprunteur = pret.emprunteur_nom || pret.emprunteur_prenom || 'Emprunteur inconnu';
+    const emprunteur_prenom = pret.emprunteur_prenom || '';
+    const emprunteur_nom = pret.emprunteur_nom || '';
+    const emprunteurComplet = `${emprunteur_prenom} ${emprunteur_nom}`.trim() || 'Emprunteur inconnu';
     const datePret = pret.date_sortie || pret.datePret || 'Non définie';
     const dateRetourPrevue = pret.date_retour_prevue || pret.dateRetourPrevue || pret.dateRetour || 'Non définie';
     const dateRetourEffectif = pret.date_retour_effective || pret.dateRetourEffectif || null;
@@ -1203,7 +1206,7 @@ function afficherHistoriquePretsDynamique(historique) {
         <!-- En-tête avec emprunteur et statut -->
         <div class="header" style="display: block; margin-bottom: 10px;">
           <div class="fw-bold text-dark" style="margin-bottom: 4px;">
-            <i class="fas fa-user me-1"></i>${emprunteur}
+            <i class="fas fa-user me-1"></i>${emprunteurComplet}
           </div>
           <div class="status" style="display: inline-block; margin-top: 2px;">
             ${badgeStatut}

@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const classeSelect = document.getElementById("classe");
     const calendarContainer = document.querySelector(".calendar-container");
 
-    // Initialiser Flatpickr pour la période de prêt
+    // Initialiser Flatpicker pour la période de prêt
     if (datePicker && typeof flatpickr === "function") {
         flatpickr(datePicker, {
             mode: 'range',
