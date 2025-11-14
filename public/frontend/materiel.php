@@ -14,20 +14,20 @@
   </head>
 
   <body class="bg-white">
-  <!-- Header -->
-  <header class="position-relative">
-    <div class="container h-100">
-        <div class="row h-100 align-items-center justify-content-center">
-        <div class="col-12 text-center">
-            <div class="logo-app d-flex align-items-center justify-content-center">
-            <a href="./index.php">
-                <img src="logo.png" alt="MediaStock" class="img-logo"/>
-            </a>
-            </div>
-        </div>
-        </div>
-    </div>
-  </header>
+    <!-- Header -->
+    <header class="position-relative">
+      <div class="container h-100">
+          <div class="row h-100 align-items-center justify-content-center">
+          <div class="col-12 text-center">
+              <div class="logo-app d-flex align-items-center justify-content-center">
+              <a href="./index.php">
+                  <img src="logo.png" alt="MediaStock" class="img-logo"/>
+              </a>
+              </div>
+          </div>
+          </div>
+      </div>
+    </header>
 
     <!-- Main -->
     <main class="container text-center py-4 min-vh-100">

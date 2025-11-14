@@ -5,7 +5,7 @@ setup_db.php
 .idea
 .autoload.php
 public/index_duprof.php
-public/frontend/Choixmat1.html
-public/frontend/materiel copy.html
 
 sql/init.sql
+
+env.php
