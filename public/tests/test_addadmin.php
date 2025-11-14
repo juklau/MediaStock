@@ -3,9 +3,14 @@
 $url = 'http://localhost/api/addadmin.php'; 
 
 // Données à envoyer
+// $data = [
+//     'login' => 'test' . rand(1000, 9999), // login unique pour éviter les doublons
+//     'mot_de_passe_hash' =>'test' //addadmin qui vreera le hachage
+// ];
+
 $data = [
-    'login' => 'test' . rand(1000, 9999), // login unique pour éviter les doublons
-    'mot_de_passe_hash' =>'test' //addadmin qui vreera le hachage
+    'login' => 'admin2', // login unique pour éviter les doublons
+    'mot_de_passe_hash' =>'MediaStock_06*' //addadmin qui vreera le hachage
 ];
 
 // test2360
