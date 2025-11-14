@@ -23,41 +23,67 @@
         exit;
     }
 
-    $nom = $input['emprunteur_nom'];
-    $prenom = $input['emprunteur_prenom'];
-    $role= $input['role'];
+    $nom = htmlspecialchars(trim($input['emprunteur_nom']));
+    $prenom = htmlspecialchars(trim($input['emprunteur_prenom']));
+    $role= htmlspecialchars(trim($input['role']));
     $formationId = $input['formation_id'] ?? null;
 
    
     try{
 
-       // instancier le model Emprunteur
+        // instancier le model Emprunteur
         $emprunteurModel = new Models\Emprunteur();
 
-        $emprunteurId = $emprunteurModel->addEmprunteur($nom, $prenom, $role, $formationId);
+        $existing = $emprunteurModel->findExistingEmprunteur($nom, $prenom);
 
-        if($emprunteurId !== false){
+        if($existing){
+            // il est déjà dans la bdd
+            $emprunteurId = (int)$existing['id'];
+
             $response = [
                 "success" => true,
                 "emprunteur_id" => $emprunteurId, 
-                "message" => "Emprunteur créé avec succès"
+                "message" => "Emprunteur déjà existant dans la base."
             ];
         }else{
+            // il faut créer emprunteur
+            $emprunteurId = $emprunteurModel->addEmprunteur($nom, $prenom, $role, $formationId);
+
             $response = [
-                "success" => false,
-                "message" => "Échec de la création de l'emprunteur"
+                "success" => true,
+                "emprunteur_id" => $emprunteurId, 
+                "message" => "Nouvel emprunteur ajouté avec succès"
             ];
         }
 
         // afficher en JSON le résultat value:.....; flags:.....
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-    }catch(PDOException $e){
+    }catch (InvalidArgumentException $e) {
+
+        $response = [
+            "success" => false,
+            "message" => "Erreur de validation : " . $e->getMessage()
+        ];
+
+        // Gestion des erreurs métier comme rôle ou formation invalide
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+
+    } catch(PDOException $e){
         $response = [
             "success" => false,
             "message" => "Erreur de connexion: " . $e->getMessage()
         ];
 
         // afficher en JSON le résultat
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    } catch (Exception $e) {
+
+        // Autres erreurs
+        $response = [
+            "success" => false,
+            "message" => "Erreur inattendue : " . $e->getMessage()
+        ];
+
         echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 

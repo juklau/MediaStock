@@ -1,6 +1,6 @@
-// ********************************************************** js pour la **********************************************************************
+ // ********************************************************** js pour la **********************************************************************
 
-//.............pour index.html.............//
+//.............pour index.php.............//
 
 
 
@@ -34,6 +34,51 @@ async function chargerMateriels() {
   }
 }
 
+// ouvrir la fenêtre pour scanner le QRcode => création de prêt et restitution
+function startQrScan() {
+  const qrContainer = document.getElementById("qr-reader-container");
+  qrContainer.style.display = "block";
+
+  const html5QrCode = new Html5Qrcode("qr-reader");
+
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    async (decodedText) => {
+      // Stop le scan
+      await html5QrCode.stop();
+      qrContainer.style.display = "none";
+
+      try {
+        const resp = await fetch(
+          `../api/getPageByQRCode.php?code=${encodeURIComponent(decodedText)}`
+        );
+        const data = await resp.json();
+
+        if (data.success && data.targetPage) {
+          const finalUrl = `/frontend/${data.targetPage}?code=${encodeURIComponent(decodedText)}`;
+          console.log("URL :", finalUrl);
+          window.location.href = finalUrl;
+        } else {
+          alert("QR code non reconnu !");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erreur réseau ou QR code invalide");
+      }
+    },
+    (errorMessage) => {
+      // Scan en cours, pas une erreur
+    }
+  )
+  .catch((err) => {
+    console.error("Impossible d'accéder à la caméra :", err);
+    alert("Impossible d'accéder à la caméra. Vérifiez les permissions et HTTPS.");
+  });
+}
+
+document.getElementById("scanPretBtn").addEventListener("click", startQrScan);
+document.getElementById("scanRestitutionBtn").addEventListener("click", startQrScan);
 
 /** 
  * Afficher les matériels depuis l'API
@@ -41,6 +86,7 @@ async function chargerMateriels() {
 function renderItems() {
   const categoryFilter = document.getElementById("categoryFilter").value;
   const statusFilter = document.getElementById("statusFilter").value;
+  const etatFilter = document.getElementById("etatFilter").value;
   const container = document.getElementById("inventoryList");
   container.innerHTML = "";
 
@@ -48,63 +94,45 @@ function renderItems() {
   const filteredItems = items.filter(item => {
     const matchCategorie= !categoryFilter || item.categorie.toLowerCase() === categoryFilter;
     const matchStatut = !statusFilter || item.statut === statusFilter;
-    return matchCategorie && matchStatut;
+    const matchEtat = !etatFilter || item.etat === etatFilter;
+    const nonArchived = item.archived === 0;
+    return matchCategorie && matchStatut && matchEtat && nonArchived ;
   });
 
-  filteredItems.forEach(item => {
-      const statusClass = `status-${item.statut.toLowerCase()}`;
 
-      const listItem = document.createElement("div");
-      listItem.className = "list-group-item";
-      listItem.dataset.itemId = item.id;
+filteredItems.forEach(item => {
+    const statusClass = `status-${item.statut.toLowerCase()}`;
+    const etatClass = `etat-${item.etat.toLowerCase()}`;
 
-      listItem.innerHTML = `
-          <div class="left">
-            <div class="item-icon"><i class="${item.image_url}"></i></div>
-            <div class="item-meta">
-              <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
-              <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
-            </div>
+    const listItem = document.createElement("div");
+    listItem.className = "list-group-item";
+    listItem.dataset.itemId = item.id;
+
+    listItem.innerHTML = `
+        <div class="left">
+          <div class="item-icon"><i class="${item.image_url}"></i></div>
+          <div class="item-meta">
+            <div><strong>${item.nom}</strong> ${item.model !== null ? item.model : ''}</div>
+            <div><span class="status-dot ${statusClass}"></span>${item.statut}</div>
+            <div><span class="etat-button ${etatClass}">${item.etat} état</span></div>
           </div>
-          <div class="item-right">
-            ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
-            <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
-          </div>
-        `;
+        </div>
+        <div class="item-right">
+          ${item.statut === 'disponible' ? '' : `<div class="text-muted small">${item.dateAjout || ''}</div>`}
 
-        container.appendChild(listItem);
-  });
+          <button class="change-btn" title="Modifier" data-id="${item.id}"><i class="fas fa-file-lines fa-lg"></i></button>
+          <button class="trash-btn" title="Supprimer" data-id="${item.id}"><i class="fas fa-trash-alt fa-lg"></i></button>
+        </div>
+      `;
+
+      container.appendChild(listItem);
+});
 
   // Attacher les gestionnaires de clic après le rendu
   attachClickHandlers(filteredItems);
 
   console.log("Catégories disponibles :", items.map(i => i.categorie));
 }
-
-
-//attacher les gestionnaires de clic sur les items
-// function attachClickHandlers(filteredItems) {
-//   const listItems = document.querySelectorAll('#inventoryList .list-group-item');
-  
-//   listItems.forEach((listItem, index) => {
-//     listItem.style.cursor = 'pointer';
-    
-//     listItem.addEventListener('click', function(e) {
-
-//       // Ne pas ouvrir si on clique sur le bouton de suppression
-//       if (e.target.closest('.trash-btn')) {
-//         return;
-//       }
-      
-//       // Trouver l'item correspondant dans le tableau
-//       if (filteredItems[index]) {
-//         const itemIndex = items.indexOf(filteredItems[index]);
-//         ouvrirFicheProduit(filteredItems[index], itemIndex);
-//       }
-//     });
-//   });
-
-// }
 
 
 //attacher les gestionnaires de clic sur les items
@@ -116,14 +144,32 @@ function attachClickHandlers(filteredItems) {
     
     listItem.addEventListener('click', function(e) {
 
-      // Ne pas ouvrir si on clique sur le bouton de suppression
-      if (e.target.closest('.trash-btn')) {
+      // Si on clique sur le bouton de modification, on redirige vers la page de modif
+      const modifBtn = e.target.closest('.change-btn');
+      if (modifBtn) {
+        const itemId = parseInt(modifBtn.dataset.id);
+        if (itemId) {
+          const finalUrl = `/frontend/modification-item.php?code=${encodeURIComponent(itemId)}`;
+          window.location.href = finalUrl;
+        }
+        e.stopPropagation();
+        return;
+      }
+
+      // Si on clique sur le bouton de suppression, on appelle le handler de suppression
+      const deleteBtn = e.target.closest('.trash-btn');
+      if (deleteBtn) {
+        const itemId = parseInt(deleteBtn.dataset.id);
+        if (itemId) {
+          attachDeleteHandlers(itemId); 
+        }
+        e.stopPropagation();
         return;
       }
       
-      // ===== CORRECTION : Utiliser l'ID réel depuis l'attribut data-item-id =====
+       // Sinon, clic sur l’élément lui-même => ouvrir la fiche
+      // Utiliser l'ID réel depuis l'attribut data-item-id
       const itemId = parseInt(listItem.dataset.itemId);
-      
       if (itemId) {
         console.log('Clic sur item ID:', itemId);
         
@@ -138,15 +184,13 @@ function attachClickHandlers(filteredItems) {
 }
 
 
-
-
-
-
 // Après rendu, attache les gestionnaires de suppression
 function attachDeleteHandlers(){
   const deleteBtns = document.querySelectorAll('.trash-btn');
   const deleteModalEl = document.getElementById('deleteModal');
+
   if(!deleteModalEl) return;
+
   const bsModal = new bootstrap.Modal(deleteModalEl);
   const deleteIcon = document.getElementById('deleteIcon');
   const deleteName = document.getElementById('deleteName');
@@ -162,7 +206,7 @@ function attachDeleteHandlers(){
       // Trouver l'item dans le tableau
       const item = items.find(i => i.id === itemId);
       if (item) {
-        deleteIcon.innerHTML = `<i class="fas ${item.icone} fa-2x"></i>`;
+        deleteIcon.innerHTML = `<i class="${item.image_url} fa-3x"></i>`;
         deleteName.textContent = item.nom;
         bsModal.show();
       }
@@ -171,6 +215,7 @@ function attachDeleteHandlers(){
   
   // Gestionnaire de confirmation
   if (confirmBtn) {
+
     // Retirer les anciens listeners pour éviter les doublons
     const newConfirmBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
@@ -178,12 +223,36 @@ function attachDeleteHandlers(){
     newConfirmBtn.addEventListener('click', async () => {
       if (currentItemId !== null) {
         try {
-          await API.deleteMateriel(currentItemId);
-          bsModal.hide();
-          await chargerMateriels(); // Recharger les données
+
+          const response = await fetch(`/api/archiveitembyid.php?id=${currentItemId}`);
+          const result = await response.json();
+
+          const container = document.getElementById("inventoryList");
+
+          if(result.success){
+            bsModal.hide();
+
+            if (container) {
+              container.innerHTML = `
+                <div class="alert alert-success text-center mt-3" role="alert">
+                  Matériel archivé avec succès.
+                </div>
+              `;
+            }
+
+            // Attendre 3s avant de recharger la liste
+            setTimeout(() => {
+              chargerMateriels();
+            }, 3000);
+
+            console.log("Archivage du matériel est réussi.");
+          }else{
+            console.error("Erreur d'archivage : ", result.message);
+            alert("Échec de l'archivage : " + result.message);
+          }
         } catch (error) {
-          console.error('Erreur lors de la suppression:', error);
-          alert('Erreur lors de la suppression du matériel');
+          console.error("Erreur lors de la l'archivage: ", error);
+          alert("Une erreur est survenue lors de l'archivage du matériel.");
         }
       }
     });
@@ -194,48 +263,15 @@ const catFilterEl = document.getElementById('categoryFilter');
 if (catFilterEl) catFilterEl.addEventListener('change', renderItems);
 const statusFilterEl = document.getElementById('statusFilter');
 if (statusFilterEl) statusFilterEl.addEventListener('change', renderItems);
+const etatFilterEl = document.getElementById('etatFilter');
+if (etatFilterEl) etatFilterEl.addEventListener('change', renderItems);
 
 // Charger les données au chargement de la page
 window.onload = function(){
   chargerMateriels();
 };
 
-
-
-
-
-//Scanner QR code pour creer ou restituer un materiel !!!!//
-
-const qrReader = document.getElementById("qr-reader");
-
-function startQrScan(targetPage) {
-  qrReader.style.display = "block";
-
-  const html5QrCode = new Html5Qrcode("qr-reader");
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    (decodedText, decodedResult) => {
-      console.log("QR Code détecté :", decodedText);
-      html5QrCode.stop();
-      qrReader.style.display = "none";
-
-      // Rediriger vers la page correspondante en passant le code QR
-      window.location.href = `${targetPage}?code=${encodeURIComponent(decodedText)}`;
-    },
-    (errorMessage) => {
-      // Scan en cours
-    }
-  ).catch(err => {
-    console.error("Impossible d'accéder à la caméra :", err);
-  });
-}
-
-// Boutons
-document.getElementById("scanPretBtn").addEventListener("click", () => startQrScan("creation-pret.html"));
-document.getElementById("scanRestitutionBtn").addEventListener("click", () => startQrScan("restitution.html"));
-
+// archivage d'un item
 document.addEventListener('click', function (e) {
   const btn = e.target.closest('.btn-trash');
   if (!btn) return;
@@ -256,8 +292,10 @@ document.addEventListener('click', function (e) {
     if (data.success) {
       // supprimer la ligne ou marquer comme archivé
       const row = btn.closest('.item-row') || btn.closest('tr');
-      if (row) row.remove();
-      else btn.remove();
+      if (row) 
+        row.remove();
+      else 
+        btn.remove();
       alert(data.message);
     } else {
       alert('Erreur : ' + (data.message || 'Archiver impossible'));
@@ -303,45 +341,6 @@ async function getHistoriquePrets(materielId) {
   }
 }
 
-/**
- * Ajouter un prêt via l'API (appelé depuis creation-pret.html)
- */
-// async function ajouterPret(materielId, pretData) {
-//   try {
-//     const pretPayload = {
-//       materielId: materielId,
-//       emprunteur: pretData.nom + ' ' + pretData.prenom,
-//       datePret: pretData.datePret,
-//       dateRetour: pretData.dateRetour,
-//       etatPret: pretData.etat,
-//       intervenant: pretData.intervenant,
-//       classe: pretData.classe,
-//       notes: pretData.notes
-//     };
-    
-//     await API.ajouterPret(pretPayload);
-//     return true;
-//   } catch (error) {
-//     console.error('Erreur lors de l\'ajout du prêt:', error);
-//     throw error;
-//   }
-// }
-
-/**
- * Mettre à jour un prêt lors de la restitution
-//  */
-// async function mettreAJourRestitution(pretId, etatRetour) {
-//   try {
-//     await API.updatePret(pretId, {
-//       etatRetour: etatRetour,
-//       dateRestitution: new Date().toISOString().split('T')[0]
-//     });
-//     return true;
-//   } catch (error) {
-//     console.error('Erreur lors de la mise à jour de la restitution:', error);
-//     throw error;
-//   }
-// }
 
 /**
  * =====================================
@@ -382,10 +381,366 @@ async function ouvrirFicheProduit(item, itemIndex) {
     
     console.log('Offcanvas ouvert avec succès pour:', itemDetails.nom);
 
+    // Initialiser les boutons QR code après l'affichage
+    initialiserBoutonsQRCode();
+
   } catch (error) {
     console.error('Erreur lors de l\'ouverture de l\'offcanvas:', error);
     afficherErreurOffcanvas('Une erreur est survenue lors du chargement');
   }
+}
+
+
+/**
+ * =====================================
+ * FONCTIONS POUR LES BOUTONS QR CODE
+ * =====================================
+ */
+
+/**
+ * Initialiser les boutons d'action du QR Code
+ */
+function initialiserBoutonsQRCode() {
+  const btnTelecharger = document.getElementById('btnTelechargerIndex');
+  const btnImprimer = document.getElementById('btnImprimerIndex');
+
+  if (btnTelecharger) {
+    btnTelecharger.addEventListener('click', telechargerQRCode);
+  }
+
+  if (btnImprimer) {
+    btnImprimer.addEventListener('click', imprimerQRCode);
+  }
+}
+
+/**
+ * Télécharger le QR Code en tant qu'image PNG
+ */
+function telechargerQRCode() {
+  const qrcodeContainer = document.getElementById('ficheQRCode');
+  
+  if (!qrcodeContainer) {
+    console.error('Container QR code introuvable');
+    return;
+  }
+
+  // Récupérer l'image du QR code
+  const qrcodeImg = qrcodeContainer.querySelector('img');
+  
+  if (!qrcodeImg) {
+    console.error('Image QR code introuvable');
+    alert('Aucun QR code à télécharger');
+    return;
+  }
+
+  // Créer un lien de téléchargement
+  const link = document.createElement('a');
+  link.href = qrcodeImg.src;
+  
+  // Récupérer le nom du matériel pour nommer le fichier
+  const nomMateriel = document.getElementById('ficheNom')?.textContent || 'qrcode';
+  link.download = `QRCode_${nomMateriel.replace(/\s+/g, '_')}.png`;
+  
+  // Déclencher le téléchargement
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('QR code téléchargé:', link.download);
+}
+
+/**
+ * Imprimer le QR Code
+ */
+function imprimerQRCode() {
+  const qrcodeContainer = document.getElementById('ficheQRCode');
+  
+  if (!qrcodeContainer) {
+    console.error('Container QR code introuvable');
+    return;
+  }
+
+  // Récupérer l'image du QR code
+  const qrcodeImg = qrcodeContainer.querySelector('img');
+  
+  if (!qrcodeImg) {
+    console.error('Image QR code introuvable');
+    alert('Aucun QR code à imprimer');
+    return;
+  }
+
+  // Récupérer le nom du matériel
+  const nomMateriel = document.getElementById('ficheNom')?.textContent || 'Matériel';
+
+  // Créer une nouvelle fenêtre pour l'impression
+  const printWindow = window.open('', '_blank', 'width=800,height=600');
+  
+  if (!printWindow) {
+    alert('Veuillez autoriser les pop-ups pour imprimer le QR code');
+    return;
+  }
+
+  // Contenu HTML pour l'impression
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Impression QR Code - ${nomMateriel}</title>
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+        .print-container {
+          text-align: center;
+          max-width: 400px;
+        }
+        h1 {
+          color: #333;
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
+        .qr-code {
+          margin: 20px 0;
+          padding: 20px;
+          background: white;
+          border: 2px solid #ddd;
+          border-radius: 10px;
+          display: inline-block;
+        }
+        .qr-code img {
+          display: block;
+          width: 250px;
+          height: 250px;
+        }
+        .info {
+          color: #666;
+          font-size: 14px;
+          margin-top: 20px;
+        }
+        @media print {
+          body {
+            background: white;
+          }
+          .no-print {
+            display: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="print-container">
+        <h1>${nomMateriel}</h1>
+        <div class="qr-code">
+          <img src="${qrcodeImg.src}" alt="QR Code ${nomMateriel}">
+        </div>
+        <div class="info">
+          <p><strong>MediaStock Inc</strong></p>
+          <p>Scannez ce code pour accéder aux détails du matériel</p>
+        </div>
+      </div>
+      <script>
+        window.onload = function() {
+          window.print();
+          // Fermer la fenêtre après l'impression (optionnel)
+          // window.onafterprint = function() { window.close(); };
+        };
+      </script>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+  console.log('Fenêtre d\'impression ouverte pour:', nomMateriel);
+}
+
+
+
+/**
+ * =====================================
+ * FONCTIONS POUR LES BOUTONS QR CODE
+ * =====================================
+ */
+
+/**
+ * Initialiser les boutons d'action du QR Code
+ */
+function initialiserBoutonsQRCode() {
+  const btnTelecharger = document.getElementById('btnTelechargerIndex');
+  const btnImprimer = document.getElementById('btnImprimerIndex');
+
+  if (btnTelecharger) {
+    btnTelecharger.addEventListener('click', telechargerQRCode);
+  }
+
+  if (btnImprimer) {
+    btnImprimer.addEventListener('click', imprimerQRCode);
+  }
+}
+
+/**
+ * Télécharger le QR Code en tant qu'image PNG
+ */
+function telechargerQRCode() {
+  const qrcodeContainer = document.getElementById('ficheQRCode');
+  
+  if (!qrcodeContainer) {
+    console.error('Container QR code introuvable');
+    return;
+  }
+
+  // Récupérer l'image du QR code
+  const qrcodeImg = qrcodeContainer.querySelector('img');
+  
+  if (!qrcodeImg) {
+    console.error('Image QR code introuvable');
+    alert('Aucun QR code à télécharger');
+    return;
+  }
+
+  // Créer un lien de téléchargement
+  const link = document.createElement('a');
+  link.href = qrcodeImg.src;
+  
+  // Récupérer le nom du matériel pour nommer le fichier
+  const nomMateriel = document.getElementById('ficheNom')?.textContent || 'qrcode';
+  link.download = `QRCode_${nomMateriel.replace(/\s+/g, '_')}.png`;
+  
+  // Déclencher le téléchargement
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  console.log('QR code téléchargé:', link.download);
+}
+
+/**
+ * Imprimer le QR Code
+ */
+function imprimerQRCode() {
+  const qrcodeContainer = document.getElementById('ficheQRCode');
+  
+  if (!qrcodeContainer) {
+    console.error('Container QR code introuvable');
+    return;
+  }
+
+  // Récupérer l'image du QR code
+  const qrcodeImg = qrcodeContainer.querySelector('img');
+  
+  if (!qrcodeImg) {
+    console.error('Image QR code introuvable');
+    alert('Aucun QR code à imprimer');
+    return;
+  }
+
+  // Récupérer le nom du matériel
+  const nomMateriel = document.getElementById('ficheNom')?.textContent || 'Matériel';
+
+  // Créer une nouvelle fenêtre pour l'impression
+  const printWindow = window.open('', '_blank', 'width=800,height=600');
+  
+  if (!printWindow) {
+    alert('Veuillez autoriser les pop-ups pour imprimer le QR code');
+    return;
+  }
+
+  // Contenu HTML pour l'impression
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Impression QR Code - ${nomMateriel}</title>
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        body {
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          padding: 20px;
+        }
+        .print-container {
+          text-align: center;
+          max-width: 400px;
+        }
+        h1 {
+          color: #333;
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
+        .qr-code {
+          margin: 20px 0;
+          padding: 20px;
+          background: white;
+          border: 2px solid #ddd;
+          border-radius: 10px;
+          display: inline-block;
+        }
+        .qr-code img {
+          display: block;
+          width: 250px;
+          height: 250px;
+        }
+        .info {
+          color: #666;
+          font-size: 14px;
+          margin-top: 20px;
+        }
+        @media print {
+          body {
+            background: white;
+          }
+          .no-print {
+            display: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="print-container">
+        <h1>${nomMateriel}</h1>
+        <div class="qr-code">
+          <img src="${qrcodeImg.src}" alt="QR Code ${nomMateriel}">
+        </div>
+        <div class="info">
+          <p><strong>MediaStock Inc</strong></p>
+          <p>Scannez ce code pour accéder aux détails du matériel</p>
+        </div>
+      </div>
+      <script>
+        window.onload = function() {
+          window.print();
+          // Fermer la fenêtre après l'impression (optionnel)
+          // window.onafterprint = function() { window.close(); };
+        };
+      </script>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+  console.log('Fenêtre d\'impression ouverte pour:', nomMateriel);
 }
 
 /**
@@ -475,7 +830,7 @@ async function recupererDetailsItem(itemId) {
         itemAvailability = items.find(item => item.id == itemId);
         
         if (itemAvailability) {
-          console.log('✅ Disponibilité récupérée depuis getitemsavailability.php:', {
+          console.log('Disponibilité récupérée depuis getitemsavailability.php:', {
             id: itemAvailability.id,
             nom: itemAvailability.nom,
             is_available: itemAvailability.is_available,
@@ -495,7 +850,7 @@ async function recupererDetailsItem(itemId) {
         const resultDetails = await responseDetails.json();
         if (resultDetails.success && resultDetails.data) {
           itemDetails = resultDetails.data;
-          console.log('✅ Détails récupérés depuis getoneitem.php:', {
+          console.log('Détails récupérés depuis getoneitem.php:', {
             id: itemDetails.id,
             nom: itemDetails.nom,
             etat: itemDetails.etat
@@ -515,18 +870,18 @@ async function recupererDetailsItem(itemId) {
       if (itemAvailability && finalItem) {
         finalItem.is_available = itemAvailability.is_available;
         finalItem.statut = itemAvailability.statut;
-        console.log('🔗 Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
+        console.log('Données fusionnées - Disponibilité depuis getitemsavailability + Détails depuis getoneitem');
       }
       
-      console.log('✅ RÉSULTAT FINAL:', finalItem);
+      console.log(' RÉSULTAT FINAL:', finalItem);
       return finalItem;
     } else {
-      console.error('❌ Aucune donnée récupérée des deux APIs');
+      console.error(' Aucune donnée récupérée des deux APIs');
       return null;
     }
     
   } catch (error) {
-    console.error('💥 ERREUR GÉNÉRALE recupererDetailsItem:', error);
+    console.error(' ERREUR GÉNÉRALE recupererDetailsItem:', error);
     return null;
   }
 }
@@ -727,7 +1082,7 @@ async function genererQRCodeDynamique(materielId) {
     qrContainer.style.display = 'flex';
     qrContainer.style.justifyContent = 'center';
     qrContainer.style.alignItems = 'center';
-    ficheQRCode.appendChild(qrContainer);
+    ficheQRCode.appendChild(qrContainer); 
     
     // Générer le QR code avec l'ID du matériel (même logique que materiel_test.js)
     new QRCode(qrContainer, {
@@ -741,6 +1096,14 @@ async function genererQRCodeDynamique(materielId) {
     
     console.log('QR Code généré pour l\'ID:', materielId);
     
+     // Afficher les boutons d'action du QR Code
+    const qrcodeActions = document.getElementById('qrcodeActionsIndex');
+    
+    if (qrcodeActions) {
+      qrcodeActions.classList.remove('d-none');
+    }
+
+
   } catch (error) {
     console.error('Erreur lors de la génération du QR Code:', error);
     document.getElementById('ficheQRCode').innerHTML = 
@@ -804,17 +1167,20 @@ function afficherHistoriquePretsDynamique(historique) {
   const historiqueTrié = [...historique].sort((a, b) => 
     new Date(b.date_pret || b.datePret) - new Date(a.date_pret || a.datePret)
   );
+
+  console.log('Historique trié:', historiqueTrié);
+  console.log('Historique non trié:', historique);
   
   let html = '<div class="list-group list-group-flush">';
   
   historiqueTrié.forEach((pret, index) => {
     // ========== Analyse des données de prêt ==========
-    const emprunteur = pret.nom_emprunteur || pret.emprunteur || 'Emprunteur inconnu';
-    const datePret = pret.date_pret || pret.datePret || 'Non définie';
+    const emprunteur = pret.emprunteur_nom || pret.emprunteur_prenom || 'Emprunteur inconnu';
+    const datePret = pret.date_sortie || pret.datePret || 'Non définie';
     const dateRetourPrevue = pret.date_retour_prevue || pret.dateRetourPrevue || pret.dateRetour || 'Non définie';
-    const dateRetourEffectif = pret.date_restitution || pret.dateRestitution || null;
-    const etatPret = pret.etat_pret || pret.etatPret || 'Bon';
-    const etatRetour = pret.etat_retour || pret.etatRetour || null;
+    const dateRetourEffectif = pret.date_retour_effective || pret.dateRetourEffectif || null;
+    const notePret = pret.note_debut || pret.notePret || null;
+    const noteRetour = pret.note_fin || pret.noteRetour || null;
     
     // ========== Détermination du statut ==========
     const estRestitue = dateRetourEffectif !== null;
@@ -832,59 +1198,67 @@ function afficherHistoriquePretsDynamique(historique) {
 
     // ========== Génération du HTML pour ce prêt ==========
     html += `
-      <div class="list-group-item ${index === 0 ? 'border-top-0' : ''}">
-        
+      <div class="list-group-item ${index === 0 ? 'border-top-0' : ''}" style="display: block; padding: 14px 16px;">
+
         <!-- En-tête avec emprunteur et statut -->
-        <div class="d-flex justify-content-between align-items-start mb-2">
-          <div class="fw-bold text-dark">
+        <div class="header" style="display: block; margin-bottom: 10px;">
+          <div class="fw-bold text-dark" style="margin-bottom: 4px;">
             <i class="fas fa-user me-1"></i>${emprunteur}
           </div>
-          ${badgeStatut}
-        </div>
-        
-        <!-- Dates de prêt -->
-        <div class="small text-muted mb-2">
-          <div class="row g-0">
-            <div class="col-sm-6">
-              <i class="fas fa-calendar-plus me-1 text-success"></i>
-              <strong>Prêt:</strong> ${formatDateFrancaise(datePret)}
-            </div>
-            <div class="col-sm-6">
-              <i class="fas fa-calendar-minus me-1 text-warning"></i>
-              <strong>Retour prévu:</strong> ${formatDateFrancaise(dateRetourPrevue)}
-            </div>
+          <div class="status" style="display: inline-block; margin-top: 2px;">
+            ${badgeStatut}
           </div>
         </div>
-        
-        <!-- États du matériel -->
-        <div class="d-flex align-items-center gap-2 small">
-          <span class="text-muted">État:</span>
-          ${genererBadgeEtatPret(etatPret)}
+
+        <!-- Dates de prêt -->
+        <div class="small text-muted mb-2" style="display: block; margin-bottom: 10px;">
+          <div style="margin-bottom: 4px;">
+            <i class="fas fa-calendar-plus me-1 text-success"></i>
+            <strong>Prêt :</strong> ${formatDateFrancaise(datePret)}
+          </div>
+          <div>
+            <i class="fas fa-calendar-minus me-1 text-warning"></i>
+            <strong>Retour prévu :</strong> ${formatDateFrancaise(dateRetourPrevue)}
+          </div>
+        </div>
+
+        <!-- Notes du matériel -->
+        <div class="notes small" style="display: block; margin-bottom: 8px;">
+          <div style="margin-bottom: 4px;">
+            <span class="text-muted">Note de prêt :</span> 
+            <strong>${notePret || '—'}</strong>
+          </div>
+
           ${estRestitue ? `
-            <i class="fas fa-arrow-right text-muted mx-1"></i>
-            ${genererBadgeEtatPret(etatRetour)}
+            <div>
+              <span class="text-muted">Note de retour :</span> 
+              <strong>${noteRetour || '—'}</strong>
+            </div>
           ` : `
-            <i class="fas fa-arrow-right text-muted mx-1"></i>
-            <span class="text-muted fst-italic">En cours...</span>
+            <div style="margin-top: 2px;">
+              <i class="fas fa-arrow-right text-muted mx-1"></i>
+              <span class="text-muted fst-italic">En cours...</span>
+            </div>
           `}
         </div>
-        
+
         <!-- Date de restitution si applicable -->
         ${estRestitue ? `
-          <div class="small text-success mt-2">
+          <div class="small text-success mt-2" style="display: block; margin-top: 8px;">
             <i class="fas fa-check-circle me-1"></i>
-            <strong>Restitué le:</strong> ${formatDateFrancaise(dateRetourEffectif)}
+            <strong>Restitué le :</strong> ${formatDateFrancaise(dateRetourEffectif)}
           </div>
         ` : ''}
-        
+
         <!-- Alerte retard si applicable -->
         ${estEnRetard ? `
-          <div class="small text-danger mt-2">
+          <div class="small text-danger mt-2" style="display: block; margin-top: 8px;">
             <i class="fas fa-exclamation-triangle me-1"></i>
             <strong>Retard de ${calculerJoursRetard(dateRetourPrevue)} jour(s)</strong>
           </div>
         ` : ''}
       </div>
+
     `;
   });
   

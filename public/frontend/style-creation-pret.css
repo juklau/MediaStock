@@ -1,5 +1,5 @@
 
-/* style de creation-pret.html*/
+/* style de creation-pret.php*/
 
 :root {
   --coral: #ff9994;
@@ -17,6 +17,10 @@ header {
 
 .logo-app {
 	z-index: 2;
+}
+
+.img-logo{
+  max-height: 60px;
 }
 
 #productIcon{
@@ -107,8 +111,9 @@ select#classe option {
   box-shadow: none !important;
 }
 
+
 .page-body {
-  max-width: 420px;
+  max-width: 420px; /* ???????????? */
   margin: 18px auto 48px;
 }
 

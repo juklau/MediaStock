@@ -5,14 +5,14 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-    try{
+    try{ 
 
         // instancier le model Item, le model Pret
         $itemModel = new Models\Item();
-        $pretModel = new Models\Pret(); 
+        $pretModel = new Models\Pret();  
 
        $disponibles = $itemModel->getAvailableItemNames();
-       $indisponibles = $itemModel->afficheItemIndisponible();
+       $indisponibles = $itemModel->afficheItemIndisponible(); 
        $enretards = $pretModel->getOverdueLoans();
 
         // construction un tableau associatif pour éviter les doublons
@@ -26,9 +26,11 @@
                 "id" => $item['id'],
                 "nom" => $item['nom'],
                 "model" => $item['model'],
+                "etat" => $item['etat'],
                 "statut" => "disponible",
-                "categorie" => $item['categorie']
-            ];
+                "categorie" => $item['categorie'],
+                "archived" => $item['archived']
+            ]; 
         }
 
         // ajouter les indisponibles
@@ -42,14 +44,16 @@
                     "id" => $item['id'],
                     "nom" => $item['nom'],
                     "model" => $item['model'],
+                    "etat" => $item['etat'],
                     "statut" => "indisponible",
                     "date_retour_prévu" => $item['date_retour_prevue'],
-                    "categorie" => $item['categorie']
+                    "categorie" => $item['categorie'],
+                    "archived" => $item['archived']
                 ];
             }
         }
 
-        // ajouter les items qui sont en retard
+        // ajouter les items qui sont en "retard"
         foreach($enretards as $pret){
             $key = $pret['image_url'] . '|' . $pret['id'] . '|' . $pret['item_nom'] . '|' . $pret['item_model'];
 
@@ -58,9 +62,11 @@
                 "id" => $pret['id'],
                 "nom" => $pret['item_nom'],
                 "model" => $pret['item_model'],
-                "statut" => "en retard",
+                "etat" => $pret['etat'],
+                "statut" => "retard",
                 "date_retour_prévu" => $pret['date_retour_prevue'],
-                "categorie" => $pret['categorie']
+                "categorie" => $pret['categorie'],
+                "archived" => $pret['archived']
             ];
         }
 

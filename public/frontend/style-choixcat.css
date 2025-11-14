@@ -1,5 +1,5 @@
 
-/* style de Choixcat.html*/
+/* style de Choixcat.php*/
 
 :root {
   --coral: #ff9994;
@@ -17,6 +17,10 @@ header {
 
 .logo-app {
 	z-index: 2;
+}
+
+.img-logo{
+  max-height: 60px;
 }
 
 #item-dispo{
@@ -48,7 +52,7 @@ header {
 }
 
 .fas{
-	font-size: 3rem; 
+	font-size: 2rem; 
 	opacity: 0.69;
 }
 

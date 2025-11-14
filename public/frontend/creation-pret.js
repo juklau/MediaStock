@@ -1,4 +1,8 @@
 
+// Configuration de la langue française pour Flatpickr => était dans le .html
+flatpickr.localize(flatpickr.l10ns.fr);
+
+
 // ===============================================================
 // == récupération des éléments d'un item (QRCode, nom, icon) ====
 // ===============================================================
@@ -178,12 +182,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // console.log("réponse de addemprunteur.php", resultFormation);
+                // console.log("réponse de getidbynameformation.php", resultFormation);
 
                 formationId = parseInt(resultFormation.formation_id);
             }
 
-
+ 
             // Création de l’emprunteur
             const emprunteurPayload = {
                 emprunteur_nom: nom,
@@ -286,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 modal.show();
 
                 document.getElementById("successModal").addEventListener("hidden.bs.modal", () => {
-                    window.location.href = "index.html";
+                    window.location.href = "index.php";
                 }, { once: true });
 
                 form.reset();

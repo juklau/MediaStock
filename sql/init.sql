@@ -1,5 +1,5 @@
 
-USE mediastock;
+USE mediastock_db;
 -- même que le dump.sql du prof
 -- il faut enlever les accents !!!
 CREATE TABLE `Item`(
@@ -49,7 +49,7 @@ CREATE TABLE `Emprunteur`(
     `emprunteur_nom` VARCHAR(50) NOT NULL,
     `emprunteur_prenom` VARCHAR(50) NOT NULL,
     `role` ENUM('etudiant(e)', 'intervenant') NOT NULL,
-    -- peut être à modifier NOT NULL sur NULL!!!!
+    --  modifié NOT NULL sur NULL, car l'intervenant n'a pas formation!!!!
     `formation_id` BIGINT UNSIGNED NULL,
     `archived` BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -89,8 +89,7 @@ ALTER TABLE
 
 
 INSERT INTO `Administrateur`(`login`, `mot_de_passe_hash`) VALUES
-('admin', '$2y$10$e0NRyqZJH1QG1k1vZ1h8euXO6jFhY'),
-('test', '$2y$10$h3NbVfBN2BA60Ne5FKdWZO7/1oqcKc4K2vWEGEbPCR/R.Aqfa07aW');
+('admin', '$2y$10$3wHecd.6I6neJMAbwDsN6ulC.5cm7G/JiJdoeKkjRmnLmJwiG5mOS');
 
 INSERT INTO `Formation`(`formation`) VALUES
 ('ECS1'),
@@ -128,37 +127,37 @@ INSERT INTO `Categorie`(`categorie`) VALUES
 -- ('Cle USB', (SELECT id FROM Categorie WHERE Categorie = 'Autres'));
 
 Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id`) VALUES
-('PC Portable', 'DELL','1','fa-solid fa-laptop','moyen','1'),
-('PC Portable', 'DELL','2','fa-solid fa-laptop','moyen','1'),
-('Apple TV', 'MAC','3','fa-solid fa-tv','bon','1'),
-('Micro cravate', 'QHOT','4','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','5','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','6','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','7','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','8','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','9','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','10','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','11','fa-solid fa-microphone','bon','2'),
-('Micro cravate', 'QHOT','12','fa-solid fa-microphone','bon','2'),
-('Micro cravate', '','13','fa-solid fa-microphone','bon','2'),
-('Micro cravate', '','14','fa-solid fa-microphone','bon','2'),
-('Micro cravate', '','15','fa-solid fa-microphone','bon','2'),
-('Micro cravate', '','16','fa-solid fa-microphone','bon','2'),
-('Micro cravate', '','17','fa-solid fa-microphone','bon','2'),
-('Micro', 'SENNHEISER','18','fa-solid fa-microphone','bon','2'),
-('Micro', 'SENNHEISER','19','fa-solid fa-microphone','bon','2'),
-('Micro', 'SENNHEISER','20','fa-solid fa-microphone','bon','2'),
-('Table de mixage ALTO', 'LIVE 1202','21','fa-solid fa-microphone','bon','2'),
-('Caisse de basses', 'THE BOX','22','fa-solid fa-microphone','bon','2'),
-('Enceinte', 'THE BOX','23','fa-solid fa-headphones','bon','2'),
-('Enceinte', 'THE BOX','24','fa-solid fa-headphones','bon','2'),
-('Transmetteur ', 'SENNHEISER','25','fa-solid fa-microphone','bon','2'),
-('Transmetteur ', 'SENNHEISER','26','fa-solid fa-microphone','bon','2'),
-('Transmetteur ', 'SENNHEISER','27','fa-solid fa-microphone','bon','2'),
-('Transmetteur ', 'SENNHEISER','28','fa-solid fa-microphone','bon','2'),
-('Transmetteur ', 'SENNHEISER','29','fa-solid fa-microphone','bon','2'),
-('Casque micro', 'Jabra','30','fa-solid fa-headphones','bon','2'),
-('Casque micro', 'JCV','31','fa-solid fa-headphones','bon','2'),
+('PC Portable', 'DELL','1','fa-solid fa-desktop','moyen','1'),
+-- ('PC Portable', 'DELL','2','fa-solid fa-laptop','moyen','1'),
+('Apple TV', 'MAC','3','fa-solid fa-desktop','bon','1'),
+('Micro cravate', 'QHOT','4','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','5','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','6','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','7','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','8','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','9','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','10','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','11','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', 'QHOT','12','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', '','13','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', '','14','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', '','15','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', '','16','fa-solid fa-volume-high','bon','2'),
+('Micro cravate', '','17','fa-solid fa-volume-high','bon','2'),
+('Micro', 'SENNHEISER','18','fa-solid fa-volume-high','bon','2'),
+('Micro', 'SENNHEISER','19','fa-solid fa-volume-high','bon','2'),
+('Micro', 'SENNHEISER','20','fa-solid fa-volume-high','bon','2'),
+('Table de mixage ALTO', 'LIVE 1202','21','fa-solid fa-volume-high','bon','2'),
+('Caisse de basses', 'THE BOX','22','fa-solid fa-volume-high','bon','2'),
+('Enceinte', 'THE BOX','23','fa-solid fa-volume-high','bon','2'),
+('Enceinte', 'THE BOX','24','fa-solid fa-volume-high','bon','2'),
+('Transmetteur ', 'SENNHEISER','25','fa-solid fa-volume-high','bon','2'),
+('Transmetteur ', 'SENNHEISER','26','fa-solid fa-volume-high','bon','2'),
+('Transmetteur ', 'SENNHEISER','27','fa-solid fa-volume-high','bon','2'),
+('Transmetteur ', 'SENNHEISER','28','fa-solid fa-volume-high','bon','2'),
+('Transmetteur ', 'SENNHEISER','29','fa-solid fa-volume-high','bon','2'),
+('Casque micro', 'Jabra','30','fa-solid fa-volume-high','bon','2'),
+('Casque micro', 'JCV','31','fa-solid fa-volume-high','bon','2'),
 ('Multiprise','9 trou','32','fa-solid fa-plug','moyen','3'),
 ('Multiprise','9 trou','33','fa-solid fa-plug','moyen','3'),
 ('Multiprise','9 trou','34','fa-solid fa-plug','mauvais','3'),
@@ -171,7 +170,7 @@ Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id
 ('Adaptateur','UGREEN USB-C to USBs','41','fa-solid fa-plug','bon','3'),
 ('Adaptateur','SELORE USB-C to USBs','42','fa-solid fa-plug','bon','3'),
 ('Adaptateur','SELORE USB to USB-C','43','fa-solid fa-plug','bon','3'),
-('Adaptateur','ACEELE USB to HDMI','44','fa-solid fa-plug','bon','3'),
+-- ('Adaptateur','ACEELE USB to HDMI','44','fa-solid fa-plug','bon','3'),
 ('Adaptateur','SYNCWIRE USB to RJ45','45','fa-solid fa-plug','bon','3'),
 ('Adaptateur','USB-C to USB','46','fa-solid fa-plug','bon','3'),
 ('Adaptateur','ThunderBolt to VGA','47','fa-solid fa-plug','bon','3'),
@@ -189,5 +188,5 @@ Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id
 ('Cable HDMI','','59','fa-solid fa-plug','bon','3'),
 ('Cable HDMI','','60','fa-solid fa-plug','bon','3'),
 ('Cable HDMI','','61','fa-solid fa-plug','bon','3'),
-('Enceinte Portable','Fenton','62','fa-solid fa-headphones','bon','2'),
-('Micro','Fenton','63','fa-solid fa-microphone','bon','2');
+('Enceinte Portable','Fenton','62','fa-solid fa-volume-high','bon','2'),
+('Micro','Fenton','63','fa-solid fa-volume-high','bon','2');

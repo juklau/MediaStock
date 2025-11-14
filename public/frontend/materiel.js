@@ -40,19 +40,24 @@ function choisirMateriel(icon) {                  //..  Choixcat.html
       window.location.href = "materiel.html";
 }
 
-const selectedIcon = localStorage.getItem("selectedIcon");
-const iconContainer = document.getElementById("icon-container");
 
-if (selectedIcon && iconContainer) {
-  iconContainer.innerHTML = `
-    <i class="fas fa-${selectedIcon}" 
-       style="font-size: 5rem; color: #00; opacity: 0.8;"></i>
-  `;
-} else {
-  iconContainer.innerHTML = `
-    <p class="text-center text-muted">Aucun matériel sélectionné.</p>
-  `;
-}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const selectedIcon = localStorage.getItem("selectedIcon");
+  const iconContainer = document.getElementById("icon-container");
+
+  if (selectedIcon && iconContainer) {
+    iconContainer.innerHTML = `
+      <i class="fas fa-${selectedIcon}" 
+         style="font-size: 5rem; color: #00; opacity: 0.8;"></i>
+    `;
+  } else if (iconContainer) {
+    iconContainer.innerHTML = `
+      <p class="text-center text-muted">Aucun matériel sélectionné.</p>
+    `;
+  }
+});
+
 
 
 // ============================================================
@@ -67,7 +72,7 @@ async function getCategorieIdFromName(nomCategorie) {
         const id = result.categorie_id;
         return  id;// l'ID de la catégorie
       } else {
-        console.warn("Catégorie non trouvée :", result.message);
+        console.warn("Catégorie non trouvée :", result.message); 
         return null;
       }
     } catch (error) {
@@ -158,6 +163,49 @@ function afficherActions() {
     actions.style.display = 'flex';    // assure l'affichage en flex
   }
 }
+
+/**
+ * Affiche le bouton "Terminer" après l'ajout à la BDD
+ */
+function afficherBoutonTerminer() {
+  console.log('🔵 Fonction afficherBoutonTerminer appelée');
+  const btnTerminerContainer = document.getElementById('btnTerminerContainer');
+  console.log('🔵 btnTerminerContainer trouvé:', btnTerminerContainer);
+  
+  if (!btnTerminerContainer) {
+    console.error('❌ btnTerminerContainer introuvable !');
+    return;
+  }
+  
+  btnTerminerContainer.classList.remove('d-none');
+  console.log('✅ Bouton Terminer affiché !');
+}
+
+/**
+ * Initialiser le bouton "Terminer"
+ */
+function initialiserBoutonTerminer() {
+  console.log('🔵 Initialisation du bouton Terminer');
+  const btnTerminer = document.getElementById('btnTerminer');
+  console.log('🔵 btnTerminer trouvé:', btnTerminer);
+  
+  if (btnTerminer) {
+    btnTerminer.addEventListener('click', function() {
+      console.log('🔵 Clic sur bouton Terminer - Redirection vers index.php');
+      // Rediriger vers index.php
+      window.location.href = 'index.php';
+    });
+    console.log('✅ Event listener ajouté au bouton Terminer');
+  } else {
+    console.error('❌ btnTerminer introuvable !');
+  }
+}
+
+// Initialiser le bouton "Terminer" au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔵 DOMContentLoaded - Initialisation du bouton Terminer');
+  initialiserBoutonTerminer();
+});
 
 
 // ==============================================================
@@ -319,7 +367,7 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     const icon = localStorage.getItem("selectedIcon");
     const categorie = localStorage.getItem("selectedCategory");
     // const qr_code = genererQRCode(categorie).text;
-    const icon = localStorage.getItem("selectedIcon");
+   
 
     if (!nom || !icon ) {
       alert("Veuillez saisir le nom du matériel.");
@@ -387,6 +435,9 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
             genererQRCode(itemId);
             afficherMessageSucces(itemId);
             afficherActions();
+            console.log('🟢 Avant appel afficherBoutonTerminer');
+            afficherBoutonTerminer(); // Afficher le bouton "Terminer"
+            console.log('🟢 Après appel afficherBoutonTerminer');
 
             // Désactiver le bouton
             const btn = document.getElementById('btnAjouterBD');

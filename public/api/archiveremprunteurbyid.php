@@ -5,7 +5,7 @@
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET');
 
-     // Vérifier si le nom de admin est fourni
+     // Vérifier si l'id de l'emprunteur est fourni
     if (!isset($_GET['id'])) {
         $response = [
             "success" => false,
@@ -43,7 +43,7 @@
             ];
             echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
             exit;
-        }
+        } 
 
         // archiver l'emprunteur
         $archived = $emprunteurModel->archiveEmprunteur($emprunteurId);

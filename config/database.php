@@ -13,11 +13,25 @@
 
     private function __construct(){
 
-        // Valeurs par défaut sensées
-        $this->host = getenv('DB_HOST') ?: 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
-        $this->db   = getenv('DB_NAME') ?: 'mediastock';
-        $this->user = getenv('DB_USER') ?: 'mediastock';
-        $this->pass = getenv('DB_PASSWORD') ?: '';
+        // $this->host = 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
+        $this->host = 'mysql-mediastock.alwaysdata.net'; // Identifiants AlwaysData
+        $this->db   = 'mediastock_db';
+<<<<<<< HEAD
+        $this->user = '439141';
+        $this->pass = '5247_Juklau+123!';
+
+        // Valeurs par défaut sensées => le DB local!!!!
+=======
+        $this->user = getenv('DB_USER');
+        $this->pass = getenv('DB_PASSWORD');
+
+        // Valeurs par défaut sensées => le DB local!!!!
+        // à vérifier le user avant la connection au database local dans .env
+>>>>>>> fe3d10de9de2cf3612e4aeef802b8843aa12de09
+        // $this->host = getenv('DB_HOST') ?: 'mysql'; //ce n'est pas localhost=> dans le docker-compose.yml c'est mysql!!
+        // $this->db   = getenv('DB_NAME') ?: 'mediastock';
+        // $this->user = getenv('DB_USER') ?: 'mediastock';
+        // $this->pass = getenv('DB_PASSWORD') ?: '';
 
       try {
         //connexion PDO à la base applicative

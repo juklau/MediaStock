@@ -92,7 +92,7 @@ class Pret extends BaseModel {
      */
     public function getOverdueLoans():array|false {
         $today = date('Y-m-d'); //p.ex: '2025-12-22'
-        $sql = "SELECT p.*, i.id,
+        $sql = "SELECT p.*, i.id, i.archived, i.etat,
                         i.nom AS item_nom, i.model AS item_model, i.qr_code, i.image_url,
                         e.emprunteur_nom, e.emprunteur_prenom,
                         c.categorie AS categorie
@@ -353,7 +353,8 @@ class Pret extends BaseModel {
                  JOIN Emprunteur e ON p.emprunteur_id = e.id
                  LEFT JOIN Formation f ON e.formation_id = f.id
                  JOIN Administrateur a ON p.preteur_id = a.id
-                 WHERE p.item_id = :id";
+                 WHERE p.item_id = :id
+                 AND p.date_retour_effective IS NULL";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
         $stmt->execute();

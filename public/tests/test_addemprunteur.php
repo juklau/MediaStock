@@ -3,8 +3,8 @@
 $url = 'http://localhost/api/addemprunteur.php'; 
 // Données à envoyer
 $data = [
-    'emprunteur_nom' => 'epejesi', 
-    'emprunteur_prenom' => 'miksa',
+    'emprunteur_nom' => 'Elemer', 
+    'emprunteur_prenom' => 'Klaudia',
     'role' => 'intervenant',
     'formation_id' => null
 ];
