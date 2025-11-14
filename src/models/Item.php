@@ -107,7 +107,6 @@ class Item extends BaseModel {
 
     /**
      * Trouver un item par son QR code
-     * à modifier pour int !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      * @param string $qrCode
      * @return array|false
      */

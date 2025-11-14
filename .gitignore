@@ -1,4 +1,5 @@
 
+.vscode/
 .env
 setup_db.php
 .idea
@@ -6,3 +7,5 @@ setup_db.php
 public/index_duprof.php
 public/frontend/Choixmat1.html
 public/frontend/materiel copy.html
+
+sql/init.sql

@@ -14,19 +14,20 @@
   </head>
 
   <body class="bg-white">
-    <!-- Header -->
-    <header class="position-relative">
-      <div class="container h-100">
+  <!-- Header -->
+  <header class="position-relative">
+    <div class="container h-100">
         <div class="row h-100 align-items-center justify-content-center">
-          <div class="col-12 text-center position-relative h-100 d-flex align-items-center justify-content-center">
-            <!-- Logo MediaStock qui colle aux bords -->
-            <div class="logo-app position-relative justify-content-center align-items-center d-flex h-100">
-              <img src="logo.png" alt="MediaStock" class="img-fluid h-100 w-auto object-fit-contain"/>
+        <div class="col-12 text-center">
+            <div class="logo-app d-flex align-items-center justify-content-center">
+            <a href="./index.php">
+                <img src="logo.png" alt="MediaStock" class="img-logo"/>
+            </a>
             </div>
-          </div>
         </div>
-      </div>
-    </header>
+        </div>
+    </div>
+  </header>
 
     <!-- Main -->
     <main class="container text-center py-4 min-vh-100">
