@@ -35,7 +35,7 @@ include_once(__DIR__ . '/../login_verify.php');
           Créer un prêt
         </button>
         <button class="btn action-btn w-100 w-md-auto" id="scanRestitutionBtn">
-          Restituer un prêt
+          Restituter un prêt
         </button>
       </div>
     </div>
@@ -180,14 +180,14 @@ include_once(__DIR__ . '/../login_verify.php');
             <div id="deleteIcon" class="d-flex align-items-center justify-content-center">
               <!-- icon injected -->
             </div>
-            <p id="deleteName" class="mt-3 fw-semibold">nom de l'élément</p>
+            <p id="deleteName" class="mt-3 fw-semibold">Nom de l'élément</p>
           </div>
           <div class="modal-footer justify-content-center">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              annuler
+              Annuler
             </button>
             <button id="confirmDeleteBtn" type="button" class="btn">
-              validé
+              Valider
             </button>
           </div>
         </div>
