@@ -35,7 +35,7 @@ include_once(__DIR__ . '/../login_verify.php');
           Créer un prêt
         </button>
         <button class="btn action-btn w-100 w-md-auto" id="scanRestitutionBtn">
-          Créer une restitution
+          Restituter un prêt
         </button>
       </div>
     </div>
