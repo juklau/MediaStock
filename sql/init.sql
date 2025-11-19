@@ -128,7 +128,7 @@ INSERT INTO `Categorie`(`categorie`) VALUES
 
 Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id`) VALUES
 ('PC Portable', 'DELL','1','fa-solid fa-desktop','moyen','1'),
--- ('PC Portable', 'DELL','2','fa-solid fa-laptop','moyen','1'),
+('PC Portable', 'DELL','2','fa-solid fa-laptop','moyen','1'),
 ('Apple TV', 'MAC','3','fa-solid fa-desktop','bon','1'),
 ('Micro cravate', 'QHOT','4','fa-solid fa-volume-high','bon','2'),
 ('Micro cravate', 'QHOT','5','fa-solid fa-volume-high','bon','2'),
@@ -170,7 +170,7 @@ Insert INTO `Item`(`nom`, `model`, `qr_code`, `image_url`, `etat`, `categorie_id
 ('Adaptateur','UGREEN USB-C to USBs','41','fa-solid fa-plug','bon','3'),
 ('Adaptateur','SELORE USB-C to USBs','42','fa-solid fa-plug','bon','3'),
 ('Adaptateur','SELORE USB to USB-C','43','fa-solid fa-plug','bon','3'),
--- ('Adaptateur','ACEELE USB to HDMI','44','fa-solid fa-plug','bon','3'),
+('Adaptateur','ACEELE USB to HDMI','44','fa-solid fa-plug','bon','3'),
 ('Adaptateur','SYNCWIRE USB to RJ45','45','fa-solid fa-plug','bon','3'),
 ('Adaptateur','USB-C to USB','46','fa-solid fa-plug','bon','3'),
 ('Adaptateur','ThunderBolt to VGA','47','fa-solid fa-plug','bon','3'),

@@ -32,10 +32,10 @@ include_once(__DIR__ . '/../login_verify.php');
     <div class="container py-4 flex-grow-1">
       <div class="d-grid gap-2 d-md-flex justify-content-md-center actions-row">
         <button class="btn action-btn w-100 w-md-auto" id="scanPretBtn">
-          Crée un prêt
+          Créer un prêt
         </button>
         <button class="btn action-btn w-100 w-md-auto" id="scanRestitutionBtn">
-          Crée une restitution
+          Restituer un prêt
         </button>
       </div>
     </div>
