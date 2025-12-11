@@ -259,6 +259,33 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 - Réinitialiser la BDD : ***docker compose down -v***
 - Accès shell : ***docker compose exec web bash***
 
+**Sauvegarde et restauration**
+
+Pour sauvegarder l'application (base de données et volumes Docker) :
+
+```bash
+    ./scripts/backup.sh
+```
+
+La sauvegarde sera créée dans `/home/mediastock/backup/mediastock_backup_YYYYMMDD_HHMMSS/`
+
+Pour restaurer une sauvegarde :
+
+```bash
+    ./scripts/restore.sh /home/mediastock/backup/mediastock_backup_YYYYMMDD_HHMMSS
+```
+
+**Personnalisation du répertoire de sauvegarde :**
+
+Le répertoire de sauvegarde par défaut est `/home/mediastock/backup`. Pour utiliser un autre emplacement, définissez la variable d'environnement `BACKUP_DIR` :
+
+```bash
+    export BACKUP_DIR=/mon/repertoire/backup
+    ./scripts/backup.sh
+```
+
+**Note importante :** Les scripts de sauvegarde/restauration utilisent des chemins absolus pour éviter l'erreur Docker `includes invalid characters for a local volume name`. Assurez-vous que le répertoire de sauvegarde existe ou sera créé automatiquement.
+
 **GitHub Workflow**
 
 ```bash

@@ -10,3 +10,8 @@ sql/init.sql
 
 env.php
 git-quick-stats
+
+# Backups
+backup/
+*.sql
+*.tar.gz
