@@ -259,6 +259,24 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 - Réinitialiser la BDD : ***docker compose down -v***
 - Accès shell : ***docker compose exec web bash***
 
+**Sauvegarde et restauration**
+
+Pour sauvegarder l'application (base de données et volumes Docker) :
+
+```bash
+    ./scripts/backup.sh
+```
+
+La sauvegarde sera créée dans `/home/mediastock/backup/mediastock_backup_YYYYMMDD_HHMMSS/`
+
+Pour restaurer une sauvegarde :
+
+```bash
+    ./scripts/restore.sh /home/mediastock/backup/mediastock_backup_YYYYMMDD_HHMMSS
+```
+
+**Note importante :** Les scripts de sauvegarde/restauration utilisent des chemins absolus. Assurez-vous que le répertoire `/home/mediastock/backup` existe ou modifiez la variable `BACKUP_DIR` dans `scripts/backup.sh` selon votre environnement.
+
 **GitHub Workflow**
 
 ```bash
