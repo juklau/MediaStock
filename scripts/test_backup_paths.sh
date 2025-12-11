@@ -5,20 +5,20 @@
 
 echo "=== Test des chemins dans backup.sh ==="
 
-# Vérifier que BACKUP_DIR commence par /
-if grep -q '^BACKUP_DIR="/home/mediastock/backup"' scripts/backup.sh; then
-    echo "✓ BACKUP_DIR utilise un chemin absolu (commence par /)"
+# Vérifier que BACKUP_DIR utilise un chemin absolu ou une variable d'environnement avec valeur par défaut
+if grep -q 'BACKUP_DIR=".*:-/.*"' scripts/backup.sh; then
+    echo "✓ BACKUP_DIR utilise un chemin absolu avec variable d'environnement configurable"
 else
-    echo "✗ ERREUR: BACKUP_DIR n'utilise pas un chemin absolu"
+    echo "✗ ERREUR: BACKUP_DIR n'utilise pas un chemin absolu configurable"
     exit 1
 fi
 
-# Vérifier qu'il n'y a pas de chemins relatifs pour les volumes
-if grep -q 'home/mediastock/backup' scripts/backup.sh | grep -v '^BACKUP_DIR=' | grep -v '#'; then
-    echo "✗ ERREUR: Chemin relatif trouvé dans backup.sh"
+# Vérifier qu'il n'y a pas de chemins relatifs non-quotés dans les volumes
+if grep 'home/mediastock/backup' scripts/backup.sh | grep -v 'BACKUP_DIR' | grep -v '#' | grep -v '"' > /dev/null 2>&1; then
+    echo "✗ ERREUR: Chemin relatif non-quoté trouvé dans backup.sh"
     exit 1
 else
-    echo "✓ Aucun chemin relatif trouvé (sauf dans BACKUP_DIR)"
+    echo "✓ Aucun chemin relatif non-quoté trouvé"
 fi
 
 # Vérifier que les commandes docker run utilisent bien la variable avec des guillemets
@@ -39,11 +39,19 @@ else
     exit 1
 fi
 
-# Vérifier l'exemple dans le message d'aide
-if grep -q '/home/mediastock/backup/mediastock_backup_' scripts/restore.sh; then
-    echo "✓ L'exemple dans restore.sh utilise un chemin absolu"
+# Vérifier que BACKUP_DIR est défini dans restore.sh
+if grep -q 'BACKUP_DIR=".*:-/.*"' scripts/restore.sh; then
+    echo "✓ restore.sh utilise la même configuration que backup.sh"
 else
-    echo "✗ ERREUR: L'exemple ne montre pas de chemin absolu"
+    echo "✗ ERREUR: restore.sh devrait utiliser la même variable BACKUP_DIR"
+    exit 1
+fi
+
+# Vérifier l'exemple dans le message d'aide utilise la variable
+if grep -q '\${BACKUP_DIR}/mediastock_backup_' scripts/restore.sh; then
+    echo "✓ L'exemple dans restore.sh utilise la variable BACKUP_DIR"
+else
+    echo "✗ ERREUR: L'exemple ne devrait pas utiliser de chemin hardcodé"
     exit 1
 fi
 

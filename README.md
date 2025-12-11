@@ -275,7 +275,16 @@ Pour restaurer une sauvegarde :
     ./scripts/restore.sh /home/mediastock/backup/mediastock_backup_YYYYMMDD_HHMMSS
 ```
 
-**Note importante :** Les scripts de sauvegarde/restauration utilisent des chemins absolus. Assurez-vous que le répertoire `/home/mediastock/backup` existe ou modifiez la variable `BACKUP_DIR` dans `scripts/backup.sh` selon votre environnement.
+**Personnalisation du répertoire de sauvegarde :**
+
+Le répertoire de sauvegarde par défaut est `/home/mediastock/backup`. Pour utiliser un autre emplacement, définissez la variable d'environnement `BACKUP_DIR` :
+
+```bash
+    export BACKUP_DIR=/mon/repertoire/backup
+    ./scripts/backup.sh
+```
+
+**Note importante :** Les scripts de sauvegarde/restauration utilisent des chemins absolus pour éviter l'erreur Docker `includes invalid characters for a local volume name`. Assurez-vous que le répertoire de sauvegarde existe ou sera créé automatiquement.
 
 **GitHub Workflow**
 

@@ -3,6 +3,10 @@
 # Script de restauration pour MediaStock
 # Ce script restaure une sauvegarde complète de la base de données MySQL et des volumes Docker
 
+# Configuration
+# Le répertoire de sauvegarde peut être personnalisé via la variable d'environnement BACKUP_DIR
+BACKUP_DIR="${BACKUP_DIR:-/home/mediastock/backup}"
+
 # Couleurs pour les messages
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -16,10 +20,10 @@ if [ -z "$1" ]; then
     echo -e "${RED}Usage: $0 /chemin/absolu/vers/backup${NC}"
     echo ""
     echo "Exemple:"
-    echo "  $0 /home/mediastock/backup/mediastock_backup_20251211_172021"
+    echo "  $0 ${BACKUP_DIR}/mediastock_backup_20251211_172021"
     echo ""
-    echo "Sauvegardes disponibles dans /home/mediastock/backup/:"
-    ls -1d /home/mediastock/backup/mediastock_backup_* 2>/dev/null || echo "  Aucune sauvegarde trouvée"
+    echo "Sauvegardes disponibles dans ${BACKUP_DIR}/:"
+    ls -1d ${BACKUP_DIR}/mediastock_backup_* 2>/dev/null || echo "  Aucune sauvegarde trouvée"
     exit 1
 fi
 

@@ -4,7 +4,8 @@
 # Ce script crée une sauvegarde complète de la base de données MySQL et des volumes Docker
 
 # Configuration
-BACKUP_DIR="/home/mediastock/backup"
+# Le répertoire de sauvegarde peut être personnalisé via la variable d'environnement BACKUP_DIR
+BACKUP_DIR="${BACKUP_DIR:-/home/mediastock/backup}"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_PATH="${BACKUP_DIR}/mediastock_backup_${TIMESTAMP}"
 CONTAINER_NAME="mediastock-db"
