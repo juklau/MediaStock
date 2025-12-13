@@ -72,7 +72,8 @@ Application **MVC simplifié** en **PHP procédural**, conteneurisée avec Docke
         │   └── init.sql                     # Script SQL (création et données initiales)
         │
         ├── config/
-        │   └── database.php                 # Connexion PDO centralisée
+        │   ├── env.example.php / env.php    # variables d'environnement pour Database.php
+        │   └── Database.php                 # Connexion PDO centralisée
         │
         ├── public/                          # Dossier exposé par Apache
         │   ├── api/                         # Endpoints backend (CRUD, prêts, restitutions…)
@@ -101,9 +102,9 @@ Trois services :
 ```
     | Service       | Image             | Port local  | Description                |
     |---------------|-------------------|-------------|----------------------------|
-    | `web`         | php:8.2-apache    | 8080        | Serveur PHP + Apache       |
+    | `web`         | php:8.2-apache    | 9080        | Serveur PHP + Apache       |
     | `mysql`       | mysql:8.0         | interne     | Base de données MySQL      |
-    | `phpmyadmin`  | phpmyadmin:latest | 8081        | Interface graphique MySQL  |
+    | `phpmyadmin`  | phpmyadmin:latest | 8082        | Interface graphique MySQL  |
 ```
 
 **Commandes principales :**
@@ -247,8 +248,8 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 
 **4. Accéder à l'application**
 
-- Application : http://localhost:8080
-- PhpMyAdmin : http://localhost:8081
+- Application : http://localhost:9080
+- PhpMyAdmin : http://localhost:8082
 
 ---
 
