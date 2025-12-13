@@ -54,6 +54,10 @@
                 // $error = "Nom d'utilisateur ou mot de passe incorrect.";
                 // Afficher le message d'erreur sur la page de connexion
                 // echo $error;
+
+                 // => à mettre pour qu'il s'arrête ici en cas d'erreur
+                 // => et côté client affiche une erreur <=> il affiche que dans le console
+                exit();
             }
         }else {
 

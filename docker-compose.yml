@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: mediastock-web
     ports:
-      - "8080:80"
+      - "9080:80"
     volumes:
       # Monter le code source dans le conteneur => à monte précisément ce dont Apache a besoin
       - ./public:/var/www/html/public
@@ -27,6 +27,8 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      # DB_USER: root
+      # DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     depends_on:
       - mysql
     networks:
@@ -36,13 +38,14 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mediastock-db
-    ports:
-      - "3306:3306" # ok en DEV; à NE PAS exposer en prod
+    # ports: => il ne faut pas car le phpmyadmin communique avec la BDD
+    #   - "3306:3306" # ok en DEV; à NE PAS exposer en prod
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME} # création de la BDD au premier démarrage
       MYSQL_USER: ${DB_USER} # création l'utilisateur applicatif
       MYSQL_PASSWORD: ${DB_PASSWORD}
+     
       TZ: Europe/Paris
     command: >
       --default-authentication-plugin=mysql_native_password
@@ -53,8 +56,8 @@ services:
       - mysql-data:/var/lib/mysql
 
       # Optionnel: script SQL auto au 1er démarrage (alternative à setup_db.php)
-      # Monter le script d'initialisation
-      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro #ro = read only
+      # Monter le script d'initialisation => il ne faut pas pour le backup et restore
+      # - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro #ro = read only
     networks:
       - mediastock-network
 
@@ -63,12 +66,14 @@ services:
     image: phpmyadmin:latest
     container_name: mediastock-phpmyadmin
     ports:
-      - "8081:80"
+      - "8082:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
-      PMA_USER: ${DB_USER}
-      PMA_PASSWORD: ${DB_PASSWORD}
+      # PMA_USER: root
+      PMA_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      # PMA_USER: ${DB_USER}
+      # PMA_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - mysql
     networks:

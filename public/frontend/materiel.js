@@ -369,10 +369,10 @@ document.getElementById('btnAjouterBD').addEventListener('click', async () => {
     // const qr_code = genererQRCode(categorie).text;
    
 
-    if (!nom || !icon ) {
-      alert("Veuillez saisir le nom du matériel.");
-      return;
-    }
+    // if (!nom || !icon ) {
+    //   alert("Veuillez saisir le nom du matériel.");
+    //   return;
+    // }
 
     //récuperer il du catégorie
     const categorieId = await getCategorieIdFromName(categorie);
