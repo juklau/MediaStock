@@ -290,3 +290,4 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 
 
 © 2025 MediaStock – Projet étudiant BTS SIO SLAM
+# MediaStock
