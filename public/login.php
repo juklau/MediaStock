@@ -78,5 +78,5 @@
         ];
 
     }
-    header('Location: /frontend/acceuil.html');
+    header('Location: /frontend/accueil.html');
 ?>

@@ -1,12 +1,12 @@
-# 🎬 MediaStock – Application de gestion de matériel
+#  MediaStock – Application de gestion de matériel
 
-> **Projet BTS SIO – Option SLAM (Session 2025)**  
-> - Réalisation de **JUHASZ Klaudia**  
+> **Projet pédagogique BTS SIO – Option SLAM (Session 2025)**  
+> - Réalisation par **JUHASZ Klaudia**  
 > - **Période de réalisation:** 03/10/2025 – 07/11/2025  
 
 ---
 
-## 📖 Sommaire
+##  Sommaire
 
 - [Objectif du projet](#-objectif-du-projet)
 - [Architecture technique](#️-architecture-technique)
@@ -24,41 +24,41 @@
 
 ---
 
-## 🎯 Objectif du projet
+## Objectif du projet
 
-**MediaStock** est une application web de **gestion de matériel informatique et audiovisuel**. 
-Elle permet à une organisation (ex. établissement scolaire, entreprise) de :
+**MediaStock** est une application web mobile-first de **gestion de matériel informatique et audiovisuel**. 
+Elle permet notamment :
 
-- gérer un **inventaire de matériel** (ajout, modification, archivage),
-- **suivre les prêts et retours** de matériels par les utilisateurs via des QR codes uniques,
-- **identifier chaque matériel via un QR code unique**,
-- permettre la **création et la restitution de prêts** directement depuis un **smartphone** (scan du QR code), 
-- **filtrer, rechercher et modifier** les éléments rapidement.
+- la gestion d’un **inventaire de matériel** (ajout, modification, archivage),
+- le **suivi des prêts et retours** de matériels,
+- l'**identification unique de chaque matériel via QR code unique**,
+- **la création et la restitution de prêts** directement depuis un **smartphone** (scan du QR code), 
+- **filtrage, recherche et modification** des éléments.
 
-L’application est **conteneurisée avec Docker** pour garantir un environnement stable et portable.  
+L’application est entièrement **conteneurisée avec Docker**, garantissant un environnement reproductible et portable.  
 
 ---
 
-## ⚙️ Architecture technique
+## Architecture technique
 
-Application **MVC simplifié** en **PHP procédural**, conteneurisée avec Docker Compose :
+Application **MVC léger**, implémentée en **PHP procédural**, avec Docker Compose :
 
     Client (HTML/CSS/JS/Bootstrap)
                 ↓ fetch()
     Serveur PHP (Apache + API REST PHP)
                 ↓ PDO
-    Base MySQL (Docker volume persistant)
+    Base de données MySQL (volume Docker)
 
 ### Couches principales :
 - **Frontend :** HTML5, CSS3, JavaScript, Bootstrap 5, QRCode.js, Flatpickr  
-- **Backend :** PHP procédural (API REST légère, PDO)
-- **BDD :** MySQL via conteneur Docker
-- **Admin DB :** phpMyAdmin  
-- **Infrastructure :** Docker Compose (multi-services)
+- **Backend :** PHP 8.2 procédural, PDO
+- **Base de données :** MySQL 8.0
+- **Administration DB :** phpMyAdmin  
+- **Infrastructure :** Docker / Docker Compose (multi-services)
 
 ---
 
-## 📦 Structure du projet
+## Structure du projet
 
 ```
    mediastock/
@@ -83,7 +83,7 @@ Application **MVC simplifié** en **PHP procédural**, conteneurisée avec Docke
         │   ├── login.php                    # Authentification d'administrateur
         │   ├── login-verify.php             # Vérification + timeout session
         │   └── frontend/                    # Pages HTML/ CSS/ JS (interface utilisateur)
-        │       ├── acceuil.html             # Page statique
+        │       ├── accueil.html             # Page statique
         │       ├── *.php                    # Pages dynamiques
         │       ├── *.css                    # Feuilles de style
         │       └── *.js                     # Scripts JavaScript (QR code, prêt, retour…)
@@ -92,17 +92,18 @@ Application **MVC simplifié** en **PHP procédural**, conteneurisée avec Docke
             └── models/                      # Classes métiers (Item, Pret, Emprunteur, Formation…)
 
 ```
+Le dossier public/ est le **DocumentRoot Apache**, afin de ne jamais exposer le code métier.
 
 ---
 
-## 🐳 Environnement Docker
+##  Environnement Docker
 
 Trois services :
 
 ```
     | Service       | Image             | Port local  | Description                |
     |---------------|-------------------|-------------|----------------------------|
-    | `web`         | php:8.2-apache    | 9080        | Serveur PHP + Apache       |
+    | `web`         | php:8.2-apache    | 9080        | Application PHP            |
     | `mysql`       | mysql:8.0         | interne     | Base de données MySQL      |
     | `phpmyadmin`  | phpmyadmin:latest | 8082        | Interface graphique MySQL  |
 ```
@@ -121,7 +122,7 @@ Les volumes assurent la persistance des données MySQL (mysql-data).
 
 ---
 
-## 🧩 Technologies utilisées
+## Technologies utilisées
 
 # Frontend
 - HTML5 / CSS3
@@ -141,7 +142,7 @@ Les volumes assurent la persistance des données MySQL (mysql-data).
 
 ---
 
-## 💻 Fonctionnalités principales
+## Fonctionnalités principales
 
 **Inventaire (CRUD complet)**
 - Ajouter, modifier, supprimer (archiver) un matériel
@@ -166,26 +167,30 @@ Les volumes assurent la persistance des données MySQL (mysql-data).
 - Utilisation sur mobile (caméra intégrée pour le scan QR)
 
 **Archivage logique**
-- Pas de suppression physique : items ou emprunteurs marqués comme `archived = 1`
+- Pas de suppression physique : les items et les emprunteurs sont destinés à être marqués comme `archived = 1` (fonctionnalité prévue, non implémentée pour les emprunteurs dans la version actuelle).
 
 ---
 
-## 🧠 Base de données
+## Base de données
 
-Schéma modélisé sous Merise (cf. cahier des charges).
+La base de données du projet **MediaStock** est modélisée selon la méthode **Merise** (voir cahier des charges et documentation technique).
 
-# Entités principales :
-- Item – matériel (nom, modèle, état, QR code, catégorie)
-- Categorie - type (informatique/ audio/ connectique/ autres) 
-- Formation – regroupement d’emprunteurs
-- Emprunteur – étudiant ou intervenant
-- Pret – gestion des prêts et retours
-- Administrateur – authentification des administrateurs
 
-# Relations clés :
-- Un ***Emprunteur*** peut appartenir à une ***Formation***
-- Un ***Pret*** relie un ***Item***, un ***Emprunteur***, et un ***Administrateur***
-- Un ***Item*** appartient à une ***Categorie***
+### Entités principales
+- **Item** : matériel (nom, modèle, état, QR code, image, archivage)
+- **Categorie** : classification du matériel (informatique, audiovisuel, connectique, etc.)
+- **Emprunteur** : personne empruntant du matériel (étudiant ou intervenant)
+- **Formation** : rattachement des emprunteurs étudiants
+- **Pret** : gestion des prêts et restitutions
+- **Administrateur** : gestion et authentification des comptes administrateurs
+
+
+### Relations clés
+- Un **Item** appartient à **une et une seule Categorie** ; une **Categorie** peut regrouper **plusieurs Item**.
+- Un **Pret** concerne **un seul Item**, tandis qu’un **Item** peut être associé à **plusieurs Pret successifs**.
+- Un **Pret** est effectué par **un seul Emprunteur** ; un **Emprunteur** peut réaliser **plusieurs Pret**.
+- Un **Pret** est enregistré par **un seul Administrateur**, qui peut gérer **plusieurs Pret**.
+- Un **Emprunteur** peut être rattaché à **zéro ou une Formation**, tandis qu’une **Formation** peut regrouper **plusieurs Emprunteurs** (distinction étudiants / intervenants).*
 
 ---
 
@@ -255,10 +260,10 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 
 ## Maintenance et développement
 
-- Arrêter proprement : ***docker compose stop***
-- Redémarrer : ***docker compose up -d***
-- Réinitialiser la BDD : ***docker compose down -v***
-- Accès shell : ***docker compose exec web bash***
+- Arrêter proprement : ***docker-compose stop***
+- Redémarrer : ***docker-compose up -d***
+- Réinitialiser la BDD : ***docker-compose down -v***
+- Accès shell : ***docker-compose exec web bash***
 
 **GitHub Workflow**
 
@@ -268,6 +273,25 @@ Schéma modélisé sous Merise (cf. cahier des charges).
     git push origin main
 
 ```
+---
+
+## Améliorations prévues (évolutions futures)
+
+Plusieurs améliorations ont été identifiées pour une version ultérieure de l’application :
+
+- **Recherche avancée par nom d’emprunteur**, en complément des filtres existants.
+- **Amélioration de la saisie de la date de retour**, avec la possibilité de définir la date de retour au même jour que la date de début du prêt.
+- **Ajout d’un bouton de déconnexion explicite** pour l’administrateur.
+- **Gestion multi-utilisateurs**, avec plusieurs comptes administrateurs ou profils distincts.
+- **Inventaire par scan de QR code**, permettant d’accéder directement à la fiche d’un matériel.
+- **Statistiques et tableaux de bord** : nombre de prêts, retards, matériels les plus empruntés, etc.
+- **Journal d’audit / historique des actions** (création, modification, prêt, restitution).
+- **Notifications par e-mail** aux emprunteurs en retard pour la restitution du matériel.
+- **Gestion avancée des rôles et permissions** (administrateur, technicien, intervenant).
+- **Archivage et désarchivage des emprunteurs**, sans suppression de l’historique des prêts.
+- **Gestion du droit à l’effacement (RGPD)** : suppression des données sur demande de l’utilisateur (fonctionnalité prévue dans une version ultérieure).
+
+Ces évolutions permettraient d’améliorer l’ergonomie, la sécurité et l’efficacité de l’application dans un contexte de déploiement réel.
 
 ---
 
@@ -286,8 +310,8 @@ Schéma modélisé sous Merise (cf. cahier des charges).
 
 - [Maquettes Figma ](https://www.figma.com/design/8YYwxKWra3P9QWC6UJBv2L/Untitled?node-id=1-3&t=VbQzFZxMR3Aizp1A-0)
 - Schémas de base de données :
- - MCD et MLD (page 19 du cahier des charges)
- - Diagrammes de Gantt et Kanban (pages 21–22 du cahier des charges)
+  - MCD et MLD (page 18 du cahier des charges)
+- Diagrammes de Gantt et Kanban (pages 20–21 du cahier des charges)
 
 
 © 2025 MediaStock – Projet étudiant BTS SIO SLAM
