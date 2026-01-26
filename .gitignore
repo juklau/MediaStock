@@ -7,6 +7,8 @@ setup_db.php
 public/index_duprof.php
 
 sql/init.sql
+sql/init_views.sql
+sql/init_triggers.sql
 
 env.php
 git-quick-stats

@@ -56,8 +56,11 @@ services:
       - mysql-data:/var/lib/mysql
 
       # Optionnel: script SQL auto au 1er démarrage (alternative à setup_db.php)
-      # Monter le script d'initialisation => il ne faut pas pour le backup et restore
+      # Monter le script d'initialisation 
+      # => il ne faut pas pour le backup et restore => il faut le commenter!!
       # - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro #ro = read only
+
+      - ./sql:/docker-entrypoint-initdb.d:ro   #il faut le commenter pour le backup et restore!!
     networks:
       - mediastock-network
 
