@@ -5,8 +5,8 @@ RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Si on est sur la racine du site (http://localhost:8080/)
-RewriteRule ^$ /frontend/acceuil.html [L]
+# Si on est sur la racine du site (http://localhost:9080/)
+RewriteRule ^$ /frontend/accueil.html [L]
 
 # Si aucune autre règle ne correspond (page inexistante)
-RewriteRule ^ frontend/acceuil.html [L]
+RewriteRule ^ frontend/accueil.html [L]

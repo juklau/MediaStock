@@ -58,7 +58,7 @@ header {
   margin-bottom: 8px;
 }
 
-/* acceuil.php */
+/* accueil.html */
 .action-btn:active {
   transform: translateY(2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);

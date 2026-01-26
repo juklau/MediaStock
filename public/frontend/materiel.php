@@ -105,7 +105,7 @@
       </div>
     </main>
 
-    <!-- Footer => basé sur la page d'acceuil, afin que ça soit pareil partout!- -->
+    <!-- Footer => basé sur la page d'accueil, afin que ça soit pareil partout!- -->
     <footer class="py-4 mt-auto text-muted py-3 border-top">
       <div class="container">
         <div class="text-center">

@@ -35,6 +35,8 @@
         $this->db   = $config['DB_NAME'];
         $this->user = $config['DB_USER'];
         $this->pass = $config['DB_PASSWORD'];
+        // $this->user = 'root';
+        // $this->pass = $config['DB_ROOT_PASSWORD'];
 
       try {
         //connexion PDO à la base applicative
