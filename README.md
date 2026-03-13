@@ -1,7 +1,7 @@
 #  MediaStock – Application de gestion de matériel
 
 > **Projet pédagogique BTS SIO – Option SLAM (Session 2025)**  
-> - Réalisation par **JUHASZ Klaudia**  
+> - Réalisation par **Yanis ADIDI**  
 > - **Période de réalisation:** 03/10/2025 – 07/11/2025  
 
 ---
