@@ -2,7 +2,7 @@
 
 > **Projet pédagogique BTS SIO – Option SLAM (Session 2025)**  
 > - Réalisation par **JUHASZ Klaudia**  
-> - **Période de réalisation:** 03/10/2025 – 07/11/2025  
+> - **Période de réalisation:** 03/10/2025 – 14/11/2025  
 
 ---
 
@@ -255,6 +255,7 @@ La base de données du projet **MediaStock** est modélisée selon la méthode *
 
 - Application : http://localhost:9080
 - PhpMyAdmin : http://localhost:8082
+- AlwaysData : https://mediastock.alwaysdata.net/frontend/accueil.html
 
 ---
 
