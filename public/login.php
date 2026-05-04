@@ -7,7 +7,7 @@
 
         if (isset($_POST['username']) && isset($_POST['password'])) {
             $username = htmlspecialchars($_POST['username']);
-            $password = htmlspecialchars($_POST['password']); 
+            $password = $_POST['password']; 
 
             if (empty($username) || empty($password)) {
                 header('Content-Type: application/json');
@@ -38,8 +38,6 @@
                 ];
                 
                 echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-                // afficher en JSON le résultat
-                // Rediriger vers la page de tableau de bord
                 exit();
             } else {
 
@@ -50,29 +48,28 @@
                     "message" => "Login ou mot de passe incorrect."
                 ];
                 echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
-                // $error = "Nom d'utilisateur ou mot de passe incorrect.";
-                // Afficher le message d'erreur sur la page de connexion
-                // echo $error;
+                exit();
             }
-        }else {
+        } else {
 
             header('Content-Type: application/json' );
             $response = [
                 "success" => false,
                 "title" => "Erreur de connexion",
-                "message" => "Les informations de connexion ne sont pas définies dans la session."
+                "message" => "Les informations de connexion ne sont pas définies."
             ];
             
-            return json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+            exit();
         }
-    }catch(PDOException $e){
+    } catch(PDOException $e) {
         error_log("Erreur de connexion: " . $e->getMessage());
+        header('Content-Type: application/json');
         $response = [
             "success" => false,
             "message" => "Erreur de connexion: " . $e->getMessage()
         ];
-
+        echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        exit();
     }
-    header('Location: /frontend/acceuil.html');
 ?>

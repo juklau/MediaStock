@@ -1,0 +1,126 @@
+# Production compose — MediaStock (Format Traefik Iris A3N)
+# URL App : https://mediastock.iris.a3n.fr:4433
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mediastock-juklau-web
+    restart: unless-stopped
+    expose:
+      - "80"
+    volumes:
+      - ./public:/var/www/html/public
+      - ./src:/var/www/html/src
+      - ./config:/var/www/html/config
+      - ./vendor:/var/www/html/vendor
+      - ./sql:/var/www/html/sql
+    environment:
+      DB_HOST: mysql
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - mediastock-internal
+      - admin_proxy
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: admin_proxy
+
+      # 1. Middleware : redirection HTTP → HTTPS avec port 4433
+      traefik.http.middlewares.mediastock-juklau-redirect.redirectregex.regex: "^http://mediastock\\.iris\\.a3n\\.fr(.*)"
+      traefik.http.middlewares.mediastock-juklau-redirect.redirectregex.replacement: "https://mediastock.iris.a3n.fr:4433$$1"
+      traefik.http.middlewares.mediastock-juklau-redirect.redirectregex.permanent: "true"
+
+      # 2. Router HTTP (port 80) — applique le redirect
+      traefik.http.routers.mediastock-juklau-http.entrypoints: web
+      traefik.http.routers.mediastock-juklau-http.rule: Host(`mediastock.iris.a3n.fr`)
+      traefik.http.routers.mediastock-juklau-http.middlewares: mediastock-juklau-redirect
+      traefik.http.routers.mediastock-juklau-http.service: mediastock-juklau-svc
+
+      # 3. Router HTTPS (port 443/4433) — avec TLS Let's Encrypt
+      traefik.http.routers.mediastock-juklau.entrypoints: websecure
+      traefik.http.routers.mediastock-juklau.rule: Host(`mediastock.iris.a3n.fr`)
+      traefik.http.routers.mediastock-juklau.tls: "true"
+      traefik.http.routers.mediastock-juklau.tls.certresolver: letsencrypt
+      traefik.http.routers.mediastock-juklau.service: mediastock-juklau-svc
+      traefik.http.routers.mediastock-juklau.middlewares: mediastock-juklau-hsts
+
+      # 4. Service — port interne
+      traefik.http.services.mediastock-juklau-svc.loadbalancer.server.port: "80"
+
+      # 5. Middleware HSTS
+      traefik.http.middlewares.mediastock-juklau-hsts.headers.stsSeconds: "31536000"
+      traefik.http.middlewares.mediastock-juklau-hsts.headers.stsIncludeSubdomains: "true"
+      traefik.http.middlewares.mediastock-juklau-hsts.headers.forceSTSHeader: "true"
+
+  mysql:
+    image: mysql:8.0
+    container_name: mediastock-juklau-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: Europe/Paris
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - mediastock-internal
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: mediastock-juklau-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    networks:
+      - mediastock-internal
+      - admin_proxy
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: admin_proxy
+      traefik.http.routers.mediastock-juklau-pma.entrypoints: websecure
+      traefik.http.routers.mediastock-juklau-pma.rule: Host(`pma-mediastock.iris.a3n.fr`)
+      traefik.http.routers.mediastock-juklau-pma.tls: "true"
+      traefik.http.routers.mediastock-juklau-pma.tls.certresolver: letsencrypt
+      traefik.http.services.mediastock-juklau-pma.loadbalancer.server.port: "80"
+
+      # Middleware : redirection HTTP → HTTPS avec port 4433 pour PMA
+      traefik.http.middlewares.mediastock-juklau-pma-redirect.redirectregex.regex: "^http://pma-mediastock\\.iris\\.a3n\\.fr(.*)"
+      traefik.http.middlewares.mediastock-juklau-pma-redirect.redirectregex.replacement: "https://pma-mediastock.iris.a3n.fr:4433$$1"
+      traefik.http.middlewares.mediastock-juklau-pma-redirect.redirectregex.permanent: "true"
+
+      # Router HTTP (port 80) — PMA
+      traefik.http.routers.mediastock-juklau-pma-http.entrypoints: web
+      traefik.http.routers.mediastock-juklau-pma-http.rule: Host(`pma-mediastock.iris.a3n.fr`)
+      traefik.http.routers.mediastock-juklau-pma-http.middlewares: mediastock-juklau-pma-redirect
+
+      # Router HTTPS (port 443/4433) — PMA
+      traefik.http.routers.mediastock-juklau-pma.middlewares: mediastock-juklau-hsts
+
+volumes:
+  mysql-data:
+
+networks:
+  mediastock-internal:
+    driver: bridge
+  admin_proxy:
+    external: true

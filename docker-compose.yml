@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: mediastock-web
     ports:
-      - "8080:80"
+      - "4433:80"
     volumes:
       # Monter le code source dans le conteneur => à monte précisément ce dont Apache a besoin
       - ./public:/var/www/html/public
@@ -37,7 +37,7 @@ services:
     image: mysql:8.0
     container_name: mediastock-db
     ports:
-      - "3306:3306" # ok en DEV; à NE PAS exposer en prod
+      - "3307:3306" # ok en DEV; à NE PAS exposer en prod
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME} # création de la BDD au premier démarrage
@@ -63,12 +63,10 @@ services:
     image: phpmyadmin:latest
     container_name: mediastock-phpmyadmin
     ports:
-      - "8081:80"
+      - "9081:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
-      PMA_USER: ${DB_USER}
-      PMA_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - mysql
     networks:
