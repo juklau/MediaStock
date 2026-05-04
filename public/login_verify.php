@@ -6,14 +6,14 @@ $session_timeout = 300;
 
 // vérification si user est connecté
 if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
-    header('Location: acceuil.html');
+    header('Location: accueil.html');
     exit();
 }
 
 // vérification si la session a expiré
 if(isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $session_timeout){
 
-    // déstruction de la session et redirection vers acceuil.html
+    // déstruction de la session et redirection vers accueil.html
     session_unset();
     session_destroy();
     header("Location:index.php");

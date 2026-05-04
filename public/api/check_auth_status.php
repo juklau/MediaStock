@@ -5,7 +5,7 @@
 
     $response = [
         'isAuthenticated' => isset($_SESSION['username']),
-        'redirectUrl' => isset($_SESSION['username']) ? null : 'acceuil.html'
+        'redirectUrl' => isset($_SESSION['username']) ? null : 'accueil.html'
     ];
 
     echo json_encode($response);

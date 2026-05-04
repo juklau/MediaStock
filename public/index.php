@@ -1,6 +1,6 @@
 <?php
-header('Location: /frontend/acceuil.html');
+header('Location: /frontend/accueil.html');
 exit;
 ?>
 
-<!-- ce fichier il faut afin de rediriger vers la page d'acceuil quand on ouvre le web depuis le docker -->
+<!-- ce fichier il faut afin de rediriger vers la page d'accueil quand on ouvre le web depuis le docker -->

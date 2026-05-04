@@ -28,7 +28,6 @@
                 $_SESSION['username'] = $username;
                 $_SESSION['last_activity'] = time();
 
-                // utilisation de la couche d'accès aux données
                 header('Content-Type: application/json');
                 $response = [
                     "success" => true,
