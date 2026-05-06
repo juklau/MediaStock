@@ -17,11 +17,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     
     try {
-        const response = await fetch(`/../api/getonepret.php?id=${encodeURIComponent(qrCode)}`);
+        const response = await fetch(`../api/getonepretbyqrcode.php?qr_code=${encodeURIComponent(qrCode)}`);
         const result = await response.json();
 
         if (result.success && result.data) {
              const pret = result.data;
+             window.scannedItemId = pret.item_id; // Stocker le vrai ID de l'item
              const imageUrl = pret.image_url;
              const itemNom = pret.nom;
              const emprunteurNom = pret.emprunteur_nom;
@@ -181,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
           }
 
-          const isItemActive = resultActive.data.some(pret => parseInt(pret.item_id) === itemId);
+          const isItemActive = resultActive.data.some(pret => parseInt(pret.item_id) === (window.scannedItemId || itemId));
           if (!isItemActive) {
             alert("Impossible de clôturer ce prêt : aucun prêt actif trouvé pour cet article.");
             return;
@@ -202,7 +203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           // Clôturer le prêt avec un commentaire => POST
           const cloturePayload = {
-            id: itemId,
+            id: window.scannedItemId || itemId,
             note_fin: commentaire
           };
 
@@ -236,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
            // Mettre à jour l'état de l'item, si la clôture est réussie =>POST
           const updateEtatPayload = {
-            id: itemId,
+            id: window.scannedItemId || itemId,
             etat: etatFin 
           };
 

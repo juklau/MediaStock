@@ -153,6 +153,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Script spécifique à cette page -->
-    <script src="creation-pret.js"></script>
+    <script src="creation-pret.js?v=1.1"></script>
   </body>
 </html>

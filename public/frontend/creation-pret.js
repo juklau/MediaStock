@@ -18,11 +18,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     
     try {
-        const response = await fetch(`/../api/getoneitem.php?id=${encodeURIComponent(qrCode)}`);
+        const response = await fetch(`../api/findbyqrcode.php?qr_code=${encodeURIComponent(qrCode)}`);
         const result = await response.json();
 
         if (result.success && result.data) {
              const item = result.data;
+             window.scannedItemId = item.id; // Stocker le vrai ID pour plus tard
 
             // Injecter les données dans la page
             document.getElementById("itemName").textContent = item.nom || "Nom inconnu";
@@ -229,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Création du prêt
             const pretPayload = {
-                item_id: itemId,
+                item_id: window.scannedItemId || itemId, // Utiliser le vrai ID récupéré
                 emprunteur_id: emprunteurId,
                 preteur_id: 1, // à adapter selon ton système de session
                 date_sortie: dateSortie,
@@ -263,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Mettre à jour l'état de l'item =>POST
             const updateEtatPayload = {
-                id: itemId,
+                id: window.scannedItemId || itemId,
                 etat: etat 
             };
 

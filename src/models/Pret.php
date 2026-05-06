@@ -405,6 +405,32 @@ class Pret extends BaseModel {
 
 
     /**
+     * Obtenir les éléments d'un prêt en cherchant selon le qr_code de l'item
+     * 
+     * @param string $qrCode
+     * @return array|false Renvoie les données de prêt si un prêt actif existe, sinon false
+     */
+    public function getLoanByItemQrCode(string $qrCode):array|false {
+        $sql = "SELECT p.*,
+                        i.etat, i.image_url, i.nom,
+                        f.formation,
+                        e.emprunteur_nom, e.emprunteur_prenom, e.formation_id,
+                        a.login as preteur_login
+                 FROM {$this->table} p
+                 JOIN Item i ON p.item_id = i.id
+                 JOIN Emprunteur e ON p.emprunteur_id = e.id
+                 LEFT JOIN Formation f ON e.formation_id = f.id
+                 JOIN Administrateur a ON p.preteur_id = a.id
+                 WHERE i.qr_code = :qr_code
+                 AND p.date_retour_effective IS NULL";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':qr_code', $qrCode);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+
+    /**
      * Obtenir le nom de la table
      * 
      * @return string
